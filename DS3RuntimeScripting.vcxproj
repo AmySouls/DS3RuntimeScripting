@@ -125,12 +125,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>C:\dev\vcpkg\installed\x64-windows\debug\lib</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);detours.lib;client.lib;;util.lib;base.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -153,14 +156,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\Downloads\SocketComs.h" />
+    <ClInclude Include="dependencies\SocketComs.h" />
     <ClInclude Include="ds3runtime\async_module.h" />
     <ClInclude Include="ds3runtime\databaseaddress.h" />
     <ClInclude Include="ds3runtime\ds3runtime.h" />
     <ClInclude Include="ds3runtime\entity.h" />
+    <ClInclude Include="ds3runtime\hook.h" />
+    <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\log.h" />
+    <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
     <ClInclude Include="ds3runtime\main_character.h" />
     <ClInclude Include="ds3runtime\memory_util.h" />
     <ClInclude Include="ds3runtime\player.h" />
+    <ClInclude Include="ds3runtime\scripts\test_script.h" />
     <ClInclude Include="ds3runtime\script_module.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
@@ -169,9 +178,15 @@
     <ClCompile Include="ds3runtime\databaseaddress.cpp" />
     <ClCompile Include="ds3runtime\ds3runtime.cpp" />
     <ClCompile Include="ds3runtime\entity.cpp" />
+    <ClCompile Include="ds3runtime\hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ds3runtime\log.cpp" />
     <ClCompile Include="ds3runtime\main_character.cpp" />
     <ClCompile Include="ds3runtime\player.cpp" />
+    <ClCompile Include="ds3runtime\scripts\test_script.cpp" />
     <ClCompile Include="ds3runtime\script_module.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">

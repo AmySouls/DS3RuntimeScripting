@@ -13,19 +13,19 @@ class AsyncModule : public ScriptModule
 public:
 	AsyncModule();
 
-	static void entryPoint(AsyncModule* asyncModule);
+	static void createThread(std::shared_ptr<ScriptModule> asyncModule);
 
 	void destroy();
 
 	bool isDestroyed();
 
-	void setSafeToDelete();
-
-	bool isSafeToDelete();
-
-	HANDLE getHandle();
+	bool isAsync()
+	{
+		return true;
+	}
 private:
-	HANDLE threadHandle;
+	static DWORD WINAPI entryPoint(std::shared_ptr<AsyncModule> asyncModule);
+
 	bool destroyed = false;
 	bool safeToDelete = false;
 };

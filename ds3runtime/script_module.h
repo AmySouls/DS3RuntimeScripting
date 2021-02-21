@@ -20,11 +20,12 @@ public:
 
 	uint64_t getUniqueId();
 
-	void setLog(Log* log);
+	virtual bool isAsync()
+	{
+		return false;
+	}
 private:
 	uint64_t uniqueId;
-protected:
-	Log* log;
 };
 
 }

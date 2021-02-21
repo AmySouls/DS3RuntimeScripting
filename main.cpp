@@ -1,44 +1,33 @@
 #include "pch.h"
 #include "ds3runtime/ds3runtime.h"
+#include "ds3runtime/hooks/game_frame_hook.h"
+#include "ds3runtime/hooks/lua_capture.h"
+#include "ds3runtime/scripts/test_script.h"
 
 using namespace ds3runtime;
 
-Log* ds3runtimeLog;
 static AsyncModule* script;
+std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;
 
 static bool attach()
 {
-    ds3runtimeLog = new Log(GetStdHandle(STD_OUTPUT_HANDLE));
-    ds3runtimeLog->info("Sucessfully loaded!");
+    ds3runtime_global.reset(new DS3RuntimeScripting);
+    ds3runtime_global->createLog(GetStdHandle(STD_OUTPUT_HANDLE));
+    ds3runtime_global->getLog()->info("Sucessfully loaded!");
+    std::shared_ptr<Hook> gameFrameHook = std::make_shared<GameFrameHook>();
+    std::shared_ptr<Hook> luaCaptureHook = std::make_shared<LuaCapture>();
+    ds3runtime_global->addHook(gameFrameHook);
+    ds3runtime_global->addHook(luaCaptureHook);
+    std::shared_ptr<ScriptModule> testScript = std::make_shared<TestScript>();
+    ds3runtime_global->runScript(testScript);
+    ds3runtime_global->attach();
     return true;
 }
 
 static bool detach()
 {
-    if (script) { //TODO: Reorganize this into a class tasks with managing all scripts
-        if (script->isSafeToDelete()) {
-            delete script;
-            script = nullptr;
-        }
-        else {
-            if (!script->isDestroyed()) script->destroy();
-            DWORD waitResult = WaitForSingleObject(script->getHandle(), 10000);
-            if (waitResult == WAIT_OBJECT_0) ds3runtimeLog->info("Succesfully ended async test script thread.");
-            else if (waitResult == WAIT_TIMEOUT) {
-                ds3runtimeLog->error("Async test script destruction timed out.");
-                return true;
-            }
-            else if (waitResult == WAIT_FAILED) {
-                ds3runtimeLog->error("Async test script destruction failed.");
-                return true;
-            }
-
-            delete script;
-            script = nullptr;
-        }
-    }
-
-    ds3runtimeLog->info("Sucessfully unloaded!");
+    ds3runtime::ds3runtime_global->detach();
+    ds3runtime::ds3runtime_global->getLog()->info("Sucessfully unloaded!");
     return true;
 }
 

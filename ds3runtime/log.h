@@ -50,13 +50,12 @@ private:
 	void cStringOut(const char* message, const char* messageStatus, uint32_t statusColor)
 	{
 		metaInfoOut(messageStatus, statusColor);
-		std::cout << message << '\n';
+		std::cout << message << std::endl;
 	}
 
 	void wcStringOut(const wchar_t* message, const char* messageStatus, uint32_t statusColor)
 	{
-		metaInfoOut(messageStatus, statusColor);
-		std::wcout << message << '\n';
+		cStringOut(std::to_string(message).c_str(), messageStatus, statusColor);
 	}
 
 	HANDLE consoleHandle;

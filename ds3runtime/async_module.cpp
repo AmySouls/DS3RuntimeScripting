@@ -10,13 +10,18 @@
 namespace ds3runtime {
 
 AsyncModule::AsyncModule() : ScriptModule::ScriptModule()
-{	this->threadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AsyncModule::entryPoint, this, 0, NULL);
+{	
 }
 
-void AsyncModule::entryPoint(AsyncModule* asyncModule)
+void AsyncModule::createThread(std::shared_ptr<ScriptModule> asyncModule)
+{
+	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AsyncModule::entryPoint, &asyncModule, 0, NULL);
+}
+
+DWORD WINAPI AsyncModule::entryPoint(std::shared_ptr<AsyncModule> asyncModule)
 {
 	while (!asyncModule->isDestroyed()) asyncModule->execute();
-	asyncModule->setSafeToDelete();
+	return 0;
 }
 
 void AsyncModule::destroy()
@@ -27,21 +32,6 @@ void AsyncModule::destroy()
 bool AsyncModule::isDestroyed()
 {
 	return destroyed;
-}
-
-void AsyncModule::setSafeToDelete()
-{
-	safeToDelete = true;
-}
-
-bool AsyncModule::isSafeToDelete()
-{
-	return safeToDelete;
-}
-
-HANDLE AsyncModule::getHandle()
-{
-	return threadHandle;
 }
 
 }

@@ -20,9 +20,4 @@ uint64_t ScriptModule::getUniqueId()
 	return uniqueId;
 }
 
-void ScriptModule::setLog(Log* log)
-{
-	this->log = log;
-}
-
 }
