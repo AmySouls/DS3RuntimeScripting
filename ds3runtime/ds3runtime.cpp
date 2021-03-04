@@ -29,17 +29,6 @@ void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook) {
 	hooks.push_back(hook);
 }
 
-Log* DS3RuntimeScripting::getLog()
-{
-	if (!log.has_value()) return nullptr;
-	return &log.value();
-}
-
-void DS3RuntimeScripting::createLog(HANDLE consoleHandle)
-{
-	log = Log(consoleHandle);
-}
-
 void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script) {
 	std::lock_guard<std::mutex> lock(mut);
 	scripts.push_back(script);
@@ -60,13 +49,39 @@ void DS3RuntimeScripting::removeScript(uint64_t uniqueId) {
 
 void DS3RuntimeScripting::executeScripts()
 {
-	std::lock_guard<std::mutex> lock(mut);
-
 	for (auto script : scripts) {
 		if (!script->isAsync()) script->execute();
 	}
+}
+
+std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
+{
+	std::shared_ptr<ScriptModule> matchingScript;
+	std::lock_guard<std::mutex> lock(mut);
+
+	for (auto script : scripts) if (script->getUniqueId() == scriptUniqueId)
+	{
+		matchingScript = script;
+		break;
+	}
 
 	cond.notify_one();
+	return matchingScript;
+}
+
+std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(std::string name)
+{
+	std::shared_ptr<ScriptModule> matchingScript;
+	std::lock_guard<std::mutex> lock(mut);
+
+	for (auto script : scripts) if (script->getName().compare(name) == 0)
+	{
+		matchingScript = script;
+		break;
+	}
+
+	cond.notify_one();
+	return matchingScript;
 }
 
 std::shared_ptr<Hook> DS3RuntimeScripting::accessHook(std::string name)

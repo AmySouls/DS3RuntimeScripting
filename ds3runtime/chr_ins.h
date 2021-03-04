@@ -1,0 +1,331 @@
+/*
+	* DS3RuntimeScripting
+	* Contributers: Amir
+	* Further notes on how to use this class:
+	* 
+	* -Setters- Online limitations.
+	* Setting several of these values will not automatically relay this information over the network.
+	* This will result in desync of these value across online player's games, or your changes being immediatly
+	* reverted by the data coming in from these other online players.
+	* 
+	* If the ChrIns you are modifying is a player, most data fields will be immediatly reverted by incoming data
+	* from their online games. If the ChrIns is not a player, the data may or may not be relayed automatically
+	* or may or may not be overwritten by incoming data depending on the field, if you are the host of the online 
+	* session.
+	* 
+	* Use this api's network utilites in your scripts to ensure intended behaivor and utilize possible work arounds.
+	* 
+	* Read the documentation of each method for more information, each setter method should document a basic description
+	* of the unpatched network behaivor when modifying said field. 
+*/
+
+#pragma once
+#include "pch.h"
+#include "memory_util.h"
+
+namespace ds3runtime {
+
+class ChrIns
+{
+public:
+	ChrIns(uintptr_t address);
+
+	enum class Handle {
+		None = 0,
+		MainChr = 0x10068000
+	};
+
+	enum class ChrType {
+		HostOfEmbers = 0,
+		WhitePhantom = 1,
+		DarkSpirit = 2,
+		Ghost1 = 3,
+		Ghost2 = 4,
+		Hollow = 8,
+		Ghost3 = 10,
+		Ghost4 = 11,
+		Dragon = 12,
+		Arena = 13
+	};
+
+	enum class Team {
+		None = 0,
+		HostOfEmbers = 1,
+		Phantom = 2,
+		BlackPhantom = 3,
+		Hollow = 4,
+		Enemy = 6,
+		Boss = 7,
+		Friend = 8,
+		AngryFriend = 9,
+		DecoyEnemy = 10,
+		BloodChild = 11,
+		BattleFriend = 12,
+		Dragon = 13,
+		DarkSpirit = 16,
+		WatchdogOfFarron = 17,
+		AldirchFaithful = 18,
+		Darkwraiths = 24,
+		NPC = 26,
+		HostileNPC = 27,
+		Arena = 29,
+		MadPhantom = 31,
+		MadSpirit = 32,
+		Crab = 33
+	};
+
+	/*
+	* Check if this ChrIns and it's base address is valid. 
+	* 
+	* Peformes several multi-level pointer checks.
+	* 
+	* @return True if ChrIns is valid.
+	*/
+	bool isValid();
+
+	/*
+	* Get's the handle of this ChrIns. 
+	* 
+	* The handle seems to be an identifier used by things such as bullets to reference entities.
+	* 
+	* @return Handle of this ChrIns.
+	*/
+	Handle getHandle();
+
+	/*
+	* Get's the ChrInsType of this ChrIns. 
+	* 
+	* ChrInsType controls apperance and roles of entities.
+	* 
+	* @return ChrInsType of this ChrIns.
+	*/
+	ChrType getChrType();
+
+	/*
+	* Set's the ChrInsType of this ChrIns. 
+	* 
+	* ChrInsType controls apperance and roles of entities.
+	* 
+	* Online limitations: For your own player character, changes to this value relay over the network 
+	* and sets a corrisponding value to your player's Team on other player's games(Eg. Setting "DarkSpirit" 
+	* results in "DarkSpirit" for team type). Changing ChrInsType of any other ChrIns seems to desync.
+	* 
+	* @param ChrInsType ChrInsType to assign this ChrIns.
+	*/
+	void setChrType(ChrType chrType);
+
+	/*
+	* Get's the Team of this ChrIns. 
+	* 
+	* Team controls combat alliances of entities.
+	* 
+	* @return Team of this ChrIns.
+	*/
+	Team getTeam();
+
+	/*
+	* Set's the Team of this ChrIns. 
+	* 
+	* Team controls combat alliances of entities.
+	* 
+	* Online limitations: This change is not relayed over the network aside from setting what you can hit, 
+	* but a work around can be peformed by setting your own ChrInsType to a corrisponding value that would 
+	* set your Team type to the desired one.
+	* 
+	* @param team Team to assign to this ChrIns.
+	*/
+	void setTeam(Team team);
+
+	/*
+	* Get's the forward id of this ChrIns. 
+	* 
+	* The forward id seems to be used as a identifier to communicate ChrIns related events
+	* across the network. For example to communicate who is riposting and who is being riposted
+	* in a riposte grab.
+	* 
+	* @return Forward id of this ChrIns.
+	*/
+	unsigned short getForwardId();
+
+	/*
+	* Get's the character string of this ChrIns 
+	* 
+	* The character string contains the character id of an ChrIns which is the same as the 
+	* actual file that holds the model, animations and behaivors of this character(Eg. c0000 is the player character). 
+	* 
+	* After the underscore is the character number, which is used to identify which
+	* instance of this character this is on the current map.
+	* 
+	* @return Character string of this ChrIns.
+	*/
+	std::wstring getCharacterString();
+
+	/*
+	* Get's the current animation string of this ChrIns. 
+	* 
+	* Animation strings are the strings defined in hks files which give descriptions of an animation's moveset 
+	* role. For example, if a player ChrIns does a light attack while two handing a weapon, this value should be 
+	* "AttackBothLight1".
+	* 
+	* @return Current animation string of this ChrIns.
+	*/
+	std::wstring getAnimationString();
+
+	/*
+	* Get's the current X-Y-Z position of this ChrIns. 
+	* 
+	* This is the absolute root position of this ChrIns in the game's virtual 3d space. 
+	* 
+	* The returned vector contains a copy of the coordinates, so changing these will not 
+	* have any effect unless you write this vector back using setPosition().
+	* 
+	* @return A vector containing the current X-Y-Z position of this ChrIns.
+	*/
+	std::vector<float> getPosition();
+
+	/*
+	* Set's the current X-Y-Z position of this ChrIns.
+	*
+	* This is the absolute root position of this ChrIns in the game's virtual 3d space.
+	*
+	* Online limitations:
+	* {
+	* Self = RELAY,
+	* Players = OVERWRITE,
+	* NPC = RELAY IF SPECIAL
+	* }
+	*
+	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game.
+	*
+	* A work around can be some-what achieved with network utilities.
+	*
+	* @param position A 3-value vector containing the X-Y-Z position to move this ChrIns to.
+	*/
+	void setPosition(std::vector<float> position);
+
+	/*
+	* Get's the current angle of this ChrIns. 
+	* 
+	* This is the absolute root rotation of this ChrIns in the game's virtual 3d space.
+	* 
+	* @return Angle this ChrIns is currently facing.
+	*/
+	float getAngle();
+
+	/*
+	* Get's the current angle of this ChrIns. 
+	* 
+	* This is the absolute root rotation of this ChrIns in the game's virtual 3d space. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = OVERWRITE, 
+	* NPC = RELAY IF SPECIAL 
+	* } 
+	* 
+	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game. 
+	* 
+	* A work around can be some-what achieved with network utilities.
+	* 
+	* @param angle The angle you want this ChrIns to face.
+	*/
+	void setAngle(float angle);
+
+	/*
+	* Get's the current amount of health points this ChrIns holds
+	* 
+	* This controls several events on the player and other entities, almost universally reaching zero starts a
+	* death sequence. Some at one, or several hundreds above it.
+	* 
+	* @return Current amount of health points this ChrIns holds.
+	*/
+	uint32_t getHealth();
+
+	/*
+	* Set's the current amount of health points this ChrIns holds. 
+	* 
+	* This controls several events on the player and other entities, almost universally reaching zero starts a 
+	* death sequence. Some at one, or several hundreds above it. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = OVERWRITE, 
+	* NPC = RELAY IF HOST  
+	* } 
+	* 
+	* A work around can be achieved with network utilities.
+	* 
+	* @param health Current amount of health points this ChrIns should hold.
+	*/
+	void setHealth(uint32_t health);
+
+	/*
+	* Get's the maximum amount of health points this ChrIns can hold.
+	* 
+	* @return Maximum amount of health points this ChrIns can hold.
+	*/
+	uint32_t getMaxHealth();
+
+	/*
+	* Set's the maximum amount of health points this ChrIns can hold.
+	* 
+	* This value is constantly being calculated and written to based on base max health and other 
+	* variables such as effect modifiers. Either use effects, adjust base max health, or use 
+	* patch utilities to adjust this value to what you intend it to be. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = OVERWRITE, 
+	* NPC = ??? 
+	* } 
+	* 
+	* @param maxHealth Maximum amount of health points this ChrIns should hold.
+	*/
+	void setMaxHealth(uint32_t maxHealth);
+
+	/*
+	* Get's the base maximum amount of health points this ChrIns can hold. 
+	* 
+	* This is the value evaluated from stats or an ChrIns's base health parameters and the value before 
+	* being multiplied by effect modifiers. For your character, It is only evaluated on load or per update 
+	* to stats(Eg. leveling up or equipping or unequipping stat level increasing rings). 
+	* 
+	* @return Base maximum amount of health points this ChrIns can hold.
+	*/
+	uint32_t getBaseMaxHealth();
+
+	/*
+	* Set's the base maximum amount of health points this ChrIns can hold. 
+	* 
+	* Setting this will adjust your max health, but only after taking this value and multiplying it with any and 
+	* all effects that adjust your max health. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = ???, 
+	* Players = ???, 
+	* NPC = ??? 
+	* } 
+	* 
+	* @param baseMaxHealth Base maximum amount of health points this ChrIns should hold.
+	*/
+	void setBaseMaxHealth(uint32_t baseMaxHealth);
+
+	/*
+	* Check if an address is the base address of an ChrIns.
+	* 
+	* Peformes several multi-level pointer checks.
+	* 
+	* @param address Base address to check.
+	* @return True if address is the base address of an ChrIns.
+	*/
+	static bool isChrIns(uintptr_t address);
+private:
+protected:
+	uintptr_t address;
+};
+
+}

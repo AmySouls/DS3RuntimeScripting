@@ -38,6 +38,8 @@ uintptr_t getDataBaseAddress(DataBaseAddress dataBase)
 			return 0x144766CA0;
 		case DataBaseAddress::SprjSessionManager:
 			return 0x144780990;
+		case DataBaseAddress::SprjBulletManager:
+			return 0x144772D78;
 	}
 
 	return 0;

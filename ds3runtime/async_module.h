@@ -24,7 +24,9 @@ public:
 		return true;
 	}
 private:
-	static DWORD WINAPI entryPoint(std::shared_ptr<AsyncModule> asyncModule);
+	void sleep(uint32_t milliseconds);
+
+	static DWORD WINAPI entryPoint(uint64_t scriptUniqueId);
 
 	bool destroyed = false;
 	bool safeToDelete = false;

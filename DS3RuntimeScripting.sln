@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.30907.101
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DS3RuntimeScripting", "DS3RuntimeScripting.vcxproj", "{A7FFFF6B-E9C0-4DAC-A2BA-A7C2B552D101}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DS3RuntimeScriptingLoader", "..\DS3RuntimeScriptingLoader\DS3RuntimeScriptingLoader.vcxproj", "{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -23,14 +21,6 @@ Global
 		{A7FFFF6B-E9C0-4DAC-A2BA-A7C2B552D101}.Release|x64.Build.0 = Release|x64
 		{A7FFFF6B-E9C0-4DAC-A2BA-A7C2B552D101}.Release|x86.ActiveCfg = Release|Win32
 		{A7FFFF6B-E9C0-4DAC-A2BA-A7C2B552D101}.Release|x86.Build.0 = Release|Win32
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Debug|x64.ActiveCfg = Debug|x64
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Debug|x64.Build.0 = Debug|x64
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Debug|x86.ActiveCfg = Debug|Win32
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Debug|x86.Build.0 = Debug|Win32
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Release|x64.ActiveCfg = Release|x64
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Release|x64.Build.0 = Release|x64
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Release|x86.ActiveCfg = Release|Win32
-		{A5E083CB-6B31-40E9-AEDB-A8DEE9E1CFEE}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

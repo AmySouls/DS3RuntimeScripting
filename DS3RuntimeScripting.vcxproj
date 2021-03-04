@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -121,7 +121,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DS3RUNTIMESCRIPTING_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DS3RUNTIMESCRIPTING_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);SPDLOG_WCHAR_TO_UTF8_SUPPORT;</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
@@ -133,7 +133,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
       <AdditionalLibraryDirectories>C:\dev\vcpkg\installed\x64-windows\debug\lib</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);detours.lib;client.lib;;util.lib;base.lib</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);detours.lib;client.lib;;util.lib;base.lib;spdlogd.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -159,35 +159,43 @@
     <ClInclude Include="..\..\..\Downloads\SocketComs.h" />
     <ClInclude Include="dependencies\SocketComs.h" />
     <ClInclude Include="ds3runtime\async_module.h" />
+    <ClInclude Include="ds3runtime\bullet_spawn.h" />
     <ClInclude Include="ds3runtime\databaseaddress.h" />
     <ClInclude Include="ds3runtime\ds3runtime.h" />
-    <ClInclude Include="ds3runtime\entity.h" />
+    <ClInclude Include="ds3runtime\chr_ins.h" />
     <ClInclude Include="ds3runtime\hook.h" />
+    <ClInclude Include="ds3runtime\hooks\animation_id_hook.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
-    <ClInclude Include="ds3runtime\log.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
-    <ClInclude Include="ds3runtime\main_character.h" />
+    <ClInclude Include="ds3runtime\hooks\session_receive_hook.h" />
     <ClInclude Include="ds3runtime\memory_util.h" />
-    <ClInclude Include="ds3runtime\player.h" />
+    <ClInclude Include="ds3runtime\player_network_session.h" />
+    <ClInclude Include="ds3runtime\player_ins.h" />
+    <ClInclude Include="ds3runtime\scripts\sync_call_script.h" />
     <ClInclude Include="ds3runtime\scripts\test_script.h" />
     <ClInclude Include="ds3runtime\script_module.h" />
+    <ClInclude Include="ds3runtime\sprj_bullet_state.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ds3runtime\async_module.cpp" />
+    <ClCompile Include="ds3runtime\bullet_spawn.cpp" />
     <ClCompile Include="ds3runtime\databaseaddress.cpp" />
     <ClCompile Include="ds3runtime\ds3runtime.cpp" />
-    <ClCompile Include="ds3runtime\entity.cpp" />
+    <ClCompile Include="ds3runtime\chr_ins.cpp" />
     <ClCompile Include="ds3runtime\hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\animation_id_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ds3runtime\log.cpp" />
-    <ClCompile Include="ds3runtime\main_character.cpp" />
-    <ClCompile Include="ds3runtime\player.cpp" />
+    <ClCompile Include="ds3runtime\hooks\session_receive_hook.cpp" />
+    <ClCompile Include="ds3runtime\player_ins.cpp" />
+    <ClCompile Include="ds3runtime\player_network_session.cpp" />
+    <ClCompile Include="ds3runtime\scripts\sync_call_script.cpp" />
     <ClCompile Include="ds3runtime\scripts\test_script.cpp" />
     <ClCompile Include="ds3runtime\script_module.cpp" />
+    <ClCompile Include="ds3runtime\sprj_bullet_state.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

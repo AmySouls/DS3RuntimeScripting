@@ -36,9 +36,9 @@ int LuaCapture::onLuaGetTop(lua_State* luaState)
 		std::lock_guard<std::mutex> lock(instance->mut);
 		instance->luaStates.push_back(luaState);
 		instance->cond.notify_one();
-		std::string str("Captured lua state: #");
-		str += std::to_string(stateNumber);
-		ds3runtime_global->getLog()->info(str.c_str());
+		//std::string str("Captured lua state: #");
+		//str += std::to_string(stateNumber);
+		//spdlog::debug(str);
 		stateNumber++;
 	}
 

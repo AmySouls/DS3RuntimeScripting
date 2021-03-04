@@ -6,6 +6,7 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/hook.h"
+#include "ds3runtime/bullet_spawn.h"
 
 namespace ds3runtime {
 

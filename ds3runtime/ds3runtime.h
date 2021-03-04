@@ -1,11 +1,9 @@
 #pragma once
-#include "log.h"
+#include "pch.h"
 #include "memory_util.h"
-#include "entity.h"
-#include "player.h"
-#include "main_character.h"
 #include "async_module.h"
 #include "hook.h"
+#include "player_ins.h"
 
 namespace ds3runtime {
 
@@ -20,19 +18,18 @@ public:
 
 	void addHook(std::shared_ptr<Hook> hook);
 
-	Log* getLog();
-
-	void createLog(HANDLE consoleHandle);
-
 	void runScript(std::shared_ptr<ScriptModule> script);
 
 	void removeScript(uint64_t uniqueId);
 
 	void executeScripts();
 
+	std::shared_ptr<ScriptModule> accessScript(uint64_t scriptUniqueId);
+
+	std::shared_ptr<ScriptModule> accessScript(std::string name);
+
 	std::shared_ptr<Hook> accessHook(std::string name);
 private:
-	std::optional<Log> log;
 	std::vector<std::shared_ptr<Hook>> hooks;
 	std::vector<std::shared_ptr<ScriptModule>> scripts;
 	std::mutex mut;

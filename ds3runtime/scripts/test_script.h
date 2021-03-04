@@ -5,8 +5,7 @@
 
 #pragma once
 #include "pch.h"
-#include "ds3runtime/log.h"
-#include "ds3runtime/script_module.h"
+#include "ds3runtime/async_module.h"
 
 namespace ds3runtime {
 

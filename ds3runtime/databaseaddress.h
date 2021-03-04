@@ -21,7 +21,8 @@ enum class DataBaseAddress {
 	SoloParamRepository,
 	SprjEventFlagMan,
 	LOCK_TGT_MAN,
-	SprjSessionManager
+	SprjSessionManager,
+	SprjBulletManager,
 };
 
 uintptr_t getDataBaseAddress(DataBaseAddress dataBase);
