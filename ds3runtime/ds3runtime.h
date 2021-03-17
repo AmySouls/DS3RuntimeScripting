@@ -29,11 +29,20 @@ public:
 	std::shared_ptr<ScriptModule> accessScript(std::string name);
 
 	std::shared_ptr<Hook> accessHook(std::string name);
+
+	void setGameThreadId(DWORD gameThreadId);
+
+	DWORD getGameThreadId();
+
+	std::string utf8_encode(const std::wstring& wstr);
+
+	std::wstring utf8_decode(const std::string& str);
+
 private:
 	std::vector<std::shared_ptr<Hook>> hooks;
 	std::vector<std::shared_ptr<ScriptModule>> scripts;
-	std::mutex mut;
-	std::condition_variable cond;
+	std::mutex scriptMutex;
+	DWORD gameThreadId = 0;
 };
 
 extern std::shared_ptr<DS3RuntimeScripting> ds3runtime_global;

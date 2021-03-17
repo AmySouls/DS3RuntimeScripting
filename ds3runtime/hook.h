@@ -14,6 +14,8 @@ public:
 	bool uninstall();
 
 	virtual std::string getName() = 0;
+
+	uintptr_t* getOriginal();
 protected:
 	uintptr_t* original;
 	uintptr_t* replacement;

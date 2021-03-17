@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "player_network_session.h"
 #include "databaseaddress.h"
+#include "ds3runtime.h"
 
 namespace ds3runtime {
 
@@ -12,19 +13,25 @@ PlayerNetworkSession::PlayerNetworkSession(uintptr_t address)
 
 uintptr_t PlayerNetworkSession::getInstance()
 {
-	return *accessMultilevelPointer<uintptr_t>(0x14474CFF8);
+	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::PlayerNetworkSession);
 }
 
 bool PlayerNetworkSession::hasInstance()
 {
-	return accessMultilevelPointer<uintptr_t>(0x14474CFF8) != nullptr;
+	return accessMultilevelPointer<uintptr_t>(DataBaseAddress::PlayerNetworkSession) != nullptr;
 }
 
 void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, int32_t packetId, char* packetBuffer, uint32_t packetSize)
 {
+	auto hook = ds3runtime_global->accessHook("session_send_hook");
 	void(*DebugPacketSend)(...);
-	*(uintptr_t*)&DebugPacketSend = 0x1407875D0;
+	*(uintptr_t*)&DebugPacketSend = hook != nullptr ? *hook->getOriginal() : 0x1407875D0;
 	DebugPacketSend(address, packetId, packetBuffer, packetSize);
+}
+
+void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, packet::Packet& packet) 
+{
+	debugPacketSend(networkHandle, packet.getId(), &packet.getDataCopy()[0], packet.getLength());
 }
 
 void PlayerNetworkSession::sessionPacketSend(int32_t packetId, char* packetBuffer, uint32_t packetSize)
@@ -34,16 +41,9 @@ void PlayerNetworkSession::sessionPacketSend(int32_t packetId, char* packetBuffe
 	SessionPacketSend(address, packetId, packetBuffer, packetSize);
 }
 
-uintptr_t* PlayerNetworkSession::getNetworkHandleByOffset(uintptr_t offsetNumber)
+void PlayerNetworkSession::sessionPacketSend(packet::Packet& packet)
 {
-	return nullptr;
-}
-
-uintptr_t PlayerNetworkSession::getPlayerInsByNetworkHandle(uintptr_t* networkHandle)
-{
-	uintptr_t(*SessionPacketSend)(...);
-	*(uintptr_t*)&SessionPacketSend = 0x1408D11A0;
-	return SessionPacketSend(*(uintptr_t*)getDataBaseAddress(DataBaseAddress::WorldChrMan), networkHandle);
+	sessionPacketSend(packet.getId(), &packet.getDataCopy()[0], packet.getLength());
 }
 
 };

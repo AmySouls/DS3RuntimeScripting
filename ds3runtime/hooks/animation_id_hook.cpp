@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "animation_id_hook.h"
 #include "ds3runtime/ds3runtime.h"
+#include "spdlog/stopwatch.h"
 
 namespace ds3runtime {
 
@@ -21,7 +22,8 @@ void AnimationIdHook::onWriteAnimationIds(uintptr_t entityAnimationHandle, void*
 	void (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
 	originalFunction(entityAnimationHandle, arg2, arg3, arg4, args5, arg6, arg7, arg8, arg9);
-
+	if (GetCurrentThreadId() != ds3runtime_global->getGameThreadId()) return;
+	
 	ChrIns entity(*accessMultilevelPointer<uintptr_t>(entityAnimationHandle + 8));
 	std::wstring characterString = entity.getCharacterString();
 

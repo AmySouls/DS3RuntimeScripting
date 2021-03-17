@@ -26,9 +26,51 @@ namespace ds3runtime {
 class PlayerIns : public ChrIns
 {
 public:
-	enum class OffsetNumber;
+	enum class OffsetNumber {
+		MainCharacter = 0,
+		Player1 = 1,
+		Player2 = 2,
+		Player3 = 3,
+		Player4 = 4,
+		Player5 = 5
+	};
 
-	enum class Covenant;
+	enum class Covenant {
+		None = 0,
+		BladeOfTheDarkmoon = 1,
+		WarriorsOfSunlight = 2,
+		MoundMakers = 3,
+		SpearsOfTheChurch = 4,
+		FingersOfRosaria = 5,
+		WatchdogsOfFarron = 6,
+		AldrichFaithfuls = 7,
+		WayOfBlue = 8,
+		BlueSentinels = 9
+	};
+
+	enum class SummonType {
+		Host = 0,
+		SummonWhite = 1,
+		SummonRed = 2,
+		InvadeRed = 3,
+		SummonPurpleWhite = 4,
+		SpearsOfTheChurch = 6,
+		CovenantBladeOfTheDarkmoon = 7,
+		UnusedGuardianOfRosaria = 8,
+		CovenantWatchdogsOfFarron = 9,
+		CovenantAldrichFaithfuls = 10,
+		UnusedAvatar = 11,
+		ArenaBrawl = 12,
+		UnusedUmbasaWhite = 13,
+		SummonSunlightWhite = 14,
+		SummonSunlightDark = 15,
+		SummonPurpleDark = 16,
+		InvadeSunlightDark = 17,
+		InvadePurpleDark = 18,
+		UnusedForceJoinSession = 19,
+		UnusedRedHunter = 20,
+		BlueSentinels = 21
+	};
 
 	PlayerIns(uintptr_t address);
 
@@ -44,27 +86,31 @@ public:
 
 	void setCovenant(Covenant covenant);
 
-	uint32_t getLeftHandWeapon(uint32_t slotNumber);
+	SummonType getSummonType();
 
-	void setLeftHandWeapon(uint32_t slotNumber, uint32_t equipParamWeaponId);
+	void setSummonType(SummonType summonType);
 
-	uint32_t getRightHandWeapon(uint32_t slotNumber);
+	int32_t getLeftHandWeapon(uint32_t slotNumber);
 
-	void setRightHandWeapon(uint32_t slotNumber, uint32_t equipParamWeaponId);
+	void setLeftHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId);
 
-	uint32_t getHead();
+	int32_t getRightHandWeapon(uint32_t slotNumber);
 
-	void setHead(uint32_t equipParamProtectorId);
+	void setRightHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId);
 
-	uint32_t getChest();
+	int32_t getHead();
 
-	void setChest(uint32_t equipParamProtectorId);
+	void setHead(int32_t equipParamProtectorId);
 
-	uint32_t getHands();
+	int32_t getChest();
 
-	void setHands(uint32_t equipParamProtectorId);
+	void setChest(int32_t equipParamProtectorId);
 
-	uint32_t getLegs();
+	int32_t getHands();
+
+	void setHands(int32_t equipParamProtectorId);
+
+	int32_t getLegs();
 
 	/*
 	* Sets the item in the legs slot of this PlayerIns in the game's memory. 
@@ -75,8 +121,11 @@ public:
 	* @param offsetNumber The PlayerIns number to get the address of
 	* @return The base address of the specified PlayerIns if they exist in memory, otherwise this returns 0.
 	*/
-	void setLegs(uint32_t equipParamProtectorId);
+	void setLegs(int32_t equipParamProtectorId);
 
+	int32_t getRing(uint32_t slotNumber);
+
+	void setRing(uint32_t slotNumber, int32_t equipParamAccessoryId);
 
 	/*
 	* Gets a handle to this player's network handle on the game's peer-to-peer network.

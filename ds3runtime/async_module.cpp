@@ -25,18 +25,8 @@ DWORD WINAPI AsyncModule::entryPoint(uint64_t scriptUniqueId)
 	std::shared_ptr<ScriptModule> scriptModule = ds3runtime_global->accessScript(scriptUniqueId);
 	if (scriptModule == nullptr) return 0;
 	AsyncModule* asyncModule = (AsyncModule*)scriptModule.get();
-	while (asyncModule != nullptr && !asyncModule->isDestroyed()) asyncModule->execute();
+	while (asyncModule != nullptr && !asyncModule->isRemoved()) asyncModule->execute();
 	return 0;
-}
-
-void AsyncModule::destroy()
-{
-	destroyed = true;
-}
-
-bool AsyncModule::isDestroyed()
-{
-	return destroyed;
 }
 
 void AsyncModule::sleep(uint32_t milliseconds)

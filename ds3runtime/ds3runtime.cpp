@@ -9,20 +9,29 @@ DS3RuntimeScripting::DS3RuntimeScripting()
 }
 
 void DS3RuntimeScripting::attach() {
+	scriptMutex.lock();
+
 	for (auto& hook : hooks) {
 		hook->install();
 	}
+
+	scriptMutex.unlock();
 }
 
 void DS3RuntimeScripting::detach() {
+	scriptMutex.lock();
+
 	for (auto& hook : hooks) {
 		hook->uninstall();
 	}
 
-	std::lock_guard<std::mutex> lock(mut);
-	for (auto script : scripts) if (script->isAsync()) ((AsyncModule*)script.get())->destroy();
-	scripts.clear();
-	cond.notify_one();
+	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {
+		script->onDetach();
+		script->remove();
+		return true;
+	}), scripts.end());
+	
+	scriptMutex.unlock();
 }
 
 void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook) {
@@ -30,34 +39,44 @@ void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook) {
 }
 
 void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script) {
-	std::lock_guard<std::mutex> lock(mut);
+	scriptMutex.lock();
+	script->onAttach();
 	scripts.push_back(script);
 	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script);
-	cond.notify_one();
+	scriptMutex.unlock();
 }
 
 void DS3RuntimeScripting::removeScript(uint64_t uniqueId) {
-	std::lock_guard<std::mutex> lock(mut);
+	scriptMutex.lock();
 
 	for (int i = 0; i < scripts.size(); i++) if (uniqueId == scripts[i]->getUniqueId()) {
-		scripts.erase(scripts.begin() + i);
+		scripts[i]->onDetach();
+		scripts[i]->remove();
 		break;
 	}
 
-	cond.notify_one();
+	scriptMutex.unlock();
 }
 
 void DS3RuntimeScripting::executeScripts()
 {
-	for (auto script : scripts) {
-		if (!script->isAsync()) script->execute();
+	scriptMutex.lock();
+
+	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {
+		return script->isRemoved();
+	}), scripts.end());
+
+	for (auto script : scripts) if (!script->isAsync()) {
+		script->execute();
 	}
+
+	scriptMutex.unlock();
 }
 
 std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
 {
 	std::shared_ptr<ScriptModule> matchingScript;
-	std::lock_guard<std::mutex> lock(mut);
+	scriptMutex.lock();
 
 	for (auto script : scripts) if (script->getUniqueId() == scriptUniqueId)
 	{
@@ -65,14 +84,14 @@ std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(uint64_t scriptU
 		break;
 	}
 
-	cond.notify_one();
+	scriptMutex.unlock();
 	return matchingScript;
 }
 
 std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(std::string name)
 {
 	std::shared_ptr<ScriptModule> matchingScript;
-	std::lock_guard<std::mutex> lock(mut);
+	scriptMutex.lock();
 
 	for (auto script : scripts) if (script->getName().compare(name) == 0)
 	{
@@ -80,14 +99,13 @@ std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(std::string name
 		break;
 	}
 
-	cond.notify_one();
+	scriptMutex.unlock();
 	return matchingScript;
 }
 
 std::shared_ptr<Hook> DS3RuntimeScripting::accessHook(std::string name)
 {
 	std::shared_ptr<Hook> matchingHook;
-	std::lock_guard<std::mutex> lock(mut);
 
 	for (auto hook : hooks) if (hook->getName().compare(name) == 0)
 	{
@@ -95,8 +113,35 @@ std::shared_ptr<Hook> DS3RuntimeScripting::accessHook(std::string name)
 		break;
 	}
 
-	cond.notify_one();
 	return matchingHook;
+}
+
+void DS3RuntimeScripting::setGameThreadId(DWORD threadId)
+{
+	gameThreadId = threadId;
+}
+
+DWORD DS3RuntimeScripting::getGameThreadId()
+{
+	return gameThreadId;
+}
+
+std::string DS3RuntimeScripting::utf8_encode(const std::wstring &wstr)
+{
+	if (wstr.empty()) return std::string();
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	std::string strTo(size_needed, 0);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	return strTo;
+}
+
+std::wstring DS3RuntimeScripting::utf8_decode(const std::string &str)
+{
+	if (str.empty()) return std::wstring();
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	std::wstring wstrTo(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+	return wstrTo;
 }
 
 }

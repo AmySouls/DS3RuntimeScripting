@@ -172,6 +172,30 @@ public:
 	std::wstring getAnimationString();
 
 	/*
+	* Get's the time elapsed since the current animation of this ChrIns started.
+	* 
+	* @return The time elapsed since the current animation of this ChrIns started.
+	*/
+	float getAnimationTime();
+
+	/*
+	* Get's the maximum time this animation can last.
+	* 
+	* @return Maximum time this animation can last.
+	*/
+	float getMaxAnimationTime();
+
+	/*
+	* Get's the current turn rate of this animation. 
+	* 
+	* The turn rate is a float value that measures turn rate in degrees per second. 
+	* -1 means turn rate doesn't apply, which means the turn rate is infinite or a flag is set so the ChrIns cannot turn. 
+	* 
+	* @return Current turn rate of this animation.
+	*/
+	float getTurnRate();
+
+	/*
 	* Get's the current X-Y-Z position of this ChrIns. 
 	* 
 	* This is the absolute root position of this ChrIns in the game's virtual 3d space. 
@@ -189,13 +213,13 @@ public:
 	* This is the absolute root position of this ChrIns in the game's virtual 3d space.
 	*
 	* Online limitations:
-	* {
-	* Self = RELAY,
-	* Players = OVERWRITE,
-	* NPC = RELAY IF SPECIAL
-	* }
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES
+	* } 
 	*
-	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game.
+	* SOMETIMES: Relay only if the NPCS's position and actions are currently naturally being set by your own game.
 	*
 	* A work around can be some-what achieved with network utilities.
 	*
@@ -220,11 +244,11 @@ public:
 	* Online limitations: 
 	* { 
 	* Self = RELAY, 
-	* Players = OVERWRITE, 
-	* NPC = RELAY IF SPECIAL 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES
 	* } 
 	* 
-	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game. 
+	* SOMETIMES: Relay only if the NPCS's position and actions are currently naturally being set by your own game. 
 	* 
 	* A work around can be some-what achieved with network utilities.
 	* 
@@ -251,8 +275,8 @@ public:
 	* Online limitations: 
 	* { 
 	* Self = RELAY, 
-	* Players = OVERWRITE, 
-	* NPC = RELAY IF HOST  
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES
 	* } 
 	* 
 	* A work around can be achieved with network utilities.
@@ -278,9 +302,11 @@ public:
 	* Online limitations: 
 	* { 
 	* Self = RELAY, 
-	* Players = OVERWRITE, 
-	* NPC = ??? 
+	* Players = DESYNC, 
+	* NPC = DESYNC 
 	* } 
+	* 
+	* A work around can be acheived with effects
 	* 
 	* @param maxHealth Maximum amount of health points this ChrIns should hold.
 	*/
@@ -305,14 +331,75 @@ public:
 	* 
 	* Online limitations: 
 	* { 
-	* Self = ???, 
-	* Players = ???, 
-	* NPC = ??? 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC 
 	* } 
 	* 
 	* @param baseMaxHealth Base maximum amount of health points this ChrIns should hold.
 	*/
 	void setBaseMaxHealth(uint32_t baseMaxHealth);
+
+	/*
+	* Play's an animation on this ChrIns via ingame function 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES 
+	* } 
+	* 
+	* @param animationStringId The integer version of the animation string id to play.
+	*/
+	void playAnimation(int32_t animationStringId);
+
+	/*
+	* Play's an animation on this ChrIns via ingame function 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES
+	* } 
+	* 
+	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game. 
+	* 
+	* @param animationString The animation string id to play.
+	*/
+	void playAnimation(std::wstring animationString);
+
+	/*
+	* Play's a specified idle animation id via writing to a debug pointer. The game reads this pointer and unless a throw animation is underway, 
+	* it will override the current animation. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES 
+	* } 
+	* 
+	* @param animationId The idle animation to play
+	*/
+	void playDebugIdle(int32_t animationId);
+
+	/*
+	* Multiplies the animation speed of this ChrIns's animations. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = DESYNC, 
+	* Players = DESYNC, 
+	* NPC = DESYNC 
+	* } 
+	* 
+	* @param animationId The idle animation to play
+	*/
+	void setDebugAnimSpeed(float speedModifier);
+
+	std::vector<std::vector<float>> getDummyPolyPositions(int32_t dummyPolyId, uint32_t polyCount);
 
 	/*
 	* Check if an address is the base address of an ChrIns.
