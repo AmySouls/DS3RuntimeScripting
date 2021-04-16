@@ -119,16 +119,18 @@ void ChrIns::setBaseMaxHealth(uint32_t baseMaxHealth)
 void ChrIns::playAnimation(int32_t animationStringId)
 {
 	int32_t input[3] = { animationStringId, 0, 0 };
+	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8);
 	void(*playAnimationInternal)(...);
 	*(uintptr_t*)&playAnimationInternal = 0x140d84870;
-	playAnimationInternal(address, input);
+	playAnimationInternal(animationHandle, input);
 }
 
 void ChrIns::playAnimation(std::wstring animationString)
 {
+	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28);
 	void(*playAnimationStringInternal)(...);
 	*(uintptr_t*)&playAnimationStringInternal = 0x140D84450;
-	playAnimationStringInternal(address, animationString.c_str());
+	playAnimationStringInternal(animationHandle, animationString.c_str());
 }
 
 void ChrIns::playDebugIdle(int32_t animationId)

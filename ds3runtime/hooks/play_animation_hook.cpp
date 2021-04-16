@@ -19,20 +19,32 @@ PlayAnimationHook::PlayAnimationHook()
 	instance = this;
 }
 
-void PlayAnimationHook::onPlayAnimation(void* chrAnimationHandle, int32_t* animationId, int32_t r8, int32_t r9, int32_t rsp20)
+void PlayAnimationHook::onPlayAnimation(uintptr_t chrAnimationHandle, int32_t* animationId)
 {
+	int32_t filteredId = *animationId;
+
+	for (auto filter : instance->filters) {
+		spdlog::debug("Filtered id: {}", filteredId);
+		filteredId = filter.second(chrAnimationHandle, filteredId);
+		if (filteredId == 0) return;
+	}
+
+	*animationId = filteredId;
 	void (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
-	originalFunction(chrAnimationHandle, animationId, r8, r9, rsp20);
-	uintptr_t* chrAddrPtr = accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80);
-	if (!chrAddrPtr) return;
-	uintptr_t chrAddr = PlayerIns::getMainChrAddress();
-	if (!PlayerIns::isMainChr(chrAddr)) return;
-	PlayerIns chr(chrAddr);
-	PlayerIns player1(PlayerIns::getAddressByOffsetNumber(PlayerIns::OffsetNumber::Player1));
-	
+	originalFunction(chrAnimationHandle, animationId);
 	//auto list = SprjGaitemImp(SprjGaitemImp::getInstance()).getItemList();
 	//for (auto item : list) spdlog::debug("Item id in inventory: {}", item.getId());
+}
+
+void PlayAnimationHook::installFilter(std::string key, AnimationFilter function)
+{
+	filters[key] = function;;
+}
+
+void PlayAnimationHook::uninstallFilter(std::string key)
+{
+	filters.erase(key);
 }
 
 PlayAnimationHook* PlayAnimationHook::instance = nullptr;

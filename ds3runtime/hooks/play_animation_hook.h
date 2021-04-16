@@ -10,18 +10,26 @@
 
 namespace ds3runtime {
 
+typedef std::function<int32_t(uintptr_t, int32_t)> AnimationFilter;
+
 class PlayAnimationHook : public Hook
 {
 public:
 	PlayAnimationHook();
 
-	static void onPlayAnimation(void* chrAnimationHandle, int32_t* animationId, int32_t, int32_t, int32_t);
+	void installFilter(std::string key, AnimationFilter function);
+
+	void uninstallFilter(std::string key);
 
 	std::string getName()
 	{
 		return "play_animation_hook";
 	}
+
+	static void onPlayAnimation(uintptr_t chrAnimationHandle, int32_t* animationId);
 private:
+	std::unordered_map<std::string, AnimationFilter> filters;
+
 	static PlayAnimationHook* instance;
 };
 

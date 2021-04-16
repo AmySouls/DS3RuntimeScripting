@@ -39,7 +39,7 @@ public:
 
 	void copyToBuffer(char* buffer, uint32_t maxLength);
 
-	int32_t getId()
+	virtual const int32_t getId()
 	{
 		return id;
 	}
@@ -70,8 +70,8 @@ public:
 	{
 		for (auto field : *getFields()) {
 			if (fieldName != field.name) continue;
-			else if (sizeof(FieldType) != field.size) return 0;
-			else if (field.offset + field.size > buffer.size()) return 0;
+			else if (sizeof(FieldType) != field.size) return;
+			else if (field.offset + field.size > buffer.size()) return;
 			*(FieldType*)(&buffer[0] + field.offset) = value;
 			return;
 		}
@@ -107,7 +107,7 @@ public:
 	{
 	}
 
-	int32_t getId()
+	const int32_t getId()
 	{
 		return 1;
 	}
@@ -160,6 +160,31 @@ public:
 	const int32_t getId()
 	{
 		return 12;
+	}
+private:
+	static std::vector<PacketField> fields;
+
+	const std::vector<PacketField>* getFields();
+};
+
+class MessageMapList : public Packet
+{
+public:
+	MessageMapList() : Packet()
+	{
+	}
+
+	MessageMapList(char* buffer, uint32_t length) : Packet(buffer, length)
+	{
+	}
+
+	MessageMapList(std::vector<char> buffer) : Packet(buffer)
+	{
+	}
+
+	const int32_t getId()
+	{
+		return 14;
 	}
 private:
 	static std::vector<PacketField> fields;

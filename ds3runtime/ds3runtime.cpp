@@ -8,60 +8,49 @@ DS3RuntimeScripting::DS3RuntimeScripting()
 {
 }
 
-void DS3RuntimeScripting::attach() {
-	scriptMutex.lock();
-
+void DS3RuntimeScripting::attach()
+{
 	for (auto& hook : hooks) {
 		hook->install();
 	}
-
-	scriptMutex.unlock();
 }
 
-void DS3RuntimeScripting::detach() {
-	scriptMutex.lock();
-
+void DS3RuntimeScripting::detach()
+{
 	for (auto& hook : hooks) {
 		hook->uninstall();
 	}
 
-	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {
+	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script){
 		script->onDetach();
 		script->remove();
 		return true;
 	}), scripts.end());
-	
-	scriptMutex.unlock();
 }
 
-void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook) {
+void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook)
+{
 	hooks.push_back(hook);
 }
 
-void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script) {
-	scriptMutex.lock();
+void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script)
+{
 	script->onAttach();
 	scripts.push_back(script);
 	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script);
-	scriptMutex.unlock();
 }
 
-void DS3RuntimeScripting::removeScript(uint64_t uniqueId) {
-	scriptMutex.lock();
-
+void DS3RuntimeScripting::removeScript(uint64_t uniqueId)
+{
 	for (int i = 0; i < scripts.size(); i++) if (uniqueId == scripts[i]->getUniqueId()) {
 		scripts[i]->onDetach();
 		scripts[i]->remove();
 		break;
 	}
-
-	scriptMutex.unlock();
 }
 
 void DS3RuntimeScripting::executeScripts()
 {
-	scriptMutex.lock();
-
 	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {
 		return script->isRemoved();
 	}), scripts.end());
@@ -69,14 +58,11 @@ void DS3RuntimeScripting::executeScripts()
 	for (auto script : scripts) if (!script->isAsync()) {
 		script->execute();
 	}
-
-	scriptMutex.unlock();
 }
 
 std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
 {
 	std::shared_ptr<ScriptModule> matchingScript;
-	scriptMutex.lock();
 
 	for (auto script : scripts) if (script->getUniqueId() == scriptUniqueId)
 	{
@@ -84,14 +70,12 @@ std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(uint64_t scriptU
 		break;
 	}
 
-	scriptMutex.unlock();
 	return matchingScript;
 }
 
 std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(std::string name)
 {
 	std::shared_ptr<ScriptModule> matchingScript;
-	scriptMutex.lock();
 
 	for (auto script : scripts) if (script->getName().compare(name) == 0)
 	{
@@ -99,7 +83,6 @@ std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(std::string name
 		break;
 	}
 
-	scriptMutex.unlock();
 	return matchingScript;
 }
 

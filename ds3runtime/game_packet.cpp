@@ -1,6 +1,6 @@
 #pragma once
 #include "pch.h"
-#include "packet.h"
+#include "game_packet.h"
 
 namespace ds3runtime::packet {
 
@@ -180,6 +180,19 @@ const std::vector<PacketField>* Equipment::getFields()
 	return &fields;
 }
 
+std::vector<PacketField> MessageMapList::fields = {
+	{ "int32_t", "message_id", 0, 4 },
+	{ "int32_t", "event_id", 4, 4 },
+	{ "int32_t", "param_1", 8, 4 },
+	{ "int32_t", "param_2", 0xC, 4 },
+	{ "int32_t", "param_3", 0x10, 4 },
+};
+
+const std::vector<PacketField>* MessageMapList::getFields()
+{
+	return &fields;
+}
+
 std::vector<PacketField> Hit::fields = {
 	{ "float", "physical_damage", 0, 4 },
 	{ "float", "magic_damage", 4, 4 },
@@ -195,6 +208,9 @@ std::vector<PacketField> Hit::fields = {
 	{ "int32_t", "atk_param_id", 0x44, 4 },
 	{ "int32_t", "headshot_flag", 0x48, 4 },
 	{ "int32_t", "unknown_flag", 0x74, 4 },
+	{ "float", "position_x", 0x90, 4 },
+	{ "float", "position_y", 0x94, 4 },
+	{ "float", "position_z", 0x98, 4 },
 };
 
 const std::vector<PacketField>* Hit::getFields()

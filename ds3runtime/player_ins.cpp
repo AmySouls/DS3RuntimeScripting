@@ -146,7 +146,12 @@ uintptr_t PlayerIns::getMainChrAddress()
 
 bool PlayerIns::isMainChr(uintptr_t address)
 {
-	return isChrIns(address) && address == *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80);
+	return isChrIns(address) && address == (uintptr_t)accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80, 0);
+}
+
+bool PlayerIns::isMainChrLoaded()
+{
+	return accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80);
 }
 
 };

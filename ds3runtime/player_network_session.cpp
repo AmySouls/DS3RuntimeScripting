@@ -26,24 +26,24 @@ void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, int32_t pac
 	auto hook = ds3runtime_global->accessHook("session_send_hook");
 	void(*DebugPacketSend)(...);
 	*(uintptr_t*)&DebugPacketSend = hook != nullptr ? *hook->getOriginal() : 0x1407875D0;
-	DebugPacketSend(address, packetId, packetBuffer, packetSize);
+	DebugPacketSend(address, networkHandle, packetId, packetBuffer, packetSize);
 }
 
-void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, packet::Packet& packet) 
+void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, packet::Packet* packet) 
 {
-	debugPacketSend(networkHandle, packet.getId(), &packet.getDataCopy()[0], packet.getLength());
+	debugPacketSend(networkHandle, packet->getId(), &packet->getDataCopy()[0], packet->getLength());
 }
 
-void PlayerNetworkSession::sessionPacketSend(int32_t packetId, char* packetBuffer, uint32_t packetSize)
+void PlayerNetworkSession::sessionPacketSend(int32_t packetId, char* packetBuffer, const uint32_t packetSize)
 {
 	void(*SessionPacketSend)(...);
 	*(uintptr_t*)&SessionPacketSend = 0x140787870;
 	SessionPacketSend(address, packetId, packetBuffer, packetSize);
 }
 
-void PlayerNetworkSession::sessionPacketSend(packet::Packet& packet)
+void PlayerNetworkSession::sessionPacketSend(packet::Packet* packet)
 {
-	sessionPacketSend(packet.getId(), &packet.getDataCopy()[0], packet.getLength());
+	sessionPacketSend(packet->getId(), &packet->getDataCopy()[0], packet->getLength());
 }
 
 };

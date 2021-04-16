@@ -159,6 +159,8 @@ public:
 	static uintptr_t getMainChrAddress();
 
 	static bool isMainChr(uintptr_t address);
+
+	static bool isMainChrLoaded();
 private:
 };
 

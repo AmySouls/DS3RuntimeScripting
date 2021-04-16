@@ -79,6 +79,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>D:\SteamLibrary\steamapps\common\DARK SOULS III\Game\</OutDir>
+    <TargetName>DS3RuntimeScriptingB</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -156,6 +157,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="dependencies\pugiconfig.hpp" />
+    <ClInclude Include="dependencies\pugixml.hpp" />
+    <ClInclude Include="dist\pugiconfig.hpp" />
+    <ClInclude Include="dist\pugixml.hpp" />
     <ClInclude Include="ds3runtime\async_module.h" />
     <ClInclude Include="ds3runtime\boss\boss.h" />
     <ClInclude Include="ds3runtime\boss\player_boss.h" />
@@ -164,18 +169,22 @@
     <ClInclude Include="ds3runtime\ds3runtime.h" />
     <ClInclude Include="ds3runtime\chr_ins.h" />
     <ClInclude Include="ds3runtime\hook.h" />
-    <ClInclude Include="ds3runtime\hooks\animation_id_hook.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
     <ClInclude Include="ds3runtime\hooks\play_animation_hook.h" />
     <ClInclude Include="ds3runtime\hooks\session_send_hook.h" />
     <ClInclude Include="ds3runtime\hooks\session_receive_hook.h" />
+    <ClInclude Include="ds3runtime\hooks\throw_hook.h" />
     <ClInclude Include="ds3runtime\memory_util.h" />
-    <ClInclude Include="ds3runtime\packet.h" />
+    <ClInclude Include="ds3runtime\game_packet.h" />
+    <ClInclude Include="ds3runtime\misc_functions.h" />
     <ClInclude Include="ds3runtime\player_network_session.h" />
     <ClInclude Include="ds3runtime\player_ins.h" />
+    <ClInclude Include="ds3runtime\scripts\animation_id_handler.h" />
+    <ClInclude Include="ds3runtime\scripts\hotkey_manager.h" />
     <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h" />
     <ClInclude Include="ds3runtime\scripts\latency_simulator.h" />
+    <ClInclude Include="ds3runtime\scripts\param_patcher.h" />
     <ClInclude Include="ds3runtime\scripts\sync_call_script.h" />
     <ClInclude Include="ds3runtime\script_module.h" />
     <ClInclude Include="ds3runtime\sprj_bullet_state.h" />
@@ -186,6 +195,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="dist\pugixml.cpp" />
     <ClCompile Include="ds3runtime\async_module.cpp" />
     <ClCompile Include="ds3runtime\boss\boss.cpp" />
     <ClCompile Include="ds3runtime\boss\player_boss.cpp" />
@@ -194,7 +204,6 @@
     <ClCompile Include="ds3runtime\ds3runtime.cpp" />
     <ClCompile Include="ds3runtime\chr_ins.cpp" />
     <ClCompile Include="ds3runtime\hook.cpp" />
-    <ClCompile Include="ds3runtime\hooks\animation_id_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -202,11 +211,16 @@
     <ClCompile Include="ds3runtime\hooks\play_animation_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\session_send_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\session_receive_hook.cpp" />
-    <ClCompile Include="ds3runtime\packet.cpp" />
+    <ClCompile Include="ds3runtime\game_packet.cpp" />
+    <ClCompile Include="ds3runtime\hooks\throw_hook.cpp" />
+    <ClCompile Include="ds3runtime\misc_functions.cpp" />
     <ClCompile Include="ds3runtime\player_ins.cpp" />
     <ClCompile Include="ds3runtime\player_network_session.cpp" />
+    <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp" />
+    <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp" />
     <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp" />
     <ClCompile Include="ds3runtime\scripts\latency_simulator.cpp" />
+    <ClCompile Include="ds3runtime\scripts\param_patcher.cpp" />
     <ClCompile Include="ds3runtime\scripts\sync_call_script.cpp" />
     <ClCompile Include="ds3runtime\script_module.cpp" />
     <ClCompile Include="ds3runtime\sprj_bullet_state.cpp" />

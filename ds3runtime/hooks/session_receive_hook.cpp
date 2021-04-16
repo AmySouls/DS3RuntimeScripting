@@ -31,7 +31,6 @@ uint32_t SessionReceiveHook::onPlayerNetworkSessionReceive(uintptr_t networkSess
 		if (receiveLength == 0) return 0;
 	}
 
-	instance->cond.notify_one();
 	return receiveLength;
 }
 

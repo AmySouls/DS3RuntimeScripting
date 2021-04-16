@@ -19,11 +19,17 @@ public:
 
 	bool isValidNetworkHandle(uintptr_t* networkHandle);
 
+	void disconnectNetworkHandle(uintptr_t* networkHandle);
+
 	std::vector<uintptr_t*> getNetworkHandles();
+
+	bool anyActiveConnections();
 
 	uintptr_t getPlayerInsByNetworkHandle(uintptr_t* networkHandle);
 
 	uint64_t getSteamIdByNetworkHandle(uintptr_t* networkHandle);
+
+	void leaveSession();
 
 	static uintptr_t getInstance();
 

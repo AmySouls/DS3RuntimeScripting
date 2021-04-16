@@ -6,7 +6,7 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/async_module.h"
-#include "ds3runtime/packet.h"
+#include "ds3runtime/game_packet.h"
 #include "ds3runtime/hooks/session_send_hook.h"
 
 namespace ds3runtime {
@@ -28,11 +28,11 @@ public:
 
 	std::string getName()
 	{
-		return "test_script";
+		return "latency_simulator";
 	}
 private:
 	std::vector<DelayedPacket> delayedPackets;
-	const uint64_t millisToDelay = 200;
+	const uint64_t millisToDelay = 500;
 };
 
 }
