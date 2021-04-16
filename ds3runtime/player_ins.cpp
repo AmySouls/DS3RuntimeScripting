@@ -6,28 +6,6 @@
 
 namespace ds3runtime {
 
-enum class PlayerIns::OffsetNumber {
-	MainCharacter = 0,
-	Player1 = 1,
-	Player2 = 2,
-	Player3 = 3,
-	Player4 = 4,
-	Player5 = 5
-};
-
-enum class PlayerIns::Covenant {
-	None = 0,
-	BladeOfTheDarkmoon = 1,
-	WarriorsOfSunlight = 2,
-	MoundMakers = 3,
-	SpearsOfTheChurch = 4,
-	FingersOfRosaria = 5,
-	WatchdogsOfFarron = 6,
-	AldrichFaithfuls = 7,
-	WayOfBlue = 8,
-	BlueSentinels = 9
-};
-
 PlayerIns::PlayerIns(uintptr_t address) : ChrIns::ChrIns(address)
 {
 }
@@ -56,72 +34,92 @@ void PlayerIns::setName(std::wstring name)
 
 PlayerIns::Covenant PlayerIns::getCovenant()
 {
-	return (Covenant)*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0xF7);
+	return (Covenant)*accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xF7);
 }
 
 void PlayerIns::setCovenant(Covenant covenant)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0xF7) = (uint32_t)covenant;
+	*accessMultilevelPointer<uint32_t>(address + 0x1AD0, 0xF7) = (uint32_t)covenant;
 }
 
-uint32_t PlayerIns::getLeftHandWeapon(uint32_t slotNumber)
+PlayerIns::SummonType PlayerIns::getSummonType()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x32C + (slotNumber - 1) * 8);
+	return (SummonType)*accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xFC);
 }
 
-void PlayerIns::setLeftHandWeapon(uint32_t slotNumber, uint32_t equipParamWeaponId)
+void PlayerIns::setSummonType(PlayerIns::SummonType summonType)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x32C + (slotNumber - 1) * 8) = equipParamWeaponId;
+	*accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xFC) = (uint32_t)summonType;
 }
 
-uint32_t PlayerIns::getRightHandWeapon(uint32_t slotNumber)
+int32_t PlayerIns::getLeftHandWeapon(uint32_t slotNumber)
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x330 + (slotNumber - 1) * 8);
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x32C + (slotNumber - 1) * 8);
 }
 
-void PlayerIns::setRightHandWeapon(uint32_t slotNumber, uint32_t equipParamWeaponId)
+void PlayerIns::setLeftHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x330 + (slotNumber - 1) * 8) = equipParamWeaponId;
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x32C + (slotNumber - 1) * 8) = equipParamWeaponId;
 }
 
-uint32_t PlayerIns::getHead()
+int32_t PlayerIns::getRightHandWeapon(uint32_t slotNumber)
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x35C);
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x330 + (slotNumber - 1) * 8);
 }
 
-void PlayerIns::setHead(uint32_t equipParamProtectorId)
+void PlayerIns::setRightHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x35C) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x330 + (slotNumber - 1) * 8) = equipParamWeaponId;
 }
 
-uint32_t PlayerIns::getChest()
+int32_t PlayerIns::getHead()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x360);
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x35C);
 }
 
-void PlayerIns::setChest(uint32_t equipParamProtectorId)
+void PlayerIns::setHead(int32_t equipParamProtectorId)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x360) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x35C) = equipParamProtectorId;
 }
 
-uint32_t PlayerIns::getHands()
+int32_t PlayerIns::getChest()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x364);
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x360);
 }
 
-void PlayerIns::setHands(uint32_t equipParamProtectorId)
+void PlayerIns::setChest(int32_t equipParamProtectorId)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x364) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x360) = equipParamProtectorId;
 }
 
-uint32_t PlayerIns::getLegs()
+int32_t PlayerIns::getHands()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x368);
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x364);
 }
 
-void PlayerIns::setLegs(uint32_t equipParamProtectorId)
+void PlayerIns::setHands(int32_t equipParamProtectorId)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1FD0, 0x368) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x364) = equipParamProtectorId;
+}
+
+int32_t PlayerIns::getLegs()
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x368);
+}
+
+void PlayerIns::setLegs(int32_t equipParamProtectorId)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x368) = equipParamProtectorId;
+}
+
+int32_t PlayerIns::getRing(uint32_t slotNumber)
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x330 + (slotNumber - 1) * 8);
+}
+
+void PlayerIns::setRing(uint32_t slotNumber, int32_t equipParamAccessoryId)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x1FD0, 0x330 + (slotNumber - 1) * 8) = equipParamAccessoryId;
 }
 
 uintptr_t* PlayerIns::getNetworkHandle()
@@ -131,7 +129,7 @@ uintptr_t* PlayerIns::getNetworkHandle()
 
 uintptr_t PlayerIns::getAddressByOffsetNumber(OffsetNumber offsetNumber)
 {
-	return *accessMultilevelPointer<uintptr_t>(getDataBaseAddress(DataBaseAddress::WorldChrMan), 0x40, (uint32_t)offsetNumber * 0x38);
+	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x40, (uint32_t)offsetNumber * 0x38);
 }
 
 bool PlayerIns::isPlayer(uintptr_t address)
@@ -143,12 +141,17 @@ bool PlayerIns::isPlayer(uintptr_t address)
 
 uintptr_t PlayerIns::getMainChrAddress()
 {
-	return *accessMultilevelPointer<uintptr_t>(getDataBaseAddress(DataBaseAddress::WorldChrMan), 0x80);
+	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80);
 }
 
 bool PlayerIns::isMainChr(uintptr_t address)
 {
-	return isChrIns(address) && address == *accessMultilevelPointer<uintptr_t>(getDataBaseAddress(DataBaseAddress::WorldChrMan), 0x80);
+	return isChrIns(address) && address == (uintptr_t)accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80, 0);
+}
+
+bool PlayerIns::isMainChrLoaded()
+{
+	return accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80);
 }
 
 };

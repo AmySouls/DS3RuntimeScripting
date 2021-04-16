@@ -37,4 +37,9 @@ bool Hook::uninstall()
     return true;
 }
 
+uintptr_t* Hook::getOriginal()
+{
+    return original;
+}
+
 }

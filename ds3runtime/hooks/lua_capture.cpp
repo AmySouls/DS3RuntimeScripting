@@ -28,19 +28,23 @@ int LuaCapture::onLuaGetTop(lua_State* luaState)
 	int luaStateTop = originalFunction(luaState);
 
 	bool alreadyCaptured = false;
+	std::lock_guard<std::mutex> lock(instance->mut);
 	for (lua_State* iLuaState : instance->luaStates) if (luaState == iLuaState) alreadyCaptured = true;
 	
 	if (!alreadyCaptured) {
 		static int stateNumber = 1;
 		static uint64_t startTime = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
-		std::lock_guard<std::mutex> lock(instance->mut);
 		instance->luaStates.push_back(luaState);
-		instance->cond.notify_one();
-		//std::string str("Captured lua state: #");
-		//str += std::to_string(stateNumber);
-		//spdlog::debug(str);
 		stateNumber++;
+		/*
+		lua_getglobal(luaState, "hkbSelf");
+		const void* hkbSelf = lua_topointer(luaState, -1);
+		lua_remove(luaState, -1);
+		spdlog::debug("hkbSelf??: {}", hkbSelf);
+		*/
 	}
+
+	instance->cond.notify_one();
 
 	if (luaStateTop == 1) {
 

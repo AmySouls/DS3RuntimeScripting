@@ -12,12 +12,33 @@ namespace ds3runtime {
 
 ScriptModule::ScriptModule()
 {
-	this->uniqueId = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
+	uniqueId = uniqueIdCounter;
+	uniqueIdCounter++;
+}
+
+void ScriptModule::onAttach()
+{
+}
+
+void ScriptModule::onDetach()
+{
+}
+
+void ScriptModule::remove()
+{
+	removed = true;
+}
+
+bool ScriptModule::isRemoved()
+{
+	return removed;
 }
 
 uint64_t ScriptModule::getUniqueId()
 {
 	return uniqueId;
 }
+
+uint64_t ScriptModule::uniqueIdCounter = 0;
 
 }

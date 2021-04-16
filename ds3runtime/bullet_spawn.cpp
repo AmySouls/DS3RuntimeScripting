@@ -171,7 +171,7 @@ void BulletSpawn::SprjBulletManSpawnCall(BulletSpawn bulletSpawn)
 
 	void(*SprjBulletManSpawn)(...);
 	*(uintptr_t*)&SprjBulletManSpawn = 0x140978500;
-	SprjBulletManSpawn(*(uintptr_t*)getDataBaseAddress(DataBaseAddress::SprjBulletManager), data, data + 0x30);
+	SprjBulletManSpawn(*(uintptr_t*)DataBaseAddress::SprjBulletManager, data, data + 0x30);
 }
 
 }

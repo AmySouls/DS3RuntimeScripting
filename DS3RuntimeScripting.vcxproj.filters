@@ -42,18 +42,6 @@
     <ClInclude Include="ds3runtime\hooks\lua_capture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Downloads\SocketComs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="dependencies\SocketComs.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\test_script.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\animation_id_hook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\chr_ins.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -73,6 +61,66 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ds3runtime\hooks\session_receive_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\boss\boss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\boss\player_boss.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\session_send_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\play_animation_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\sprj_session_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\sprj_gaitem_ins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\sprj_gaitem_imp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\sprj_wep_gaitem_ins.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\latency_simulator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\game_packet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\animation_id_handler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\throw_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\hotkey_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\misc_functions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\param_patcher.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\pugiconfig.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dependencies\pugixml.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dist\pugixml.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dist\pugiconfig.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -104,12 +152,6 @@
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\test_script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\animation_id_hook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\chr_ins.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -129,6 +171,57 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\hooks\session_receive_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\boss\boss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\boss\player_boss.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\session_send_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\play_animation_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\sprj_session_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\sprj_gaitem_ins.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\sprj_gaitem_imp.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\sprj_wep_gaitem_ins.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\latency_simulator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\game_packet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\throw_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\misc_functions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\param_patcher.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dist\pugixml.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

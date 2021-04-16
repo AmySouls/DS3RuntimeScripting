@@ -17,14 +17,24 @@ public:
 
 	virtual std::string getName() = 0;
 
-	uint64_t getUniqueId();
+	virtual void onAttach();
+
+	virtual void onDetach();
 
 	virtual bool isAsync()
 	{
 		return false;
 	}
+
+	void remove();
+
+	bool isRemoved();
+
+	uint64_t getUniqueId();
 private:
 	uint64_t uniqueId;
+	static uint64_t uniqueIdCounter;
+	bool removed = false;
 };
 
 }

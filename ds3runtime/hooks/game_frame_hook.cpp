@@ -19,11 +19,11 @@ GameFrameHook::GameFrameHook()
 
 void GameFrameHook::onGameFrame(void* rcx, void* rdx, void* r8, void* r9, void* rsp20)
 {
-	ds3runtime_global->executeScripts();
-	
-	void (*originalFunction)(...);
+	void(*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
 	originalFunction(rcx, rdx, r8, r9, rsp20);
+	if (ds3runtime_global->getGameThreadId() == 0) ds3runtime_global->setGameThreadId(GetCurrentThreadId());
+	ds3runtime_global->executeScripts();
 }
 
 GameFrameHook* GameFrameHook::instance = nullptr;

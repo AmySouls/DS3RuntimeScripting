@@ -5,31 +5,25 @@
 
 #pragma once
 #include "pch.h"
-#include "ds3runtime/hook.h"
+#include "ds3runtime/script_module.h"
 #include "ds3runtime/chr_ins.h"
 
 namespace ds3runtime {
 
-typedef void (*writeAnimationIds)(void*, void*, void*, void*, int64_t, void*, void*, void*, void*);
-
-class AnimationIdHook : public Hook
+class AnimationIdHandler : public ScriptModule
 {
 public:
-	AnimationIdHook();
-
-	static void onWriteAnimationIds(uintptr_t entityAnimationHandle, void*, void*, void*, int64_t, void*, void*, void*, void*);
+	void execute();
 
 	std::string getName()
 	{
-		return "animation_id_hook";
+		return "animation_id_handler";
 	}
 
 	uint32_t getAnimationId(ChrIns chr);
 private:
 	std::unordered_map<std::wstring, std::unordered_map<uint32_t, uint32_t>> animationIdMap;
 	std::unordered_map<std::wstring, uint32_t> latestAnimationIdMap;
-
-	static AnimationIdHook* instance;
 };
 
 }
