@@ -48,7 +48,7 @@ void LatencySimulator::execute()
 			auto session = PlayerNetworkSession(PlayerNetworkSession::getInstance());
 			auto sessionManager = SprjSessionManager(SprjSessionManager::getInstance());
 			if (!delayedPacket.packet.has_value() || !sessionManager.isValidNetworkHandle(delayedPacket.networkHandle)) return true;
-			session.debugPacketSend(delayedPacket.networkHandle, &*delayedPacket.packet);
+			session.packetSend(delayedPacket.networkHandle, &*delayedPacket.packet);
 			return true;
 		}), delayedPackets.end());
 }
