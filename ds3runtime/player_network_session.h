@@ -16,9 +16,9 @@ class PlayerNetworkSession
 public:
 	PlayerNetworkSession(uintptr_t address);
 
-	void debugPacketSend(uintptr_t* networkHandle, int32_t packetId, char* packetBuffer, uint32_t packetSize);
+	void packetSend(uintptr_t* networkHandle, int32_t packetId, char* packetBuffer, uint32_t packetSize);
 
-	void debugPacketSend(uintptr_t* networkHandle, packet::Packet* packet);
+	void packetSend(uintptr_t* networkHandle, packet::Packet* packet);
 
 	void sessionPacketSend(int32_t packetId, char* packetBuffer, uint32_t packetSize);
 

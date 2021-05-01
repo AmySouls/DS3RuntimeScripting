@@ -136,7 +136,7 @@ bool PlayerIns::isPlayer(uintptr_t address)
 {
 	bool isPlayer = false;
 	for (int i = 0; i < 5; i++) if (getAddressByOffsetNumber((OffsetNumber)i) == address) isPlayer = true;
-	return isChrIns(address) && isPlayer;
+	return isChrIns(address) && isPlayer && accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xFC);
 }
 
 uintptr_t PlayerIns::getMainChrAddress()

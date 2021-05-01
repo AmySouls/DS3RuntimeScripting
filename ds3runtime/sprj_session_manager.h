@@ -13,7 +13,22 @@ namespace ds3runtime {
 class SprjSessionManager
 {
 public:
+	enum class NetworkState : uint8_t
+	{
+		None = 0,
+		TrytoCreateSession = 1,
+		FailedToCreateSessio =2,
+		Host = 3,
+		TrytoJoinSession = 4,
+		FailedToJoinSession = 5,
+		Client = 6,
+		OnLeaveSession = 7,
+		FailedToLeaveSession = 8
+	};
+
 	SprjSessionManager(uintptr_t address);
+
+	NetworkState getState();
 
 	bool areHandlesEqual(uintptr_t* networkHandle, uintptr_t* networkHandleOther);
 

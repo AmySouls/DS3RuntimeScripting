@@ -10,7 +10,7 @@
 
 namespace ds3runtime {
 
-typedef std::function<int32_t(void*, uintptr_t, uintptr_t, int32_t)> ThrowNodeFilter;
+typedef std::function<int32_t(uintptr_t, uintptr_t, uintptr_t, int32_t)> ThrowNodeFilter;
 
 class ThrowHook : public Hook
 {
@@ -26,7 +26,7 @@ public:
 		return "throw_hook";
 	}
 
-	static void onThrow(void* classInstance, uintptr_t throwerChr, uintptr_t victimChr, int32_t id, int8_t param5, int8_t param6);
+	static void onThrow(uintptr_t throwAreaParam, uintptr_t throwerChr, uintptr_t victimChr, int32_t id, int8_t param5, int8_t param6);
 private:
 	std::unordered_map<std::string, ThrowNodeFilter> filters;
 

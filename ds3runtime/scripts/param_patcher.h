@@ -125,10 +125,7 @@ public:
 	template<class FieldType>
 	void patch(std::string fieldName, FieldType value)
 	{
-		spdlog::debug("Huh");
-
 		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->getParamLayout(param)) {
-			spdlog::debug("Field name itr vs looking: {} {}", field.fieldName, fieldName);
 			if (field.fieldName != fieldName) continue;
 			patch(field.bitOffset / 8, value);
 			break;

@@ -22,6 +22,8 @@ public:
 
 	void removeScript(uint64_t uniqueId);
 
+	void removeScript(std::string name);
+
 	void executeScripts();
 
 	std::shared_ptr<ScriptModule> accessScript(uint64_t scriptUniqueId);

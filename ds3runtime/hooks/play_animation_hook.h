@@ -26,7 +26,7 @@ public:
 		return "play_animation_hook";
 	}
 
-	static void onPlayAnimation(uintptr_t chrAnimationHandle, int32_t* animationId);
+	static void onPlayAnimation(uintptr_t hkbCharacter, int32_t* animationId);
 private:
 	std::unordered_map<std::string, AnimationFilter> filters;
 

@@ -49,6 +49,15 @@ void DS3RuntimeScripting::removeScript(uint64_t uniqueId)
 	}
 }
 
+void DS3RuntimeScripting::removeScript(std::string name)
+{
+	for (int i = 0; i < scripts.size(); i++) if (name == scripts[i]->getName()) {
+		scripts[i]->onDetach();
+		scripts[i]->remove();
+		break;
+	}
+}
+
 void DS3RuntimeScripting::executeScripts()
 {
 	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {

@@ -341,7 +341,33 @@ public:
 	void setBaseMaxHealth(uint32_t baseMaxHealth);
 
 	/*
-	* Play's an animation on this ChrIns via ingame function 
+	* Get's this ChrIns's death state. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = UNDEFINED
+	* } 
+	*/
+	int32_t isDead();
+
+	/*
+	* Get's this ChrIns's death state. 
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = UNDEFINED
+	* } 
+	* 
+	* @param isDead If this value is set to less or equal to 0, this character is dead.
+	*/
+	void setIsDead(int32_t isDead);
+
+	/*
+	* Play's an animation on this ChrIns via ingame function it's hkbCharacter class.
 	* 
 	* Online limitations: 
 	* { 
@@ -355,7 +381,7 @@ public:
 	void playAnimation(int32_t animationStringId);
 
 	/*
-	* Play's an animation on this ChrIns via ingame function 
+	* Play's an animation on this ChrIns via calling the function for it's AnibndResCap class.
 	* 
 	* Online limitations: 
 	* { 
@@ -369,6 +395,23 @@ public:
 	* @param animationString The animation string id to play.
 	*/
 	void playAnimation(std::wstring animationString);
+
+	/*
+	* Executes an attack on this ChrIns from another specified ChrIns via calling the function for it's SprjChrDamageModule
+	* Takes a struct of attack data.
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES
+	* } 
+	* 
+	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game. 
+	* 
+	* @param animationString The animation string id to play.
+	*/
+	void applyAttack(std::wstring animationString);
 
 	/*
 	* Play's a specified idle animation id via writing to a debug pointer. The game reads this pointer and unless a throw animation is underway, 

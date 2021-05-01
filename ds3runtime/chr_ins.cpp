@@ -116,10 +116,20 @@ void ChrIns::setBaseMaxHealth(uint32_t baseMaxHealth)
 	*accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xE0) = baseMaxHealth;
 }
 
+int32_t ChrIns::isDead()
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x50, 0x48, 0x11C);
+}
+
+void ChrIns::setIsDead(int32_t isDead)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x50, 0x48, 0x11C) = isDead;
+}
+
 void ChrIns::playAnimation(int32_t animationStringId)
 {
 	int32_t input[3] = { animationStringId, 0, 0 };
-	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8);
+	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8); //hkbCharacter
 	void(*playAnimationInternal)(...);
 	*(uintptr_t*)&playAnimationInternal = 0x140d84870;
 	playAnimationInternal(animationHandle, input);
@@ -127,7 +137,7 @@ void ChrIns::playAnimation(int32_t animationStringId)
 
 void ChrIns::playAnimation(std::wstring animationString)
 {
-	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28);
+	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28); //AnibndResCap
 	void(*playAnimationStringInternal)(...);
 	*(uintptr_t*)&playAnimationStringInternal = 0x140D84450;
 	playAnimationStringInternal(animationHandle, animationString.c_str());

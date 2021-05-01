@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "param_patcher.h"
 #include "dist/pugixml.hpp"
+#include <ds3runtime/world_chr_man.h>
 
 namespace ds3runtime {
 
@@ -44,10 +45,55 @@ void ParamPatcher::execute()
 {
     static bool done = false;
 
-    if (false) {
+    if (!done) {
+        std::optional<WorldChrMan> worldChrMan;
+        if (WorldChrMan::hasInstance()) worldChrMan = WorldChrMan::getInstance();
+
+        if (worldChrMan.has_value()) {
+            worldChrMan->findEntityTest(1);
+            done = true;
+        }
+    }
+
+    if (!done && false) {
         done = true;
         ParamHandler ringedKnightSS("test", L"EquipParamWeapon", 2250000);
-        ringedKnightSS.patch("residentSpEffectId0", 103563000);
+        //ringedKnightSS.patch("residentSpEffectId0", 103563000);
+
+        ParamHandler rkssL2R1Hit1("test", L"AtkParam_Pc", 2330700);
+        rkssL2R1Hit1.patchBinary(0x7E, 7, true);
+        rkssL2R1Hit1.patch("damageLevel", 9);
+        rkssL2R1Hit1.patch("Hit2_Radius", 2.5f);
+        rkssL2R1Hit1.patch("Hit2_DmyPoly1", 120);
+        rkssL2R1Hit1.patch("KnockbackDist", -2.6f);
+
+        ParamHandler rkssL2R1Hit2("test", L"AtkParam_Pc", 2330701);
+        rkssL2R1Hit2.patchBinary(0x7E, 7, true);
+        rkssL2R1Hit2.patch("damageLevel", 9);
+        rkssL2R1Hit2.patch("Hit2_Radius", 2.5f);
+        rkssL2R1Hit2.patch("Hit2_DmyPoly1", 120);
+        rkssL2R1Hit2.patch("KnockbackDist", 2.6f);
+
+        ParamHandler rkssL2R1R1Hit1("test", L"AtkParam_Pc", 2330710);
+        rkssL2R1R1Hit1.patchBinary(0x7E, 7, true);
+        rkssL2R1R1Hit1.patch("damageLevel", 9);
+        rkssL2R1R1Hit1.patch("Hit2_Radius", 2.5f);
+        rkssL2R1R1Hit1.patch("Hit2_DmyPoly1", 120);
+        rkssL2R1R1Hit1.patch("KnockbackDist", -2.6f);
+
+        ParamHandler rkssL2R1R1Hit2("test", L"AtkParam_Pc", 2330711);
+        rkssL2R1R1Hit2.patchBinary(0x7E, 7, true);
+        rkssL2R1R1Hit2.patch("damageLevel", 9);
+        rkssL2R1R1Hit2.patch("Hit2_Radius", 2.5f);
+        rkssL2R1R1Hit2.patch("Hit2_DmyPoly1", 120);
+        rkssL2R1R1Hit2.patch("KnockbackDist", -2.6f);
+
+        ParamHandler rkssL2R1R1R1Hit("test", L"AtkParam_Pc", 2330721);
+        rkssL2R1R1R1Hit.patchBinary(0x7E, 7, true);
+        rkssL2R1R1R1Hit.patch("damageLevel", 9);
+        rkssL2R1R1R1Hit.patch("Hit2_Radius", 2.5f);
+        rkssL2R1R1R1Hit.patch("Hit2_DmyPoly1", 120);
+        rkssL2R1R1R1Hit.patch("KnockbackDist", 15.0f);
     }
 }
 
@@ -88,7 +134,6 @@ void ParamPatcher::onAttach()
                 paramField.fieldName = entry.child("name").text().as_string();
                 paramField.fieldType = entry.child("type").text().as_string();
                 paramField.bitOffset = bitOffset;
-                if (paramEntry.first == L"EquipParamWeapon") spdlog::debug("Here! D: BitOff {} Name {} Type {}", bitOffset, paramField.fieldName, paramField.fieldType);
                 pugi::xml_text defaultValue = entry.child("type").text();
                 bool invalidType = false;
                

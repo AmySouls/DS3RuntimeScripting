@@ -21,7 +21,7 @@ bool PlayerNetworkSession::hasInstance()
 	return accessMultilevelPointer<uintptr_t>(DataBaseAddress::PlayerNetworkSession) != nullptr;
 }
 
-void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, int32_t packetId, char* packetBuffer, uint32_t packetSize)
+void PlayerNetworkSession::packetSend(uintptr_t* networkHandle, int32_t packetId, char* packetBuffer, uint32_t packetSize)
 {
 	auto hook = ds3runtime_global->accessHook("session_send_hook");
 	void(*DebugPacketSend)(...);
@@ -29,9 +29,9 @@ void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, int32_t pac
 	DebugPacketSend(address, networkHandle, packetId, packetBuffer, packetSize);
 }
 
-void PlayerNetworkSession::debugPacketSend(uintptr_t* networkHandle, packet::Packet* packet) 
+void PlayerNetworkSession::packetSend(uintptr_t* networkHandle, packet::Packet* packet) 
 {
-	debugPacketSend(networkHandle, packet->getId(), &packet->getDataCopy()[0], packet->getLength());
+	packetSend(networkHandle, packet->getId(), &packet->getDataCopy()[0], packet->getLength());
 }
 
 void PlayerNetworkSession::sessionPacketSend(int32_t packetId, char* packetBuffer, const uint32_t packetSize)

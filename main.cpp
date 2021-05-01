@@ -13,6 +13,7 @@
 #include <ds3runtime/hooks/throw_hook.h>
 #include <ds3runtime/scripts/hotkey_manager.h>
 #include <ds3runtime/scripts/param_patcher.h>
+#include <ds3runtime/scripts/dynamic_pvp_patch.h>
 
 using namespace ds3runtime;
 
@@ -53,7 +54,6 @@ static bool attach()
     ds3runtime_global->addHook(std::make_shared<ThrowHook>());
     ds3runtime_global->runScript(std::make_shared<AnimationIdHandler>());
     ds3runtime_global->runScript(std::make_shared<SyncCallScript>());
-    ds3runtime_global->runScript(std::make_shared<KingCrimsonProtections>());
     ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
     //ds3runtime_global->runScript(std::make_shared<LatencySimulator>());
     ds3runtime_global->attach();

@@ -98,6 +98,11 @@ void SprjSessionManager::leaveSession()
 	
 }
 
+SprjSessionManager::NetworkState SprjSessionManager::getState()
+{
+	return (SprjSessionManager::NetworkState)*accessMultilevelPointer<uint8_t>(address + 0x16C);
+}
+
 uintptr_t SprjSessionManager::getInstance()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::SprjSessionManager);
