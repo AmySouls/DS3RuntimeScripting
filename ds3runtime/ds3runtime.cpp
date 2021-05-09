@@ -35,7 +35,6 @@ void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook)
 
 void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script)
 {
-	script->onAttach();
 	scripts.push_back(script);
 	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script);
 }
@@ -65,7 +64,8 @@ void DS3RuntimeScripting::executeScripts()
 	}), scripts.end());
 
 	for (auto script : scripts) if (!script->isAsync()) {
-		script->execute();
+		if (!script->isAttached()) script->tryAttach(script->onAttach());
+		else script->execute();
 	}
 }
 

@@ -12,23 +12,33 @@
 
 namespace ds3runtime {
 
-void LatencySimulator::onAttach()
+LatencySimulator::LatencySimulator(LatencyAttributes latencyAttributes)
+{
+	this->latencyAttributes = latencyAttributes;
+}
+
+bool LatencySimulator::onAttach()
 {
 	auto sharedPtr = ds3runtime_global->accessHook("session_send_hook");
 	auto sessionSendHook = (SessionSendHook*)sharedPtr.get();
 
 	sessionSendHook->installPacketFilter("latency_simulator", [&](uintptr_t networkSession, uintptr_t* networkHandle, int32_t id, char* buffer, uint32_t maxLength) {
-			std::random_device rd;
-			std::mt19937 gen(rd());
-			std::uniform_real_distribution<> dis(0.0, 1000.0);
 			DelayedPacket delayedPacket = {};
 			delayedPacket.timeToSend = std::chrono::duration_cast<std::chrono::milliseconds>(
-				std::chrono::system_clock::now().time_since_epoch()).count() + (uint64_t)dis(gen);
+				std::chrono::system_clock::now().time_since_epoch()).count() + latencyAttributes.flatOutLatency;
+			std::random_device rd;
+			std::mt19937 gen(rd());
+			std::uniform_real_distribution<> dis(0.0, latencyAttributes.jitterOut);
+			delayedPacket.timeToSend + (uint64_t)dis(gen);
 			delayedPacket.networkHandle = networkHandle;
 			delayedPacket.packet = packet::Packet(id, buffer, maxLength);
+			if (delayedPackets[delayedPackets.size() - 1].timeToSend >= delayedPacket.timeToSend) 
+				delayedPacket.timeToSend = delayedPackets[delayedPackets.size() - 1].timeToSend + 1;
 			delayedPackets.push_back(delayedPacket);
 			return 0;
 		});
+
+	return true;
 }
 
 void LatencySimulator::onDetach()

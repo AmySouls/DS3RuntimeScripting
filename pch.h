@@ -33,5 +33,7 @@
 #include <codecvt>
 #include <fstream>
 #include <filesystem>
+#include <fmod.hpp>
+#include <fmod_errors.h>
 
 #endif //PCH_H

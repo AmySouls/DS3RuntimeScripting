@@ -39,7 +39,6 @@ public:
 	std::string utf8_encode(const std::wstring& wstr);
 
 	std::wstring utf8_decode(const std::string& str);
-
 private:
 	std::vector<std::shared_ptr<Hook>> hooks;
 	std::vector<std::shared_ptr<ScriptModule>> scripts;

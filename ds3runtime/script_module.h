@@ -17,7 +17,7 @@ public:
 
 	virtual std::string getName() = 0;
 
-	virtual void onAttach();
+	virtual bool onAttach();
 
 	virtual void onDetach();
 
@@ -30,11 +30,16 @@ public:
 
 	bool isRemoved();
 
+	bool isAttached();
+
+	void tryAttach(const bool attachState);
+
 	uint64_t getUniqueId();
 private:
 	uint64_t uniqueId;
 	static uint64_t uniqueIdCounter;
 	bool removed = false;
+	bool attached = false;
 };
 
 }

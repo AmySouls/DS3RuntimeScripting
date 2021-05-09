@@ -341,3 +341,19 @@ healthchecksdb
 
 ds3runtime/scripts/king_crimson_protections.cpp
 ds3runtime/scripts/king_crimson_protections.h
+ds3runtime/boss/ariandar_boss.cpp
+ds3runtime/boss/ariandar_boss.h
+ds3runtime/boss/player_boss.cpp
+ds3runtime/boss/player_boss.h
+ds3runtime/boss/standard_player_boss.cpp
+ds3runtime/boss/standard_player_boss.h
+ds3runtime/boss/player_boss.h
+ds3runtime/boss/player_boss.cpp
+ds3runtime/scripts/face_data_capture.cpp
+ds3runtime/scripts/face_data_capture.h
+ds3runtime/scripts/dynamic_pvp_patch.cpp
+ds3runtime/scripts/dynamic_pvp_patch.h
+ds3runtime/scripts/reversal_ring_test_send.cpp
+ds3runtime/scripts/reversal_ring_test.h
+ds3runtime/scripts/reversal_ring_test.cpp
+ds3runtime/scripts/reversal_ring_test_send.h

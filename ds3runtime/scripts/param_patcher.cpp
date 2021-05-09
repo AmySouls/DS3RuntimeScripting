@@ -3,6 +3,10 @@
 #include "param_patcher.h"
 #include "dist/pugixml.hpp"
 #include <ds3runtime/world_chr_man.h>
+extern "C" { 
+#include <lua.h> 
+}
+#include "ds3runtime/databaseaddress.h"
 
 namespace ds3runtime {
 
@@ -45,15 +49,16 @@ void ParamPatcher::execute()
 {
     static bool done = false;
 
-    if (!done) {
-        std::optional<WorldChrMan> worldChrMan;
-        if (WorldChrMan::hasInstance()) worldChrMan = WorldChrMan::getInstance();
+    /*
+    lua_State** chrBehaivorLuaStatePtr = accessMultilevelPointer<lua_State*>(DataBaseAddress::WorldChrMan, 0x80, 0x1F90, 0x28, 0x10, 0x28);
 
-        if (worldChrMan.has_value()) {
-            worldChrMan->findEntityTest(1);
-            done = true;
-        }
+    if (chrBehaivorLuaStatePtr) {
+        lua_getglobal(*chrBehaivorLuaStatePtr, "SetVariable");
+        lua_pushstring(*chrBehaivorLuaStatePtr, "DamageCount");
+        lua_pushnumber(*chrBehaivorLuaStatePtr, 4);
+        lua_call(*chrBehaivorLuaStatePtr, 1, 0);
     }
+    */
 
     if (!done && false) {
         done = true;
@@ -97,8 +102,12 @@ void ParamPatcher::execute()
     }
 }
 
-void ParamPatcher::onAttach()
+bool ParamPatcher::onAttach()
 {
+    if (!accessMultilevelPointer<uintptr_t>(DataBaseAddress::SoloParamRepository, 0x10C0, 0x68, 0x68)) {
+        return false;
+    }
+
     const uintptr_t paramStart = *accessMultilevelPointer<uintptr_t>(0x144785FE0, 0x10);
     const uintptr_t paramEnd = *accessMultilevelPointer<uintptr_t>(0x144785FE0, 0x10 + 8);
     const uintptr_t paramCount = (paramEnd - paramStart) / 8;
@@ -198,6 +207,8 @@ void ParamPatcher::onAttach()
             }
         }
     }
+
+    return true;
 }
 
 void ParamPatcher::onDetach()

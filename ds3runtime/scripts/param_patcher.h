@@ -38,7 +38,7 @@ public:
 
 	void execute();
 
-	void onAttach();
+	bool onAttach();
 
 	void onDetach();
 

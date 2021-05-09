@@ -46,10 +46,6 @@ int LuaCapture::onLuaGetTop(lua_State* luaState)
 
 	instance->cond.notify_one();
 
-	if (luaStateTop == 1) {
-
-	}
-
 	return luaStateTop;
 }
 

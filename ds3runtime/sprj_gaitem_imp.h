@@ -17,11 +17,13 @@ public:
 
 	std::optional<SprjGaitemIns> getItemByOffsetId(uint32_t id);
 
-	int32_t getOffsetIdByInventoryId(int32_t id);
+	uint32_t getOffsetIdByInventoryId(int32_t id);
 
 	std::optional<SprjGaitemIns> getItemByInventoryId(int32_t id);
 
-	std::vector<SprjGaitemIns> getItemList();
+	std::unordered_map<int32_t, SprjGaitemIns> getItemList();
+
+	void removeItemByOffsetId(uint32_t offsetId);
 
 	static uintptr_t getInstance();
 

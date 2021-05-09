@@ -15,7 +15,7 @@ struct PacketField {
 	size_t size;
 };
 
-enum class id {
+enum class id : int32_t {
 	Status = 1,
 	PlayerStruct = 8,
 	Equipment = 12,

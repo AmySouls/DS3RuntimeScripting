@@ -20,6 +20,11 @@ bool SprjGaitemIns::isValid()
 	return vtablePtr && (*vtablePtr == 0x14289A8C8 || *vtablePtr == 0x14289A7D8 || *vtablePtr == 0x142899fe8);
 }
 
+uintptr_t SprjGaitemIns::getVtablePtr()
+{
+	return *accessMultilevelPointer<uintptr_t>(address);
+}
+
 uintptr_t SprjGaitemIns::getAddress()
 {
 	return address;

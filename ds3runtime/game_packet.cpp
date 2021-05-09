@@ -119,7 +119,7 @@ std::vector<PacketField> PlayerStruct::fields = {
 	{ "int32_t", "luck", 0x48, 4 },
 	{ "int32_t", "vitality", 0x50, 4 },
 	{ "int32_t", "soul_level", 0x54, 4 },
-	{ "int32_t", "summon_type", 0x58, 4 },
+	{ "int8_t", "summon_type", 0x58, 1 },
 	{ "wchar_t[]", "name", 0x5C, 32 },
 	{ "wchar_t[]", "steam_id", 0x7D, 32 },
 	{ "char[]", "face", 0xA0, 4 },

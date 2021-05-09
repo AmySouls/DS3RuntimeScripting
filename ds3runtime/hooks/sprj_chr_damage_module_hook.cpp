@@ -27,7 +27,7 @@ void SprjChrDamageModuleHook::onApplyDamage(uintptr_t sprjChrDamageModule, uintp
 
 	void (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
-	originalFunction(sprjChrDamageModule, attackerChr, attackDataBuffer); //Search for SprjChrDamageModuleHook in ghidra for more information.
+	originalFunction(sprjChrDamageModule, attackerChr, attackDataBuffer);
 }
 
 void SprjChrDamageModuleHook::installFilter(std::string key, AttackFilter function)

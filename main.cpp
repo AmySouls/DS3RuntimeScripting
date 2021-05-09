@@ -14,10 +14,15 @@
 #include <ds3runtime/scripts/hotkey_manager.h>
 #include <ds3runtime/scripts/param_patcher.h>
 #include <ds3runtime/scripts/dynamic_pvp_patch.h>
+#include <ds3runtime/scripts/face_data_capture.h>
+#include <ds3runtime/scripts/bonk_sound_cosmetic.h>
+#include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
+#include <ds3runtime/scripts/imposter_sound_cosmetic.h>
+#include <ds3runtime/scripts/fmod_system_handler.h>
 
 using namespace ds3runtime;
 
-std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;
+std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;;
 
 static std::shared_ptr<spdlog::logger> createLogger()
 {
@@ -52,10 +57,16 @@ static bool attach()
     ds3runtime_global->addHook(std::make_shared<SessionSendHook>());
     ds3runtime_global->addHook(std::make_shared<PlayAnimationHook>());
     ds3runtime_global->addHook(std::make_shared<ThrowHook>());
+    ds3runtime_global->addHook(std::make_shared<SprjChrDamageModuleHook>());
+    ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
+    ds3runtime_global->runScript((std::make_shared<FMODSystemHandler>()));
     ds3runtime_global->runScript(std::make_shared<AnimationIdHandler>());
     ds3runtime_global->runScript(std::make_shared<SyncCallScript>());
-    ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
+    ds3runtime_global->runScript(std::make_shared<KingCrimsonProtections>());
     //ds3runtime_global->runScript(std::make_shared<LatencySimulator>());
+    ds3runtime_global->runScript(std::make_shared<FaceDataCapture>());
+    ds3runtime_global->runScript(std::make_shared<ImposterSoundCosmetic>());
+    ds3runtime_global->runScript(std::make_shared<BonkSoundCosmetic>());
     ds3runtime_global->attach();
     return true;
 }

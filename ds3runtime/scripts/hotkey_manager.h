@@ -12,7 +12,7 @@ namespace ds3runtime {
 class HotkeyManager : public ScriptModule
 {
 public:
-	void onAttach();
+	bool onAttach();
 
 	void execute();
 

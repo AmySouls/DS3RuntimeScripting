@@ -16,8 +16,9 @@ ScriptModule::ScriptModule()
 	uniqueIdCounter++;
 }
 
-void ScriptModule::onAttach()
+bool ScriptModule::onAttach()
 {
+	return true;
 }
 
 void ScriptModule::onDetach()
@@ -32,6 +33,16 @@ void ScriptModule::remove()
 bool ScriptModule::isRemoved()
 {
 	return removed;
+}
+
+bool ScriptModule::isAttached()
+{
+	return attached;
+}
+
+void ScriptModule::tryAttach(const bool attachState)
+{
+	attached = attachState;
 }
 
 uint64_t ScriptModule::getUniqueId()
