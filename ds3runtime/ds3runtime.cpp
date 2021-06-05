@@ -8,17 +8,36 @@ DS3RuntimeScripting::DS3RuntimeScripting()
 {
 }
 
+void DS3RuntimeScripting::setAsyncMode(bool async)
+{
+	this->async = async;
+}
+
 void DS3RuntimeScripting::attach()
 {
-	for (auto& hook : hooks) {
-		hook->install();
+	attached = true;
+
+	if (!async) {
+		for (auto& hook : hooks) {
+			hook->install();
+		}
+	}
+	else {
+		asyncModeThreadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)asyncModeThreadProc, NULL, 0, NULL);
 	}
 }
 
 void DS3RuntimeScripting::detach()
 {
-	for (auto& hook : hooks) {
-		hook->uninstall();
+	attached = false;
+
+	if (!async) {
+		for (auto& hook : hooks) {
+			hook->uninstall();
+		}
+	}
+	else {
+		asyncModeThreadHandle = NULL;
 	}
 
 	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script){
@@ -134,6 +153,13 @@ std::wstring DS3RuntimeScripting::utf8_decode(const std::string &str)
 	std::wstring wstrTo(size_needed, 0);
 	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
 	return wstrTo;
+}
+
+void DS3RuntimeScripting::asyncModeThreadProc()
+{
+	while (ds3runtime_global->asyncModeThreadHandle != NULL) {
+		ds3runtime_global->executeScripts();
+	}
 }
 
 }

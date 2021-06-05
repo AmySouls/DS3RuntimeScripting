@@ -17,6 +17,7 @@ bool FMODSystemHandler::onAttach()
 	if (result != FMOD_OK) {
 		printf("FMOD error at FMODSystemHandler::onAttach, call of FMOD::System_Create: (%d) %s\n", 
 			result, FMOD_ErrorString(result));
+		fmodSystem = nullptr;
 		return true;
 	}
 
@@ -25,6 +26,7 @@ bool FMODSystemHandler::onAttach()
 	if (result != FMOD_OK) {
 		printf("FMOD error at FMODSystemHandler::onAttach, call of FMOD::System::init: (%d) %s\n",
 			result, FMOD_ErrorString(result));
+		fmodSystem = nullptr;
 	}
 
 	return true;
@@ -45,6 +47,15 @@ void FMODSystemHandler::execute()
 FMOD::System* FMODSystemHandler::getFMODSystem()
 {
 	return fmodSystem;
+}
+
+void FMODSystemHandler::tryErrorSound()
+{
+	if (fmodSystem) {
+		FMOD::Sound* sound = nullptr;
+		fmodSystem->createStream("DS3RuntimeScripting\\assets\\sounds\\msg_bad.wav", FMOD_DEFAULT, nullptr, &sound);
+		fmodSystem->playSound(sound, nullptr, false, nullptr);
+	}
 }
 
 }

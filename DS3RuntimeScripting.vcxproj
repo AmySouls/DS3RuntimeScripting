@@ -127,7 +127,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -193,7 +193,9 @@
     <ClInclude Include="ds3runtime\scripts\imposter_sound_cosmetic.h" />
     <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h" />
     <ClInclude Include="ds3runtime\scripts\latency_simulator.h" />
+    <ClInclude Include="ds3runtime\scripts\npc_mod_test.h" />
     <ClInclude Include="ds3runtime\scripts\param_patcher.h" />
+    <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h" />
     <ClInclude Include="ds3runtime\scripts\reversal_ring_test.h" />
     <ClInclude Include="ds3runtime\scripts\reversal_ring_test_send.h" />
     <ClInclude Include="ds3runtime\scripts\sync_call_script.h" />
@@ -242,7 +244,9 @@
     <ClCompile Include="ds3runtime\scripts\imposter_sound_cosmetic.cpp" />
     <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp" />
     <ClCompile Include="ds3runtime\scripts\latency_simulator.cpp" />
+    <ClCompile Include="ds3runtime\scripts\npc_mod_test.cpp" />
     <ClCompile Include="ds3runtime\scripts\param_patcher.cpp" />
+    <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp" />
     <ClCompile Include="ds3runtime\scripts\reversal_ring_test.cpp" />
     <ClCompile Include="ds3runtime\scripts\reversal_ring_test_send.cpp" />
     <ClCompile Include="ds3runtime\scripts\sync_call_script.cpp" />

@@ -134,6 +134,8 @@ public:
 	*/
 	uintptr_t* getNetworkHandle();
 
+	bool isValid();
+
 	/*
 	* Get the base address of PlayerIns by the offset multiplier in memory. 
 	* 

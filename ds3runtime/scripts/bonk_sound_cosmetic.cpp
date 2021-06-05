@@ -8,6 +8,9 @@ namespace ds3runtime {
 
 bool BonkSoundCosmetic::onAttach()
 {
+	if (!ds3runtime_global->accessScript("fmod_system_handler")
+		|| !((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->getFMODSystem()) return false;
+
 	((SprjChrDamageModuleHook*)ds3runtime_global
 		->accessHook("sprj_chr_damage_module_hook")
 		.get())->installFilter("bonk_sound_cosmetic", [&](uintptr_t, uintptr_t, char* attackDataBuffer) -> bool {

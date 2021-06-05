@@ -14,7 +14,7 @@ class SprjLuaEventConditionItem
 public:
 	SprjLuaEventConditionItem(uintptr_t address);
 
-	void giveItem(int32_t quantity, int32_t itemId, int32_t durablity);
+	void giveItem(int32_t quantity, int32_t giveItemId, int32_t durablity);
 
 	static uintptr_t getInstance();
 

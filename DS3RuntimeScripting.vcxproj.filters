@@ -162,6 +162,12 @@
     <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\npc_mod_test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -300,6 +306,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\npc_mod_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

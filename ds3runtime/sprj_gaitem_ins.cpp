@@ -17,7 +17,7 @@ int32_t SprjGaitemIns::getId()
 bool SprjGaitemIns::isValid()
 {
 	auto vtablePtr = accessMultilevelPointer<uintptr_t>(address);
-	return vtablePtr && (*vtablePtr == 0x14289A8C8 || *vtablePtr == 0x14289A7D8 || *vtablePtr == 0x142899fe8);
+	return vtablePtr && (*vtablePtr == 0x14289A8C8 || *vtablePtr == 0x14289A7D8);
 }
 
 uintptr_t SprjGaitemIns::getVtablePtr()

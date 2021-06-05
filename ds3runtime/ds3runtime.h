@@ -12,6 +12,8 @@ class DS3RuntimeScripting
 public:
 	DS3RuntimeScripting();
 
+	void setAsyncMode(bool async);
+
 	void attach();
 
 	void detach();
@@ -44,6 +46,11 @@ private:
 	std::vector<std::shared_ptr<ScriptModule>> scripts;
 	std::mutex scriptMutex;
 	DWORD gameThreadId = 0;
+	bool async = false;
+	HANDLE asyncModeThreadHandle;
+	std::atomic<bool> attached = false;
+
+	static void asyncModeThreadProc();
 };
 
 extern std::shared_ptr<DS3RuntimeScripting> ds3runtime_global;

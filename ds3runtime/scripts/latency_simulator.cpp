@@ -29,7 +29,7 @@ bool LatencySimulator::onAttach()
 			std::random_device rd;
 			std::mt19937 gen(rd());
 			std::uniform_real_distribution<> dis(0.0, latencyAttributes.jitterOut);
-			delayedPacket.timeToSend + (uint64_t)dis(gen);
+			delayedPacket.timeToSend += (uint64_t)dis(gen);
 			delayedPacket.networkHandle = networkHandle;
 			delayedPacket.packet = packet::Packet(id, buffer, maxLength);
 			if (delayedPackets[delayedPackets.size() - 1].timeToSend >= delayedPacket.timeToSend) 

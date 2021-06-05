@@ -10,6 +10,9 @@ namespace ds3runtime {
 
 bool ImposterSoundCosmetic::onAttach()
 {
+	if (!ds3runtime_global->accessScript("fmod_system_handler")
+		|| !((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->getFMODSystem()) return false;
+
 	((SessionReceiveHook*)ds3runtime_global
 		->accessHook("session_receive_hook")
 		.get())->installPacketFilter("imposter_sound_cosmetic", [&](uintptr_t networkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength, uint32_t receiveLength) -> uint32_t {
@@ -28,7 +31,7 @@ bool ImposterSoundCosmetic::onAttach()
 				}
 			}
 
-			return true;
+			return receiveLength;
 			});
 
 	return true;

@@ -6,10 +6,11 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/script_module.h"
+#include "ds3runtime/ds3runtime.h"
 
 namespace ds3runtime {
 
-class FMODSystemHandler : public ScriptModule
+class NPCModTest : public ScriptModule
 {
 public:
 	bool onAttach();
@@ -20,14 +21,8 @@ public:
 
 	std::string getName()
 	{
-		return "fmod_system_handler";
+		return "npc_mod_test";
 	}
-
-	FMOD::System* getFMODSystem();
-
-	void tryErrorSound();
-private:
-	FMOD::System* fmodSystem;
 };
 
 }

@@ -47,59 +47,7 @@ void ParamHandler::patchBinary(std::string fieldName, bool value)
 
 void ParamPatcher::execute()
 {
-    static bool done = false;
 
-    /*
-    lua_State** chrBehaivorLuaStatePtr = accessMultilevelPointer<lua_State*>(DataBaseAddress::WorldChrMan, 0x80, 0x1F90, 0x28, 0x10, 0x28);
-
-    if (chrBehaivorLuaStatePtr) {
-        lua_getglobal(*chrBehaivorLuaStatePtr, "SetVariable");
-        lua_pushstring(*chrBehaivorLuaStatePtr, "DamageCount");
-        lua_pushnumber(*chrBehaivorLuaStatePtr, 4);
-        lua_call(*chrBehaivorLuaStatePtr, 1, 0);
-    }
-    */
-
-    if (!done && false) {
-        done = true;
-        ParamHandler ringedKnightSS("test", L"EquipParamWeapon", 2250000);
-        //ringedKnightSS.patch("residentSpEffectId0", 103563000);
-
-        ParamHandler rkssL2R1Hit1("test", L"AtkParam_Pc", 2330700);
-        rkssL2R1Hit1.patchBinary(0x7E, 7, true);
-        rkssL2R1Hit1.patch("damageLevel", 9);
-        rkssL2R1Hit1.patch("Hit2_Radius", 2.5f);
-        rkssL2R1Hit1.patch("Hit2_DmyPoly1", 120);
-        rkssL2R1Hit1.patch("KnockbackDist", -2.6f);
-
-        ParamHandler rkssL2R1Hit2("test", L"AtkParam_Pc", 2330701);
-        rkssL2R1Hit2.patchBinary(0x7E, 7, true);
-        rkssL2R1Hit2.patch("damageLevel", 9);
-        rkssL2R1Hit2.patch("Hit2_Radius", 2.5f);
-        rkssL2R1Hit2.patch("Hit2_DmyPoly1", 120);
-        rkssL2R1Hit2.patch("KnockbackDist", 2.6f);
-
-        ParamHandler rkssL2R1R1Hit1("test", L"AtkParam_Pc", 2330710);
-        rkssL2R1R1Hit1.patchBinary(0x7E, 7, true);
-        rkssL2R1R1Hit1.patch("damageLevel", 9);
-        rkssL2R1R1Hit1.patch("Hit2_Radius", 2.5f);
-        rkssL2R1R1Hit1.patch("Hit2_DmyPoly1", 120);
-        rkssL2R1R1Hit1.patch("KnockbackDist", -2.6f);
-
-        ParamHandler rkssL2R1R1Hit2("test", L"AtkParam_Pc", 2330711);
-        rkssL2R1R1Hit2.patchBinary(0x7E, 7, true);
-        rkssL2R1R1Hit2.patch("damageLevel", 9);
-        rkssL2R1R1Hit2.patch("Hit2_Radius", 2.5f);
-        rkssL2R1R1Hit2.patch("Hit2_DmyPoly1", 120);
-        rkssL2R1R1Hit2.patch("KnockbackDist", -2.6f);
-
-        ParamHandler rkssL2R1R1R1Hit("test", L"AtkParam_Pc", 2330721);
-        rkssL2R1R1R1Hit.patchBinary(0x7E, 7, true);
-        rkssL2R1R1R1Hit.patch("damageLevel", 9);
-        rkssL2R1R1R1Hit.patch("Hit2_Radius", 2.5f);
-        rkssL2R1R1R1Hit.patch("Hit2_DmyPoly1", 120);
-        rkssL2R1R1R1Hit.patch("KnockbackDist", 15.0f);
-    }
 }
 
 bool ParamPatcher::onAttach()
@@ -214,6 +162,11 @@ bool ParamPatcher::onAttach()
 void ParamPatcher::onDetach()
 {
     this->restore("test");
+}
+
+bool ParamPatcher::doesIdExistInParam(std::wstring param, int32_t id)
+{
+    return paramIdTables[param].find(id) != paramIdTables[param].end();
 }
 
 bool ParamPatcher::readBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset)

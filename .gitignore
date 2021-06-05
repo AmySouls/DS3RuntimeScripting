@@ -357,3 +357,7 @@ ds3runtime/scripts/reversal_ring_test_send.cpp
 ds3runtime/scripts/reversal_ring_test.h
 ds3runtime/scripts/reversal_ring_test.cpp
 ds3runtime/scripts/reversal_ring_test_send.h
+ds3runtime/boss/player_boss.h
+ds3runtime/boss/player_boss.cpp
+ds3runtime/scripts/repeat_players_filter.cpp
+ds3runtime/scripts/repeat_players_filter.h

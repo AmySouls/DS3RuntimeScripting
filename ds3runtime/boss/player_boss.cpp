@@ -4,9 +4,8 @@
 
 namespace ds3runtime {
 
-PlayerBoss::PlayerBoss(PlayerIns playerIns) : Boss(playerIns)
+PlayerBoss::PlayerBoss(std::shared_ptr<PlayerIns> playerIns) : Boss(playerIns)
 {
-	savedEquipment = std::array<int32_t, 47>();
 }
 
 }

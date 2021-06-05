@@ -139,6 +139,14 @@ bool PlayerIns::isPlayer(uintptr_t address)
 	return isChrIns(address) && isPlayer && accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xFC);
 }
 
+bool PlayerIns::isValid()
+{
+	bool isPlayer = false;
+	spdlog::debug("Is playr: {} {} {}", isPlayer, (void*)accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xFC));
+	for (int i = 0; i < 5; i++) if (getAddressByOffsetNumber((OffsetNumber)i) == address) isPlayer = true;
+	return isPlayer && accessMultilevelPointer<uint32_t>(address + 0x1FA0, 0xFC);
+}
+
 uintptr_t PlayerIns::getMainChrAddress()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x80);

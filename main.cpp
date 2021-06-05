@@ -19,6 +19,7 @@
 #include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
 #include <ds3runtime/scripts/imposter_sound_cosmetic.h>
 #include <ds3runtime/scripts/fmod_system_handler.h>
+#include <ds3runtime/scripts/npc_mod_test.h>
 
 using namespace ds3runtime;
 
@@ -67,6 +68,9 @@ static bool attach()
     ds3runtime_global->runScript(std::make_shared<FaceDataCapture>());
     ds3runtime_global->runScript(std::make_shared<ImposterSoundCosmetic>());
     ds3runtime_global->runScript(std::make_shared<BonkSoundCosmetic>());
+    //ds3runtime_global->runScript(std::make_shared<DynamicPvpPatch>());
+    //ds3runtime_global->setAsyncMode(true);
+    //ds3runtime_global->runScript(std::make_shared<NPCModTest>());
     ds3runtime_global->attach();
     return true;
 }

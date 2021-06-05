@@ -46,6 +46,8 @@ public:
 
 	void leaveSession();
 
+	static uintptr_t getPlayerGameDataByNetworkHandle(uintptr_t* networkHandle);
+
 	static uintptr_t getInstance();
 
 	static bool hasInstance();
