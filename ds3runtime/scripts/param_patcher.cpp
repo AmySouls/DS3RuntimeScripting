@@ -42,13 +42,6 @@ void ParamHandler::patchBinary(std::string fieldName, bool value)
 
 void ParamPatcher::execute()
 {
-    static bool done = false;
-
-    if (false) {
-        done = true;
-        ParamHandler ringedKnightSS("test", L"EquipParamWeapon", 2250000);
-        ringedKnightSS.patch("residentSpEffectId0", 103563000);
-    }
 }
 
 void ParamPatcher::onAttach()
