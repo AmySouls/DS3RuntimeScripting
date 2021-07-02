@@ -47,7 +47,6 @@ void ParamHandler::patchBinary(std::string fieldName, bool value)
 
 void ParamPatcher::execute()
 {
-
 }
 
 bool ParamPatcher::onAttach()
