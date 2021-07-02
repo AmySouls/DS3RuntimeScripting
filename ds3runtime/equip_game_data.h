@@ -5,17 +5,9 @@
 
 #pragma once
 #include "pch.h"
-#include "memory_util.h"
+#include "equip_inventory_data.h"
 
 namespace ds3runtime {
-
-struct InventoryItem
-{
-	int32_t uniqueId;
-	int32_t giveId;
-	uint32_t quantity;
-	int32_t unknown1;
-};
 
 enum class InventorySlot : uint32_t
 {
@@ -29,10 +21,10 @@ enum class InventorySlot : uint32_t
 	PrimaryBolt = 7,
 	SecondaryArrow = 8,
 	SecondaryBolt = 9,
-	Helmet = 12,
-	Armor = 13,
-	Gauntlet = 14,
-	Leggings = 15,
+	Head = 12,
+	Chest = 13,
+	Hands = 14,
+	Legs = 15,
 	Ring1 = 17,
 	Ring2 = 18,
 	Ring3 = 19,
@@ -67,14 +59,6 @@ enum class ItemUniqueIdPrefix : uint32_t
 	Goods = 0xB0000000,
 };
 
-enum class ItemParamIdPrefix : int32_t
-{
-	Weapon = 0,
-	Protector = 0x10000000,
-	Accessory = 0x20000000,
-	Goods = 0x40000000,
-};
-
 class EquipGameData
 {
 public:
@@ -90,19 +74,9 @@ public:
 
 	void equipGoodsInventoryItem(GoodsSlot goodsSlot, int32_t inventoryItemId);
 
-	void discardInventoryItems(int32_t inventoryItemId, int32_t quantity);
-
 	void modifyInventoryItemQuantity(int32_t inventoryItemId, int32_t quantityDelta);
 
-	void addItem(ItemParamIdPrefix paramIdPrefix, int32_t paramId, uint32_t quantity, int32_t durability);
-
-	InventoryItem* getInventoryItemById(int32_t inventoryItemId);
-
-	int32_t getInventoryItemCount();
-
-	static uintptr_t getInstance();
-
-	static bool hasInstance();
+	uintptr_t getEquipInventoryData();
 private:
 	uintptr_t address;
 };

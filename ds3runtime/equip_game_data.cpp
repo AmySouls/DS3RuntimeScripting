@@ -3,6 +3,7 @@
 #include "equip_game_data.h"
 #include "databaseaddress.h"
 #include <ds3runtime/sprj_gaitem_imp.h>
+#include "memory_util.h"
 
 namespace ds3runtime {
 
@@ -22,7 +23,7 @@ void EquipGameData::equipInventoryItem(InventorySlot inventorySlot, int32_t inve
 	*(uintptr_t*)weirdBA = 0x1427AFA38;
 	*(uintptr_t*)(weirdBA + 8) = address;
 	*(uint32_t*)(weirdBA + 0x10) = (uint32_t)inventorySlot;
-	*(uint32_t*)(weirdBA + 0x14) = inventoryItemId == -1 ? 0 : getInventoryItemById(inventoryItemId)->uniqueId;
+	*(uint32_t*)(weirdBA + 0x14) = inventoryItemId == -1 ? 0 : EquipInventoryData(getEquipInventoryData()).getInventoryItemById(inventoryItemId)->uniqueId;
 	void (*switchEquipment)(...);
 	*(uintptr_t*)&switchEquipment = 0x1405886a0;
 	switchEquipment(address, inventorySlot, inventoryItemId, weirdData);
@@ -31,7 +32,7 @@ void EquipGameData::equipInventoryItem(InventorySlot inventorySlot, int32_t inve
 void EquipGameData::equipGoodsInventoryItem(GoodsSlot goodsSlot, int32_t inventoryItemId)
 {
 	char data[0x20] = {};
-	*(uint32_t*)data = inventoryItemId == -1 ? 0 : getInventoryItemById(inventoryItemId)->uniqueId;
+	*(uint32_t*)data = inventoryItemId == -1 ? 0 : EquipInventoryData(getEquipInventoryData()).getInventoryItemById(inventoryItemId)->uniqueId;
 	void (*equipGoods)(...);
 	*(uintptr_t*)&equipGoods = 0x140583ED0;
 	equipGoods(address, goodsSlot, data, inventoryItemId, 1);
@@ -52,13 +53,6 @@ int32_t EquipGameData::getInventoryItemIdByToolbeltSlot(GoodsSlot goodsSlot)
 	return *accessMultilevelPointer<int32_t>(address + 0x26C + (uintptr_t)goodsSlot * 8 + 4);
 }
 
-void EquipGameData::discardInventoryItems(int32_t inventoryItemId, int32_t quantity)
-{
-	void (*DiscardItems)(...);
-	*(uintptr_t*)&DiscardItems = 0x140a28eb0;
-	DiscardItems(address + 0x1A8 + 0x10, inventoryItemId);
-}
-
 void EquipGameData::modifyInventoryItemQuantity(int32_t inventoryItemId, int32_t quantityDelta)
 {
 	void (*ModifyItemQuantity)(...);
@@ -66,35 +60,9 @@ void EquipGameData::modifyInventoryItemQuantity(int32_t inventoryItemId, int32_t
 	ModifyItemQuantity(address, inventoryItemId, quantityDelta, 1);
 }
 
-void EquipGameData::addItem(ItemParamIdPrefix paramIdPrefix, int32_t paramId, uint32_t quantity, int32_t durability)
+uintptr_t EquipGameData::getEquipInventoryData()
 {
-	int32_t data[2] = {};
-	*(int32_t*)data = durability;
-	void (*AddItem)(...);
-	*(uintptr_t*)&AddItem = 0x14058aa20;
-	AddItem(address + 0x1A8, paramIdPrefix, paramId, quantity, data);
-}
-
-InventoryItem* EquipGameData::getInventoryItemById(int32_t inventoryItemId)
-{
-	uintptr_t (*GetInventoryItem)(...);
-	*(uintptr_t*)&GetInventoryItem = 0x14058cb30;
-	return reinterpret_cast<InventoryItem*>(GetInventoryItem(address + 0x1A8, inventoryItemId));
-}
-
-int32_t EquipGameData::getInventoryItemCount()
-{
-	return *accessMultilevelPointer<int32_t>(address + 0x1A8 + 0x88) + 1;
-}
-
-uintptr_t EquipGameData::getInstance()
-{
-	return (uintptr_t)accessMultilevelPointer<uintptr_t>(DataBaseAddress::GAME, 0x10, 0x228);
-}
-
-bool EquipGameData::hasInstance()
-{
-	return accessMultilevelPointer<uintptr_t>(DataBaseAddress::GAME, 0x10, 0x228) != nullptr;
+	return address + 0x1A8;
 }
 
 }

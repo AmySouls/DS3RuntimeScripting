@@ -35,5 +35,6 @@
 #include <filesystem>
 #include <fmod.hpp>
 #include <fmod_errors.h>
+#include <cmath>
 
 #endif //PCH_H

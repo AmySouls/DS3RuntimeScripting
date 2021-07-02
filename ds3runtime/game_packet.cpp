@@ -85,7 +85,7 @@ void Packet::setWideStringField(std::string fieldName, std::wstring value)
 	for (auto field : *getFields()) {
 		if (fieldName != field.name) continue;
 		else if (field.typeName != "wchar_t[]") return;
-		else if (field.offset + field.size > buffer.size() || field.offset + field.size > value.size() * 2) return;
+		//else if (field.offset + field.size > buffer.size() || field.offset + field.size > value.size() * 2) return;
 		memcpy(&buffer[0] + field.offset, value.c_str(), value.size() * 2);
 		return;
 	}

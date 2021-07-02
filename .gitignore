@@ -361,3 +361,7 @@ ds3runtime/boss/player_boss.h
 ds3runtime/boss/player_boss.cpp
 ds3runtime/scripts/repeat_players_filter.cpp
 ds3runtime/scripts/repeat_players_filter.h
+ds3runtime/scripts/position_hide.cpp
+ds3runtime/scripts/position_hide.h
+ds3runtime/scripts/player_name_talk.cpp
+ds3runtime/scripts/player_name_talk.h

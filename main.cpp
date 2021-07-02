@@ -20,6 +20,9 @@
 #include <ds3runtime/scripts/imposter_sound_cosmetic.h>
 #include <ds3runtime/scripts/fmod_system_handler.h>
 #include <ds3runtime/scripts/npc_mod_test.h>
+#include <ds3runtime/scripts/player_name_talk.h>
+#include <ds3runtime/scripts/damage_update_test.h>
+#include <ds3runtime/scripts/interrupt_attacks.h>
 
 using namespace ds3runtime;
 
@@ -66,11 +69,13 @@ static bool attach()
     ds3runtime_global->runScript(std::make_shared<KingCrimsonProtections>());
     //ds3runtime_global->runScript(std::make_shared<LatencySimulator>());
     ds3runtime_global->runScript(std::make_shared<FaceDataCapture>());
-    ds3runtime_global->runScript(std::make_shared<ImposterSoundCosmetic>());
+    //ds3runtime_global->runScript(std::make_shared<ImposterSoundCosmetic>());
     ds3runtime_global->runScript(std::make_shared<BonkSoundCosmetic>());
+    //ds3runtime_global->runScript(std::make_shared<InterruptAttacks>());
+    //ds3runtime_global->runScript(std::make_shared<TalkWithPlayerName>());
     //ds3runtime_global->runScript(std::make_shared<DynamicPvpPatch>());
     //ds3runtime_global->setAsyncMode(true);
-    //ds3runtime_global->runScript(std::make_shared<NPCModTest>());
+    ds3runtime_global->runScript(std::make_shared<NPCModTest>());
     ds3runtime_global->attach();
     return true;
 }

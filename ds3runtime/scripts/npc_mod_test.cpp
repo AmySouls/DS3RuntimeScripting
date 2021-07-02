@@ -9,13 +9,8 @@ namespace ds3runtime {
 
 bool NPCModTest::onAttach()
 {
-	std::optional<WorldChrMan> worldChrMan;
-	if (WorldChrMan::hasInstance()) worldChrMan = WorldChrMan::getInstance();
-	else return false;
-	spdlog::info("Reload called.");
-	worldChrMan->reloadCharacterFiles(L"c0000");
 	ParamHandler drakeBloodKnight("npc_mod_test", L"CharaInitParam", 28800);
-	drakeBloodKnight.patch("equip_Wep_Right", 2250005);
+	drakeBloodKnight.patch("equip_Wep_Right", 4070005);
 	drakeBloodKnight.patch("equip_Wep_Left", 21100005);
 	drakeBloodKnight.patch("equip_Helm", 88000000);
 	drakeBloodKnight.patch("equip_Armor", 88001000);
