@@ -31,5 +31,10 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <locale>
 #include <codecvt>
+#include <fstream>
+#include <filesystem>
+#include <fmod.hpp>
+#include <fmod_errors.h>
+#include <cmath>
 
 #endif //PCH_H

@@ -13,12 +13,9 @@ namespace ds3runtime {
 class PlayerBoss : public Boss
 {
 public:
-	PlayerBoss(PlayerIns playerIns);
+	PlayerBoss(std::shared_ptr<PlayerIns> playerIns);
 private:
-	std::array<int32_t, 47> savedEquipment;
-	std::wstring savedName;
 protected:
-	
 };
 
 }

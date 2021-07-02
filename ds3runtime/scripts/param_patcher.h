@@ -38,7 +38,7 @@ public:
 
 	void execute();
 
-	void onAttach();
+	bool onAttach();
 
 	void onDetach();
 
@@ -46,6 +46,8 @@ public:
 	{
 		return "param_patcher";
 	}
+
+	bool doesIdExistInParam(std::wstring param, int32_t id);
 
 	template<class FieldType>
 	FieldType read(std::wstring param, int32_t id, uintptr_t offset)
@@ -99,7 +101,16 @@ public:
 	template<class FieldType>
 	FieldType read(uintptr_t offset)
 	{
-		return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->read(param, id, offset);
+		return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->read<FieldType>(param, id, offset);
+	}
+
+	template<class FieldType>
+	FieldType read(std::string fieldName)
+	{
+		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->getParamLayout(param)) {
+			if (field.fieldName != fieldName) continue;
+			return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->read<FieldType>(param, id, field.bitOffset / 8);
+		}
 	}
 
 	bool readBinary(uintptr_t offset, uint8_t binaryOffset);
@@ -125,12 +136,9 @@ public:
 	template<class FieldType>
 	void patch(std::string fieldName, FieldType value)
 	{
-		spdlog::debug("Huh");
-
 		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->getParamLayout(param)) {
-			spdlog::debug("Field name itr vs looking: {} {}", field.fieldName, fieldName);
 			if (field.fieldName != fieldName) continue;
-			patch(field.bitOffset / 8, value);
+			patch<FieldType>(field.bitOffset / 8, value);
 			break;
 		}
 	}

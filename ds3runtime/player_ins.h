@@ -26,7 +26,8 @@ namespace ds3runtime {
 class PlayerIns : public ChrIns
 {
 public:
-	enum class OffsetNumber {
+	enum class OffsetNumber
+	{
 		MainCharacter = 0,
 		Player1 = 1,
 		Player2 = 2,
@@ -35,60 +36,11 @@ public:
 		Player5 = 5
 	};
 
-	enum class Covenant {
-		None = 0,
-		BladeOfTheDarkmoon = 1,
-		WarriorsOfSunlight = 2,
-		MoundMakers = 3,
-		SpearsOfTheChurch = 4,
-		FingersOfRosaria = 5,
-		WatchdogsOfFarron = 6,
-		AldrichFaithfuls = 7,
-		WayOfBlue = 8,
-		BlueSentinels = 9
-	};
-
-	enum class SummonType {
-		Host = 0,
-		SummonWhite = 1,
-		SummonRed = 2,
-		InvadeRed = 3,
-		SummonPurpleWhite = 4,
-		SpearsOfTheChurch = 6,
-		CovenantBladeOfTheDarkmoon = 7,
-		UnusedGuardianOfRosaria = 8,
-		CovenantWatchdogsOfFarron = 9,
-		CovenantAldrichFaithfuls = 10,
-		UnusedAvatar = 11,
-		ArenaBrawl = 12,
-		UnusedUmbasaWhite = 13,
-		SummonSunlightWhite = 14,
-		SummonSunlightDark = 15,
-		SummonPurpleDark = 16,
-		InvadeSunlightDark = 17,
-		InvadePurpleDark = 18,
-		UnusedForceJoinSession = 19,
-		UnusedRedHunter = 20,
-		BlueSentinels = 21
-	};
-
 	PlayerIns(uintptr_t address);
 
+	uintptr_t getPlayerGameData();
+
 	uintptr_t* getNetworkPointer();
-
-	uint32_t getNumber();
-
-	std::wstring getName();
-
-	void setName(std::wstring name);
-
-	Covenant getCovenant();
-
-	void setCovenant(Covenant covenant);
-
-	SummonType getSummonType();
-
-	void setSummonType(SummonType summonType);
 
 	int32_t getLeftHandWeapon(uint32_t slotNumber);
 
@@ -127,12 +79,20 @@ public:
 
 	void setRing(uint32_t slotNumber, int32_t equipParamAccessoryId);
 
+	bool isNoGoodsConsume();
+
+	void setNoGoodsConsume(bool value);
+
+	uintptr_t getPlayerCtrl();
+
 	/*
 	* Gets a handle to this player's network handle on the game's peer-to-peer network.
 	* 
 	* @return handle to this player's network handle on the game's peer-to-peer network.
 	*/
 	uintptr_t* getNetworkHandle();
+
+	bool isValid();
 
 	/*
 	* Get the base address of PlayerIns by the offset multiplier in memory. 

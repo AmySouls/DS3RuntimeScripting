@@ -24,7 +24,6 @@ uint32_t SessionReceiveHook::onPlayerNetworkSessionReceive(uintptr_t networkSess
 	*(uintptr_t*)&originalFunction = *instance->original;
 	uint32_t receiveLength = originalFunction(networkSession, networkHandle, id, buffer, maxLength);
 	if (receiveLength == 0) return 0;
-	std::lock_guard<std::mutex> lock(instance->mut);
 
 	for (auto filter : instance->packetFilters) {
 		receiveLength = filter.second(networkSession, networkHandle, id, buffer, maxLength, receiveLength);
@@ -36,16 +35,12 @@ uint32_t SessionReceiveHook::onPlayerNetworkSessionReceive(uintptr_t networkSess
 
 void SessionReceiveHook::installPacketFilter(std::string key, SessionReceiveHookPacketFilter function)
 {
-	std::lock_guard<std::mutex> lock(mut);
 	packetFilters[key] = function;
-	cond.notify_one();
 }
 
 void SessionReceiveHook::uninstallPacketFilter(std::string key)
 {
-	std::lock_guard<std::mutex> lock(mut);
 	packetFilters.erase(key);
-	cond.notify_one();
 }
 
 SessionReceiveHook* SessionReceiveHook::instance = nullptr;

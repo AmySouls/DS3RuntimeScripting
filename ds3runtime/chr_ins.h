@@ -30,12 +30,14 @@ class ChrIns
 public:
 	ChrIns(uintptr_t address);
 
-	enum class Handle {
+	enum class Handle
+	{
 		None = 0,
 		MainChr = 0x10068000
 	};
 
-	enum class ChrType {
+	enum class ChrType
+	{
 		HostOfEmbers = 0,
 		WhitePhantom = 1,
 		DarkSpirit = 2,
@@ -48,7 +50,8 @@ public:
 		Arena = 13
 	};
 
-	enum class Team {
+	enum class Team
+	{
 		None = 0,
 		HostOfEmbers = 1,
 		Phantom = 2,
@@ -256,92 +259,42 @@ public:
 	*/
 	void setAngle(float angle);
 
-	/*
-	* Get's the current amount of health points this ChrIns holds
-	* 
-	* This controls several events on the player and other entities, almost universally reaching zero starts a
-	* death sequence. Some at one, or several hundreds above it.
-	* 
-	* @return Current amount of health points this ChrIns holds.
-	*/
-	uint32_t getHealth();
+	uintptr_t getSprjChrDataModule();
+
+	uintptr_t getSprjChrDamageModule();
 
 	/*
-	* Set's the current amount of health points this ChrIns holds. 
-	* 
-	* This controls several events on the player and other entities, almost universally reaching zero starts a 
-	* death sequence. Some at one, or several hundreds above it. 
+	* Get's this ChrIns's death state. 
 	* 
 	* Online limitations: 
 	* { 
 	* Self = RELAY, 
 	* Players = DESYNC, 
-	* NPC = DESYNC SOMETIMES
+	* NPC = UNDEFINED
 	* } 
-	* 
-	* A work around can be achieved with network utilities.
-	* 
-	* @param health Current amount of health points this ChrIns should hold.
 	*/
-	void setHealth(uint32_t health);
+	int32_t isDead();
 
 	/*
-	* Get's the maximum amount of health points this ChrIns can hold.
-	* 
-	* @return Maximum amount of health points this ChrIns can hold.
-	*/
-	uint32_t getMaxHealth();
-
-	/*
-	* Set's the maximum amount of health points this ChrIns can hold.
-	* 
-	* This value is constantly being calculated and written to based on base max health and other 
-	* variables such as effect modifiers. Either use effects, adjust base max health, or use 
-	* patch utilities to adjust this value to what you intend it to be. 
+	* Get's this ChrIns's death state. 
 	* 
 	* Online limitations: 
 	* { 
 	* Self = RELAY, 
 	* Players = DESYNC, 
-	* NPC = DESYNC 
+	* NPC = UNDEFINED
 	* } 
 	* 
-	* A work around can be acheived with effects
-	* 
-	* @param maxHealth Maximum amount of health points this ChrIns should hold.
+	* @param isDead If this value is set to less or equal to 0, this character is dead.
 	*/
-	void setMaxHealth(uint32_t maxHealth);
+	void setIsDead(int32_t isDead);
+
+	bool isNoGravity();
+
+	void setNoGravity(bool value);
 
 	/*
-	* Get's the base maximum amount of health points this ChrIns can hold. 
-	* 
-	* This is the value evaluated from stats or an ChrIns's base health parameters and the value before 
-	* being multiplied by effect modifiers. For your character, It is only evaluated on load or per update 
-	* to stats(Eg. leveling up or equipping or unequipping stat level increasing rings). 
-	* 
-	* @return Base maximum amount of health points this ChrIns can hold.
-	*/
-	uint32_t getBaseMaxHealth();
-
-	/*
-	* Set's the base maximum amount of health points this ChrIns can hold. 
-	* 
-	* Setting this will adjust your max health, but only after taking this value and multiplying it with any and 
-	* all effects that adjust your max health. 
-	* 
-	* Online limitations: 
-	* { 
-	* Self = RELAY, 
-	* Players = DESYNC, 
-	* NPC = DESYNC 
-	* } 
-	* 
-	* @param baseMaxHealth Base maximum amount of health points this ChrIns should hold.
-	*/
-	void setBaseMaxHealth(uint32_t baseMaxHealth);
-
-	/*
-	* Play's an animation on this ChrIns via ingame function 
+	* Play's an animation on this ChrIns via ingame function it's hkbCharacter class.
 	* 
 	* Online limitations: 
 	* { 
@@ -355,7 +308,7 @@ public:
 	void playAnimation(int32_t animationStringId);
 
 	/*
-	* Play's an animation on this ChrIns via ingame function 
+	* Play's an animation on this ChrIns via calling the function for it's AnibndResCap class.
 	* 
 	* Online limitations: 
 	* { 
@@ -371,6 +324,23 @@ public:
 	void playAnimation(std::wstring animationString);
 
 	/*
+	* Executes an attack on this ChrIns from another specified ChrIns via calling the function for it's SprjChrDamageModule
+	* Takes a struct of attack data.
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC SOMETIMES
+	* } 
+	* 
+	* SPECIAL: Relay only if the NPCS's position and actions are currently naturally being set by your own game. 
+	* 
+	* @param animationString The animation string id to play.
+	*/
+	void applyAttack(std::wstring animationString);
+
+	/*
 	* Play's a specified idle animation id via writing to a debug pointer. The game reads this pointer and unless a throw animation is underway, 
 	* it will override the current animation. 
 	* 
@@ -384,6 +354,10 @@ public:
 	* @param animationId The idle animation to play
 	*/
 	void playDebugIdle(int32_t animationId);
+
+	int32_t getWeightIndex();
+
+	void setWeightIndex(int32_t weightIndex);
 
 	/*
 	* Multiplies the animation speed of this ChrIns's animations. 

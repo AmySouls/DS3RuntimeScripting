@@ -18,6 +18,8 @@ public:
 	int32_t getId();
 
 	bool isValid();
+
+	uintptr_t getVtablePtr();
 private:
 	uintptr_t address;
 protected:

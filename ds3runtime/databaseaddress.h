@@ -24,6 +24,7 @@ enum class DataBaseAddress : uintptr_t {
 	SprjSessionManager = 0x144780990,
 	SprjBulletManager = 0x144772D78,
 	SprjGaitem = 0x144775D58,
+	SprjLuaEventConditionItem = 0x144752300,
 };
 
 }

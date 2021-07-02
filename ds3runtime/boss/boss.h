@@ -13,12 +13,14 @@ namespace ds3runtime {
 class Boss : public ScriptModule
 {
 public:
-	Boss(ChrIns chrIns);
+	Boss(std::shared_ptr<ChrIns> chrIns);
 
 	void execute();
 private:
-	ChrIns chr;
+	std::shared_ptr<ChrIns> chr;
 protected:
+	std::shared_ptr<ChrIns> getChr();
+
 	virtual void logic() = 0;
 
 	virtual void checks() = 0;

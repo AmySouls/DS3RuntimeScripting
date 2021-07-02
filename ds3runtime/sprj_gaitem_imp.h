@@ -15,13 +15,7 @@ class SprjGaitemImp
 public:
 	SprjGaitemImp(uintptr_t address);
 
-	std::optional<SprjGaitemIns> getItemByOffsetId(uint32_t id);
-
-	int32_t getOffsetIdByInventoryId(int32_t id);
-
-	std::optional<SprjGaitemIns> getItemByInventoryId(int32_t id);
-
-	std::vector<SprjGaitemIns> getItemList();
+	std::optional<SprjGaitemIns> getItemByUniqueId(uint32_t uniqueId);
 
 	static uintptr_t getInstance();
 

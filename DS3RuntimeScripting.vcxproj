@@ -126,15 +126,15 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include</AdditionalIncludeDirectories>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>C:\dev\vcpkg\installed\x64-windows\debug\lib;C:\Program Files\Lua</AdditionalLibraryDirectories>
-      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);detours.lib;client.lib;;util.lib;base.lib;spdlogd.lib;Lua.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\dev\vcpkg\installed\x64-windows\debug\lib;C:\Program Files\Lua;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);detours.lib;client.lib;;util.lib;base.lib;spdlogd.lib;Lua.lib;fmod_vc.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -162,47 +162,76 @@
     <ClInclude Include="dist\pugiconfig.hpp" />
     <ClInclude Include="dist\pugixml.hpp" />
     <ClInclude Include="ds3runtime\async_module.h" />
+    <ClInclude Include="ds3runtime\boss\ariandar_boss.h" />
     <ClInclude Include="ds3runtime\boss\boss.h" />
     <ClInclude Include="ds3runtime\boss\player_boss.h" />
+    <ClInclude Include="ds3runtime\boss\standard_player_boss.h" />
     <ClInclude Include="ds3runtime\bullet_spawn.h" />
     <ClInclude Include="ds3runtime\databaseaddress.h" />
     <ClInclude Include="ds3runtime\ds3runtime.h" />
     <ClInclude Include="ds3runtime\chr_ins.h" />
+    <ClInclude Include="ds3runtime\equip_game_data.h" />
+    <ClInclude Include="ds3runtime\equip_inventory_data.h" />
+    <ClInclude Include="ds3runtime\game_data_man.h" />
     <ClInclude Include="ds3runtime\hook.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
     <ClInclude Include="ds3runtime\hooks\play_animation_hook.h" />
     <ClInclude Include="ds3runtime\hooks\session_send_hook.h" />
     <ClInclude Include="ds3runtime\hooks\session_receive_hook.h" />
+    <ClInclude Include="ds3runtime\hooks\sprj_chr_damage_module_hook.h" />
     <ClInclude Include="ds3runtime\hooks\throw_hook.h" />
     <ClInclude Include="ds3runtime\memory_util.h" />
     <ClInclude Include="ds3runtime\game_packet.h" />
     <ClInclude Include="ds3runtime\misc_functions.h" />
+    <ClInclude Include="ds3runtime\player_game_data.h" />
     <ClInclude Include="ds3runtime\player_network_session.h" />
     <ClInclude Include="ds3runtime\player_ins.h" />
     <ClInclude Include="ds3runtime\scripts\animation_id_handler.h" />
+    <ClInclude Include="ds3runtime\scripts\bonk_sound_cosmetic.h" />
+    <ClInclude Include="ds3runtime\scripts\damage_update_test.h" />
+    <ClInclude Include="ds3runtime\scripts\dynamic_pvp_patch.h" />
+    <ClInclude Include="ds3runtime\scripts\face_data_capture.h" />
+    <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h" />
     <ClInclude Include="ds3runtime\scripts\hotkey_manager.h" />
+    <ClInclude Include="ds3runtime\scripts\imposter_sound_cosmetic.h" />
+    <ClInclude Include="ds3runtime\scripts\interrupt_attacks.h" />
     <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h" />
     <ClInclude Include="ds3runtime\scripts\latency_simulator.h" />
+    <ClInclude Include="ds3runtime\scripts\npc_mod_test.h" />
     <ClInclude Include="ds3runtime\scripts\param_patcher.h" />
+    <ClInclude Include="ds3runtime\scripts\player_name_talk.h" />
+    <ClInclude Include="ds3runtime\scripts\position_hide.h" />
+    <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h" />
+    <ClInclude Include="ds3runtime\scripts\reversal_ring_test.h" />
+    <ClInclude Include="ds3runtime\scripts\reversal_ring_test_send.h" />
     <ClInclude Include="ds3runtime\scripts\sync_call_script.h" />
     <ClInclude Include="ds3runtime\script_module.h" />
     <ClInclude Include="ds3runtime\sprj_bullet_state.h" />
+    <ClInclude Include="ds3runtime\sprj_chr_damage_module.h" />
+    <ClInclude Include="ds3runtime\sprj_chr_data_module.h" />
     <ClInclude Include="ds3runtime\sprj_gaitem_imp.h" />
     <ClInclude Include="ds3runtime\sprj_gaitem_ins.h" />
+    <ClInclude Include="ds3runtime\sprj_lua_event_condition_item.h" />
     <ClInclude Include="ds3runtime\sprj_session_manager.h" />
     <ClInclude Include="ds3runtime\sprj_wep_gaitem_ins.h" />
+    <ClInclude Include="ds3runtime\world_chr_man.h" />
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dist\pugixml.cpp" />
     <ClCompile Include="ds3runtime\async_module.cpp" />
+    <ClCompile Include="ds3runtime\boss\ariandar_boss.cpp" />
     <ClCompile Include="ds3runtime\boss\boss.cpp" />
     <ClCompile Include="ds3runtime\boss\player_boss.cpp" />
+    <ClCompile Include="ds3runtime\boss\standard_player_boss.cpp" />
     <ClCompile Include="ds3runtime\bullet_spawn.cpp" />
     <ClCompile Include="ds3runtime\databaseaddress.cpp" />
     <ClCompile Include="ds3runtime\ds3runtime.cpp" />
     <ClCompile Include="ds3runtime\chr_ins.cpp" />
+    <ClCompile Include="ds3runtime\equip_game_data.cpp" />
+    <ClCompile Include="ds3runtime\equip_inventory_data.cpp" />
+    <ClCompile Include="ds3runtime\game_data_man.cpp" />
     <ClCompile Include="ds3runtime\hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
@@ -212,22 +241,41 @@
     <ClCompile Include="ds3runtime\hooks\session_send_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\session_receive_hook.cpp" />
     <ClCompile Include="ds3runtime\game_packet.cpp" />
+    <ClCompile Include="ds3runtime\hooks\sprj_chr_damage_module_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\throw_hook.cpp" />
     <ClCompile Include="ds3runtime\misc_functions.cpp" />
+    <ClCompile Include="ds3runtime\player_game_data.cpp" />
     <ClCompile Include="ds3runtime\player_ins.cpp" />
     <ClCompile Include="ds3runtime\player_network_session.cpp" />
     <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp" />
+    <ClCompile Include="ds3runtime\scripts\bonk_sound_cosmetic.cpp" />
+    <ClCompile Include="ds3runtime\scripts\damage_update_test.cpp" />
+    <ClCompile Include="ds3runtime\scripts\dynamic_pvp_patch.cpp" />
+    <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp" />
+    <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp" />
     <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp" />
+    <ClCompile Include="ds3runtime\scripts\imposter_sound_cosmetic.cpp" />
+    <ClCompile Include="ds3runtime\scripts\interrupt_attacks.cpp" />
     <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp" />
     <ClCompile Include="ds3runtime\scripts\latency_simulator.cpp" />
+    <ClCompile Include="ds3runtime\scripts\npc_mod_test.cpp" />
     <ClCompile Include="ds3runtime\scripts\param_patcher.cpp" />
+    <ClCompile Include="ds3runtime\scripts\player_name_talk.cpp" />
+    <ClCompile Include="ds3runtime\scripts\position_hide.cpp" />
+    <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp" />
+    <ClCompile Include="ds3runtime\scripts\reversal_ring_test.cpp" />
+    <ClCompile Include="ds3runtime\scripts\reversal_ring_test_send.cpp" />
     <ClCompile Include="ds3runtime\scripts\sync_call_script.cpp" />
     <ClCompile Include="ds3runtime\script_module.cpp" />
     <ClCompile Include="ds3runtime\sprj_bullet_state.cpp" />
+    <ClCompile Include="ds3runtime\sprj_chr_damage_module.cpp" />
+    <ClCompile Include="ds3runtime\sprj_chr_data_module.cpp" />
     <ClCompile Include="ds3runtime\sprj_gaitem_imp.cpp" />
     <ClCompile Include="ds3runtime\sprj_gaitem_ins.cpp" />
+    <ClCompile Include="ds3runtime\sprj_lua_event_condition_item.cpp" />
     <ClCompile Include="ds3runtime\sprj_session_manager.cpp" />
     <ClCompile Include="ds3runtime\sprj_wep_gaitem_ins.cpp" />
+    <ClCompile Include="ds3runtime\world_chr_man.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

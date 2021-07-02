@@ -98,6 +98,19 @@ void SprjSessionManager::leaveSession()
 	
 }
 
+SprjSessionManager::NetworkState SprjSessionManager::getState()
+{
+	return (SprjSessionManager::NetworkState)*accessMultilevelPointer<uint8_t>(address + 0x16C);
+}
+
+uintptr_t SprjSessionManager::getPlayerGameDataByNetworkHandle(uintptr_t* networkHandle)
+{
+	
+	uintptr_t(*FunctionCall)(uintptr_t* networkHandle);
+	*(uintptr_t*)&FunctionCall = 0x1405951f0;
+	return FunctionCall(networkHandle);
+}
+
 uintptr_t SprjSessionManager::getInstance()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::SprjSessionManager);

@@ -11,6 +11,15 @@
 
 namespace ds3runtime {
 
+struct LatencyAttributes {
+	uint64_t flatOutLatency;
+	uint64_t flatInLatency;
+	uint64_t jitterOut;
+	uint64_t jitterIn;
+	float dropRateOut;
+	float dropRateIn;
+};
+
 struct DelayedPacket {
 	uint64_t timeToSend;
 	uintptr_t* networkHandle;
@@ -20,7 +29,9 @@ struct DelayedPacket {
 class LatencySimulator : public ScriptModule
 {
 public:
-	void onAttach();
+	LatencySimulator(LatencyAttributes latencyAttributes);
+
+	bool onAttach();
 
 	void onDetach();
 
@@ -32,7 +43,7 @@ public:
 	}
 private:
 	std::vector<DelayedPacket> delayedPackets;
-	const uint64_t millisToDelay = 500;
+	LatencyAttributes latencyAttributes;
 };
 
 }

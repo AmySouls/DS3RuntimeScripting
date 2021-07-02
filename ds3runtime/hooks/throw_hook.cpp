@@ -16,7 +16,7 @@ ThrowHook::ThrowHook()
 	instance = this;
 }
 
-void ThrowHook::onThrow(void* throwAreaParam, uintptr_t throwerChr, uintptr_t victimChr, int32_t id, int8_t param5, int8_t param6)
+void ThrowHook::onThrow(uintptr_t throwAreaParam, uintptr_t throwerChr, uintptr_t victimChr, int32_t id, int8_t param5, int8_t param6)
 {
 	int32_t filteredId = id;
 

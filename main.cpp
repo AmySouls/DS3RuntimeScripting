@@ -13,10 +13,20 @@
 #include <ds3runtime/hooks/throw_hook.h>
 #include <ds3runtime/scripts/hotkey_manager.h>
 #include <ds3runtime/scripts/param_patcher.h>
+#include <ds3runtime/scripts/dynamic_pvp_patch.h>
+#include <ds3runtime/scripts/face_data_capture.h>
+#include <ds3runtime/scripts/bonk_sound_cosmetic.h>
+#include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
+#include <ds3runtime/scripts/imposter_sound_cosmetic.h>
+#include <ds3runtime/scripts/fmod_system_handler.h>
+#include <ds3runtime/scripts/npc_mod_test.h>
+#include <ds3runtime/scripts/player_name_talk.h>
+#include <ds3runtime/scripts/damage_update_test.h>
+#include <ds3runtime/scripts/interrupt_attacks.h>
 
 using namespace ds3runtime;
 
-std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;
+std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;;
 
 static std::shared_ptr<spdlog::logger> createLogger()
 {
@@ -51,11 +61,21 @@ static bool attach()
     ds3runtime_global->addHook(std::make_shared<SessionSendHook>());
     ds3runtime_global->addHook(std::make_shared<PlayAnimationHook>());
     ds3runtime_global->addHook(std::make_shared<ThrowHook>());
+    ds3runtime_global->addHook(std::make_shared<SprjChrDamageModuleHook>());
+    ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
+    ds3runtime_global->runScript((std::make_shared<FMODSystemHandler>()));
     ds3runtime_global->runScript(std::make_shared<AnimationIdHandler>());
     ds3runtime_global->runScript(std::make_shared<SyncCallScript>());
     ds3runtime_global->runScript(std::make_shared<KingCrimsonProtections>());
-    ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
     //ds3runtime_global->runScript(std::make_shared<LatencySimulator>());
+    ds3runtime_global->runScript(std::make_shared<FaceDataCapture>());
+    //ds3runtime_global->runScript(std::make_shared<ImposterSoundCosmetic>());
+    ds3runtime_global->runScript(std::make_shared<BonkSoundCosmetic>());
+    //ds3runtime_global->runScript(std::make_shared<InterruptAttacks>());
+    //ds3runtime_global->runScript(std::make_shared<TalkWithPlayerName>());
+    //ds3runtime_global->runScript(std::make_shared<DynamicPvpPatch>());
+    //ds3runtime_global->setAsyncMode(true);
+    ds3runtime_global->runScript(std::make_shared<NPCModTest>());
     ds3runtime_global->attach();
     return true;
 }

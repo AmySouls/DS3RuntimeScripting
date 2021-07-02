@@ -86,40 +86,42 @@ void ChrIns::setAngle(float angle)
 	*accessMultilevelPointer<float>(address + 0x18, 0x28, 0x74) = angle;
 }
 
-uint32_t ChrIns::getHealth()
+uintptr_t ChrIns::getSprjChrDataModule()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xD8);
+	return *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x18);
 }
 
-void ChrIns::setHealth(uint32_t health)
+uintptr_t ChrIns::getSprjChrDamageModule()
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xD8) = health;
+	return *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x98);
 }
 
-uint32_t ChrIns::getMaxHealth()
+int32_t ChrIns::isDead()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xDC);
+	return *accessMultilevelPointer<int32_t>(address + 0x50, 0x48, 0x11C);
 }
 
-void ChrIns::setMaxHealth(uint32_t maxHealth)
+void ChrIns::setIsDead(int32_t isDead)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xD8) = maxHealth;
+	*accessMultilevelPointer<int32_t>(address + 0x50, 0x48, 0x11C) = isDead;
 }
 
-uint32_t ChrIns::getBaseMaxHealth()
+bool ChrIns::isNoGravity()
 {
-	return *accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xE0);
+	return (*accessMultilevelPointer<uint8_t>(address + 0x1A08) & (uint8_t)pow(2, 6)) == pow(2, 6);
 }
 
-void ChrIns::setBaseMaxHealth(uint32_t baseMaxHealth)
+void ChrIns::setNoGravity(bool value)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xE0) = baseMaxHealth;
+	uint8_t* newByte = accessMultilevelPointer<uint8_t>(address + 0x1A08);
+	if (value) *newByte = *newByte | (uint8_t)pow(2, 6);
+	else *newByte = (*newByte & ~(uint8_t)pow(2, 6));
 }
 
 void ChrIns::playAnimation(int32_t animationStringId)
 {
 	int32_t input[3] = { animationStringId, 0, 0 };
-	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8);
+	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8); //hkbCharacter
 	void(*playAnimationInternal)(...);
 	*(uintptr_t*)&playAnimationInternal = 0x140d84870;
 	playAnimationInternal(animationHandle, input);
@@ -127,15 +129,20 @@ void ChrIns::playAnimation(int32_t animationStringId)
 
 void ChrIns::playAnimation(std::wstring animationString)
 {
-	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28);
+	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28); //AnibndResCap
 	void(*playAnimationStringInternal)(...);
 	*(uintptr_t*)&playAnimationStringInternal = 0x140D84450;
 	playAnimationStringInternal(animationHandle, animationString.c_str());
 }
 
-void ChrIns::playDebugIdle(int32_t animationId)
+int32_t ChrIns::getWeightIndex()
 {
-	*accessMultilevelPointer<int32_t>(address + 0x1F90, 0x58, 0x20) = animationId;
+	return *accessMultilevelPointer<int32_t>(address + 0x50, 0x2B4);
+}
+
+void ChrIns::setWeightIndex(int32_t weightIndex)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x50, 0x2B4) = weightIndex;
 }
 
 void ChrIns::setDebugAnimSpeed(float speedModifier)

@@ -5,8 +5,9 @@
 
 namespace ds3runtime {
 
-void HotkeyManager::onAttach()
+bool HotkeyManager::onAttach()
 {
+	return true;
 }
 
 void HotkeyManager::onDetach()

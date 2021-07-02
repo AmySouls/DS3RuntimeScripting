@@ -2,6 +2,11 @@
 #include "pch.h"
 #include "param_patcher.h"
 #include "dist/pugixml.hpp"
+#include <ds3runtime/world_chr_man.h>
+extern "C" { 
+#include <lua.h> 
+}
+#include "ds3runtime/databaseaddress.h"
 
 namespace ds3runtime {
 
@@ -44,8 +49,12 @@ void ParamPatcher::execute()
 {
 }
 
-void ParamPatcher::onAttach()
+bool ParamPatcher::onAttach()
 {
+    if (!accessMultilevelPointer<uintptr_t>(DataBaseAddress::SoloParamRepository, 0x10C0, 0x68, 0x68)) {
+        return false;
+    }
+
     const uintptr_t paramStart = *accessMultilevelPointer<uintptr_t>(0x144785FE0, 0x10);
     const uintptr_t paramEnd = *accessMultilevelPointer<uintptr_t>(0x144785FE0, 0x10 + 8);
     const uintptr_t paramCount = (paramEnd - paramStart) / 8;
@@ -81,7 +90,6 @@ void ParamPatcher::onAttach()
                 paramField.fieldName = entry.child("name").text().as_string();
                 paramField.fieldType = entry.child("type").text().as_string();
                 paramField.bitOffset = bitOffset;
-                if (paramEntry.first == L"EquipParamWeapon") spdlog::debug("Here! D: BitOff {} Name {} Type {}", bitOffset, paramField.fieldName, paramField.fieldType);
                 pugi::xml_text defaultValue = entry.child("type").text();
                 bool invalidType = false;
                
@@ -146,11 +154,18 @@ void ParamPatcher::onAttach()
             }
         }
     }
+
+    return true;
 }
 
 void ParamPatcher::onDetach()
 {
     this->restore("test");
+}
+
+bool ParamPatcher::doesIdExistInParam(std::wstring param, int32_t id)
+{
+    return paramIdTables[param].find(id) != paramIdTables[param].end();
 }
 
 bool ParamPatcher::readBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset)

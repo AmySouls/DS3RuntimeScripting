@@ -8,17 +8,36 @@ DS3RuntimeScripting::DS3RuntimeScripting()
 {
 }
 
+void DS3RuntimeScripting::setAsyncMode(bool async)
+{
+	this->async = async;
+}
+
 void DS3RuntimeScripting::attach()
 {
-	for (auto& hook : hooks) {
-		hook->install();
+	attached = true;
+
+	if (!async) {
+		for (auto& hook : hooks) {
+			hook->install();
+		}
+	}
+	else {
+		asyncModeThreadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)asyncModeThreadProc, NULL, 0, NULL);
 	}
 }
 
 void DS3RuntimeScripting::detach()
 {
-	for (auto& hook : hooks) {
-		hook->uninstall();
+	attached = false;
+
+	if (!async) {
+		for (auto& hook : hooks) {
+			hook->uninstall();
+		}
+	}
+	else {
+		asyncModeThreadHandle = NULL;
 	}
 
 	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script){
@@ -35,7 +54,6 @@ void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook)
 
 void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script)
 {
-	script->onAttach();
 	scripts.push_back(script);
 	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script);
 }
@@ -49,6 +67,15 @@ void DS3RuntimeScripting::removeScript(uint64_t uniqueId)
 	}
 }
 
+void DS3RuntimeScripting::removeScript(std::string name)
+{
+	for (int i = 0; i < scripts.size(); i++) if (name == scripts[i]->getName()) {
+		scripts[i]->onDetach();
+		scripts[i]->remove();
+		break;
+	}
+}
+
 void DS3RuntimeScripting::executeScripts()
 {
 	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {
@@ -56,7 +83,8 @@ void DS3RuntimeScripting::executeScripts()
 	}), scripts.end());
 
 	for (auto script : scripts) if (!script->isAsync()) {
-		script->execute();
+		if (!script->isAttached()) script->tryAttach(script->onAttach());
+		else script->execute();
 	}
 }
 
@@ -125,6 +153,13 @@ std::wstring DS3RuntimeScripting::utf8_decode(const std::string &str)
 	std::wstring wstrTo(size_needed, 0);
 	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
 	return wstrTo;
+}
+
+void DS3RuntimeScripting::asyncModeThreadProc()
+{
+	while (ds3runtime_global->asyncModeThreadHandle != NULL) {
+		ds3runtime_global->executeScripts();
+	}
 }
 
 }
