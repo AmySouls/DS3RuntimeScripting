@@ -293,6 +293,8 @@ public:
 
 	void setNoGravity(bool value);
 
+	uintptr_t getHkbCharacter();
+
 	/*
 	* Play's an animation on this ChrIns via ingame function it's hkbCharacter class.
 	* 
@@ -374,6 +376,8 @@ public:
 	void setDebugAnimSpeed(float speedModifier);
 
 	std::vector<std::vector<float>> getDummyPolyPositions(int32_t dummyPolyId, uint32_t polyCount);
+
+	uintptr_t getAddress();
 
 	/*
 	* Check if an address is the base address of an ChrIns.

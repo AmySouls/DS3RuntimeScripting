@@ -16,11 +16,11 @@ public:
 	Boss(std::shared_ptr<ChrIns> chrIns);
 
 	void execute();
+
+	std::shared_ptr<ChrIns> getChr();
 private:
 	std::shared_ptr<ChrIns> chr;
 protected:
-	std::shared_ptr<ChrIns> getChr();
-
 	virtual void logic() = 0;
 
 	virtual void checks() = 0;

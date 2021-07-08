@@ -20,10 +20,12 @@ public:
 		return "animation_id_handler";
 	}
 
-	uint32_t getAnimationId(ChrIns chr);
+	std::optional<int32_t> getAnimationId(ChrIns chr);
+
+	std::optional<std::unordered_map<int32_t, int32_t>> getAnimationIdBuffer(ChrIns chr);
 private:
-	std::unordered_map<std::wstring, std::unordered_map<uint32_t, uint32_t>> animationIdMap;
-	std::unordered_map<std::wstring, uint32_t> latestAnimationIdMap;
+	std::unordered_map<std::wstring, std::unordered_map<int32_t, int32_t>> animationIdMap;
+	std::unordered_map<std::wstring, int32_t> latestAnimationIdMap;
 };
 
 }

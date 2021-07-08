@@ -24,9 +24,16 @@ void AnimationIdHandler::execute()
 	}	
 }
 
-uint32_t AnimationIdHandler::getAnimationId(ChrIns chr)
+std::optional<int32_t> AnimationIdHandler::getAnimationId(ChrIns chr)
 {
+	if (!latestAnimationIdMap.contains(chr.getCharacterString())) return {};
 	return latestAnimationIdMap[chr.getCharacterString()];
+}
+
+std::optional<std::unordered_map<int32_t, int32_t>> AnimationIdHandler::getAnimationIdBuffer(ChrIns chr)
+{
+	if (!animationIdMap.contains(chr.getCharacterString())) return {};
+	return animationIdMap[chr.getCharacterString()];
 }
 
 }

@@ -118,10 +118,15 @@ void ChrIns::setNoGravity(bool value)
 	else *newByte = (*newByte & ~(uint8_t)pow(2, 6));
 }
 
+uintptr_t ChrIns::getHkbCharacter()
+{
+	return *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8);
+}
+
 void ChrIns::playAnimation(int32_t animationStringId)
 {
 	int32_t input[3] = { animationStringId, 0, 0 };
-	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8); //hkbCharacter
+	uintptr_t animationHandle = this->getHkbCharacter();
 	void(*playAnimationInternal)(...);
 	*(uintptr_t*)&playAnimationInternal = 0x140d84870;
 	playAnimationInternal(animationHandle, input);
@@ -129,7 +134,7 @@ void ChrIns::playAnimation(int32_t animationStringId)
 
 void ChrIns::playAnimation(std::wstring animationString)
 {
-	uintptr_t animationHandle = *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28); //AnibndResCap
+	uintptr_t* animationHandle = accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28); //AnibndResCap
 	void(*playAnimationStringInternal)(...);
 	*(uintptr_t*)&playAnimationStringInternal = 0x140D84450;
 	playAnimationStringInternal(animationHandle, animationString.c_str());
@@ -168,6 +173,11 @@ std::vector<std::vector<float>> ChrIns::getDummyPolyPositions(int32_t dummyPolyI
 	}
 
 	return returnVector;
+}
+
+uintptr_t ChrIns::getAddress()
+{
+	return address;
 }
 
 bool ChrIns::isChrIns(uintptr_t address)

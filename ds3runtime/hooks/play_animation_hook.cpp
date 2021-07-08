@@ -35,7 +35,7 @@ void PlayAnimationHook::onPlayAnimation(uintptr_t hkbCharacter, int32_t* animati
 
 void PlayAnimationHook::installFilter(std::string key, AnimationFilter function)
 {
-	filters[key] = function;;
+	filters[key] = function;
 }
 
 void PlayAnimationHook::uninstallFilter(std::string key)

@@ -59,9 +59,9 @@ static bool attach()
     ds3runtime_global->runScript(std::make_shared<HotkeyManager>());
     ds3runtime_global->addHook(std::make_shared<SessionReceiveHook>());
     ds3runtime_global->addHook(std::make_shared<SessionSendHook>());
-    ds3runtime_global->addHook(std::make_shared<PlayAnimationHook>());
     ds3runtime_global->addHook(std::make_shared<ThrowHook>());
     ds3runtime_global->addHook(std::make_shared<SprjChrDamageModuleHook>());
+    ds3runtime_global->addHook(std::make_shared<PlayAnimationHook>());
     ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
     ds3runtime_global->runScript((std::make_shared<FMODSystemHandler>()));
     ds3runtime_global->runScript(std::make_shared<AnimationIdHandler>());
@@ -75,7 +75,7 @@ static bool attach()
     //ds3runtime_global->runScript(std::make_shared<TalkWithPlayerName>());
     //ds3runtime_global->runScript(std::make_shared<DynamicPvpPatch>());
     //ds3runtime_global->setAsyncMode(true);
-    ds3runtime_global->runScript(std::make_shared<NPCModTest>());
+    //ds3runtime_global->runScript(std::make_shared<NPCModTest>());
     ds3runtime_global->attach();
     return true;
 }

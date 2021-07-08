@@ -23,7 +23,7 @@ public:
 
 	std::string getName()
 	{
-		return "play_animation_hook";
+		return "play_anim_hook";
 	}
 
 	static void onPlayAnimation(uintptr_t hkbCharacter, int32_t* animationId);

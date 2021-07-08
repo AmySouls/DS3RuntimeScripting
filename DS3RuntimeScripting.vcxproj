@@ -122,12 +122,13 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;DS3RUNTIMESCRIPTING_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);SPDLOG_WCHAR_TO_UTF8_SUPPORT;</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;DS3RUNTIMESCRIPTING_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);SPDLOG_WCHAR_TO_UTF8_SUPPORT;_USE_MATH_DEFINES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalOptions>/D_USE_MATH_DEFINES %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -173,6 +174,7 @@
     <ClInclude Include="ds3runtime\equip_game_data.h" />
     <ClInclude Include="ds3runtime\equip_inventory_data.h" />
     <ClInclude Include="ds3runtime\game_data_man.h" />
+    <ClInclude Include="ds3runtime\game_option_man.h" />
     <ClInclude Include="ds3runtime\hook.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
@@ -232,6 +234,7 @@
     <ClCompile Include="ds3runtime\equip_game_data.cpp" />
     <ClCompile Include="ds3runtime\equip_inventory_data.cpp" />
     <ClCompile Include="ds3runtime\game_data_man.cpp" />
+    <ClCompile Include="ds3runtime\game_option_man.cpp" />
     <ClCompile Include="ds3runtime\hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">

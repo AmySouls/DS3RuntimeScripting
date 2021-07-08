@@ -32,7 +32,7 @@ void ThrowHook::onThrow(uintptr_t throwAreaParam, uintptr_t throwerChr, uintptr_
 
 void ThrowHook::installFilter(std::string key, ThrowNodeFilter function)
 {
-	filters[key] = function;;
+	filters[key] = function;
 }
 
 void ThrowHook::uninstallFilter(std::string key)

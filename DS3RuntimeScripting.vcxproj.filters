@@ -195,6 +195,9 @@
     <ClInclude Include="ds3runtime\scripts\interrupt_attacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ds3runtime\game_option_man.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -366,6 +369,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\scripts\interrupt_attacks.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\game_option_man.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
