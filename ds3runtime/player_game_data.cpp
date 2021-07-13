@@ -103,4 +103,41 @@ uintptr_t PlayerGameData::getEquipGameData()
 	return address + 0x228;
 }
 
+uint16_t PlayerGameData::getWeaponSheathData()
+{
+	uint16_t(*function)(uintptr_t);
+	*(uintptr_t*)&function = 0x1409EBA70;
+	return function(address + 0x2B8);
+}
+
+int32_t PlayerGameData::getRightHandSlot()
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x2BC);
+}
+
+void PlayerGameData::setRightHandSlot(int32_t slot)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x2BC) = slot;
+}
+
+int32_t PlayerGameData::getLeftHandSlot()
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x2C0);
+}
+
+void PlayerGameData::setLeftHandSlot(int32_t slot)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x2C0) = slot;
+}
+
+int32_t PlayerGameData::getWeaponSheathState()
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x2B8);
+}
+
+void PlayerGameData::setWeaponSheathState(int32_t slot)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x2B8) = slot;
+}
+
 }

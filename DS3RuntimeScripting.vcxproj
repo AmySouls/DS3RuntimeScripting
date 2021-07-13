@@ -171,6 +171,7 @@
     <ClInclude Include="ds3runtime\databaseaddress.h" />
     <ClInclude Include="ds3runtime\ds3runtime.h" />
     <ClInclude Include="ds3runtime\chr_ins.h" />
+    <ClInclude Include="ds3runtime\ds3_debug_variables.h" />
     <ClInclude Include="ds3runtime\equip_game_data.h" />
     <ClInclude Include="ds3runtime\equip_inventory_data.h" />
     <ClInclude Include="ds3runtime\game_data_man.h" />
@@ -231,6 +232,7 @@
     <ClCompile Include="ds3runtime\databaseaddress.cpp" />
     <ClCompile Include="ds3runtime\ds3runtime.cpp" />
     <ClCompile Include="ds3runtime\chr_ins.cpp" />
+    <ClCompile Include="ds3runtime\ds3_debug_variables.cpp" />
     <ClCompile Include="ds3runtime\equip_game_data.cpp" />
     <ClCompile Include="ds3runtime\equip_inventory_data.cpp" />
     <ClCompile Include="ds3runtime\game_data_man.cpp" />

@@ -18,7 +18,7 @@ void DS3RuntimeScripting::attach()
 	attached = true;
 
 	if (!async) {
-		for (auto& hook : hooks) {
+		for (auto&& hook : hooks) {
 			hook->install();
 		}
 	}
@@ -27,12 +27,12 @@ void DS3RuntimeScripting::attach()
 	}
 }
 
-void DS3RuntimeScripting::detach()
+bool DS3RuntimeScripting::detach()
 {
 	attached = false;
 
 	if (!async) {
-		for (auto& hook : hooks) {
+		for (auto&& hook : hooks) {
 			hook->uninstall();
 		}
 	}
@@ -40,87 +40,116 @@ void DS3RuntimeScripting::detach()
 		asyncModeThreadHandle = NULL;
 	}
 
-	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script){
-		script->onDetach();
-		script->remove();
-		return true;
-	}), scripts.end());
+	while (true) {
+		auto itr = std::find_if(scripts.begin(), scripts.end(), [](auto&& script) {
+			bool detachResult = true;
+			if (script->isAttached()) detachResult = script->onDetach();
+			if (detachResult) script->remove();
+			else {
+				spdlog::warn("Script {} was unable to detach...", script->getName());
+				script->setDetaching(true);
+			}
+
+			return detachResult;
+			});
+		
+		if (itr == scripts.end()) break;
+		auto moveDestroy = std::move(*itr);
+		scripts.erase(itr);
+	}
+
+	return true;
 }
 
-void DS3RuntimeScripting::addHook(std::shared_ptr<Hook> hook)
+void DS3RuntimeScripting::addHook(std::unique_ptr<Hook> hook)
 {
-	hooks.push_back(hook);
+	hooks.push_back(std::move(hook));
 }
 
-void DS3RuntimeScripting::runScript(std::shared_ptr<ScriptModule> script)
+void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule> script)
 {
-	scripts.push_back(script);
-	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script);
+	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script.get());
+	scripts.insert(scripts.begin(), std::move(script));
 }
 
-void DS3RuntimeScripting::removeScript(uint64_t uniqueId)
+bool DS3RuntimeScripting::removeScript(uint64_t uniqueId)
 {
 	for (int i = 0; i < scripts.size(); i++) if (uniqueId == scripts[i]->getUniqueId()) {
-		scripts[i]->onDetach();
-		scripts[i]->remove();
-		break;
+		bool detachResult = true;
+		if (scripts[i]->isAttached()) detachResult = scripts[i]->onDetach();
+		if (detachResult) scripts[i]->remove();
+		else scripts[i]->setDetaching(true);
+		return detachResult;
 	}
+
+	return true;
 }
 
-void DS3RuntimeScripting::removeScript(std::string name)
+bool DS3RuntimeScripting::removeScript(std::string name)
 {
 	for (int i = 0; i < scripts.size(); i++) if (name == scripts[i]->getName()) {
-		scripts[i]->onDetach();
-		scripts[i]->remove();
-		break;
+		bool detachResult = true;
+		if (scripts[i]->isAttached()) detachResult = scripts[i]->onDetach();
+		if (detachResult) scripts[i]->remove();
+		else scripts[i]->setDetaching(true);
+		return detachResult;
 	}
+
+	return true;
 }
 
 void DS3RuntimeScripting::executeScripts()
 {
-	scripts.erase(std::remove_if(scripts.begin(), scripts.end(), [](auto script) {
-		return script->isRemoved();
-	}), scripts.end());
+	while (true) {
+		auto itr = std::find_if(scripts.begin(), scripts.end(), [](auto&& script) {
+			return script->isRemoved();
+			});
 
-	for (auto script : scripts) if (!script->isAsync()) {
+		if (itr == scripts.end()) break;
+		auto moveDestroy = std::move(*itr);
+		scripts.erase(itr);
+	}
+
+	for (auto&& script : scripts) if (!script->isAsync()) {
 		if (!script->isAttached()) script->tryAttach(script->onAttach());
+		else if (script->isDetaching() && script->onDetach()) script->remove();
 		else script->execute();
 	}
 }
 
-std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
+ScriptModule* DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
 {
-	std::shared_ptr<ScriptModule> matchingScript;
+	ScriptModule* matchingScript = nullptr;
 
-	for (auto script : scripts) if (script->getUniqueId() == scriptUniqueId)
+	for (auto&& script : scripts) if (script->getUniqueId() == scriptUniqueId)
 	{
-		matchingScript = script;
+		matchingScript = script.get();
 		break;
 	}
 
 	return matchingScript;
 }
 
-std::shared_ptr<ScriptModule> DS3RuntimeScripting::accessScript(std::string name)
+ScriptModule* DS3RuntimeScripting::accessScript(std::string name)
 {
-	std::shared_ptr<ScriptModule> matchingScript;
+	ScriptModule* matchingScript = nullptr;
 
-	for (auto script : scripts) if (script->getName().compare(name) == 0)
+	for (auto&& script : scripts) if (script->getName().compare(name) == 0)
 	{
-		matchingScript = script;
+		matchingScript = script.get();
 		break;
 	}
 
 	return matchingScript;
 }
 
-std::shared_ptr<Hook> DS3RuntimeScripting::accessHook(std::string name)
+Hook* DS3RuntimeScripting::accessHook(std::string name)
 {
-	std::shared_ptr<Hook> matchingHook;
+	Hook* matchingHook = nullptr;
 
-	for (auto hook : hooks) if (hook->getName().compare(name) == 0)
+	for (auto&& hook : hooks) if (hook->getName().compare(name) == 0)
 	{
-		matchingHook = hook;
+		matchingHook = hook.get();
 		break;
 	}
 

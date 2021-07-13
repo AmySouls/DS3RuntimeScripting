@@ -32,10 +32,11 @@ bool FMODSystemHandler::onAttach()
 	return true;
 }
 
-void FMODSystemHandler::onDetach()
+bool FMODSystemHandler::onDetach()
 {
-	if (!fmodSystem) return;
+	if (!fmodSystem) return true;
 	fmodSystem->release();
+	return true;
 }
 
 void FMODSystemHandler::execute()

@@ -19,12 +19,14 @@ ParamHandler::ParamHandler(std::string patchId, std::wstring param, int32_t id)
 
 bool ParamHandler::readBinary(uintptr_t offset, uint8_t binaryOffset)
 {
-    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->readBinary(param, id, offset, binaryOffset);
+    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+        ->readBinary(param, id, offset, binaryOffset);
 }
 
 bool ParamHandler::readBinaryOriginal(uintptr_t offset, uint8_t binaryOffset)
 {
-    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->readBinaryOriginal(param, id, offset, binaryOffset);
+    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+        ->readBinaryOriginal(param, id, offset, binaryOffset);
 }
 
 void ParamHandler::patchBinary(uintptr_t offset, int8_t binaryOffset, bool value)
@@ -33,12 +35,14 @@ void ParamHandler::patchBinary(uintptr_t offset, int8_t binaryOffset, bool value
     patch.patchId = patchId;
     patch.value = value;
     patch.size = sizeof(value);
-    ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->patchBinary(param, id, offset, binaryOffset, patch);
+    ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+        ->patchBinary(param, id, offset, binaryOffset, patch);
 }
 
 void ParamHandler::patchBinary(std::string fieldName, bool value)
 {
-    for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->getParamLayout(param)) {
+    for (ParamField field : ((ParamPatcher*)ds3runtime_global
+            ->accessScript("param_patcher"))->getParamLayout(param)) {
         if (field.fieldName != fieldName) continue;
         patchBinary(field.bitOffset - field.bitOffset % 8, field.bitOffset % 8, value);
         break;
@@ -158,9 +162,9 @@ bool ParamPatcher::onAttach()
     return true;
 }
 
-void ParamPatcher::onDetach()
+bool ParamPatcher::onDetach()
 {
-    this->restore("test");
+    return true;
 }
 
 bool ParamPatcher::doesIdExistInParam(std::wstring param, int32_t id)
@@ -226,6 +230,7 @@ void ParamPatcher::patchBinary(std::wstring param, int32_t id, uintptr_t offset,
 void ParamPatcher::restore(std::wstring param, int32_t id, uintptr_t offset, std::string patchId)
 {
     if (patchId == "original") return;
+    spdlog::debug("Step E 1");
     std::vector<ParamPatchInfo>* patchList = &patchMap[param][id][offset];
 
     patchList->erase(std::remove_if(patchList->begin(), patchList->end(), [&](auto patch) -> bool {

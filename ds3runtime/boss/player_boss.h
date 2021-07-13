@@ -13,7 +13,9 @@ namespace ds3runtime {
 class PlayerBoss : public Boss
 {
 public:
-	PlayerBoss(std::shared_ptr<PlayerIns> playerIns);
+	PlayerBoss(uint16_t forwardId);
+
+	std::optional<uintptr_t> getChrAddress();
 private:
 protected:
 };

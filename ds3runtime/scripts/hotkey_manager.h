@@ -16,7 +16,7 @@ public:
 
 	void execute();
 
-	void onDetach();
+	bool onDetach();
 
 	std::string getName()
 	{

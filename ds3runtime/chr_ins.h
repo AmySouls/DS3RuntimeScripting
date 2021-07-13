@@ -295,6 +295,8 @@ public:
 
 	uintptr_t getHkbCharacter();
 
+	bool hasHkbCharacter();
+
 	/*
 	* Play's an animation on this ChrIns via ingame function it's hkbCharacter class.
 	* 
@@ -324,6 +326,8 @@ public:
 	* @param animationString The animation string id to play.
 	*/
 	void playAnimation(std::wstring animationString);
+
+	int32_t getHkbIdFromString(std::wstring animationString);
 
 	/*
 	* Executes an attack on this ChrIns from another specified ChrIns via calling the function for it's SprjChrDamageModule

@@ -46,4 +46,11 @@ void PlayerNetworkSession::sessionPacketSend(packet::Packet* packet)
 	sessionPacketSend(packet->getId(), &packet->getDataCopy()[0], packet->getLength());
 }
 
+void PlayerNetworkSession::queueEquipmentPacket()
+{
+	void(*function)();
+	*(uintptr_t*)&function = 0x14077bbd0;
+	function();
+}
+
 };

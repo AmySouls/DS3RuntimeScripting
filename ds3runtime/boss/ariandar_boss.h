@@ -12,11 +12,11 @@ namespace ds3runtime {
 class AriandarBoss : public StandardPlayerBoss
 {
 public:
-	AriandarBoss(std::shared_ptr<PlayerIns> playerIns);
+	AriandarBoss();
 
 	bool onAttach();
 
-	void onDetach();
+	bool onDetach();
 
 	std::string getName()
 	{
@@ -27,14 +27,6 @@ protected:
 
 	void checks();
 private:
-	//std::optional<BossTask> currentMoveTask;
-	/*
-	static BossTask dragonSlayerSpear_2h_running_r1;
-	static BossTask phase1_2h_running_r1_followup_r2_charged;
-	static BossTask phase1_2h_running_r1_followup_r2_uncharged;
-	static BossTask dragonSlayerSpear_2h_kick_r2;
-	static std::vector<BossTask*> allBossTasks;
-	*/
 };
 
 }

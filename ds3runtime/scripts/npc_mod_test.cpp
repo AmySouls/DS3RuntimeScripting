@@ -23,9 +23,10 @@ void NPCModTest::execute()
 {
 }
 
-void NPCModTest::onDetach()
+bool NPCModTest::onDetach()
 {
-	((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->restore("npc_mod_test");
+	((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))->restore("npc_mod_test");
+	return true;
 }
 
 }

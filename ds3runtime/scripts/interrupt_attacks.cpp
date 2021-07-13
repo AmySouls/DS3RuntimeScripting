@@ -42,9 +42,9 @@ void InterruptAttacks::execute()
 	//reinterpret_cast<S_ChrDamage*>(bigArray)
 }
 
-void InterruptAttacks::onDetach()
+bool InterruptAttacks::onDetach()
 {
-
+	return true;
 }
 
 }

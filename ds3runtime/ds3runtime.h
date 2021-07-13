@@ -16,23 +16,23 @@ public:
 
 	void attach();
 
-	void detach();
+	bool detach();
 
-	void addHook(std::shared_ptr<Hook> hook);
+	void addHook(std::unique_ptr<Hook> hook);
 
-	void runScript(std::shared_ptr<ScriptModule> script);
+	void runScript(std::unique_ptr<ScriptModule> script);
 
-	void removeScript(uint64_t uniqueId);
+	bool removeScript(uint64_t uniqueId);
 
-	void removeScript(std::string name);
+	bool removeScript(std::string name);
 
 	void executeScripts();
 
-	std::shared_ptr<ScriptModule> accessScript(uint64_t scriptUniqueId);
+	ScriptModule* accessScript(uint64_t scriptUniqueId);
 
-	std::shared_ptr<ScriptModule> accessScript(std::string name);
+	ScriptModule* accessScript(std::string name);
 
-	std::shared_ptr<Hook> accessHook(std::string name);
+	Hook* accessHook(std::string name);
 
 	void setGameThreadId(DWORD gameThreadId);
 
@@ -42,8 +42,8 @@ public:
 
 	std::wstring utf8_decode(const std::string& str);
 private:
-	std::vector<std::shared_ptr<Hook>> hooks;
-	std::vector<std::shared_ptr<ScriptModule>> scripts;
+	std::vector<std::unique_ptr<Hook>> hooks;
+	std::vector<std::unique_ptr<ScriptModule>> scripts;
 	std::mutex scriptMutex;
 	DWORD gameThreadId = 0;
 	bool async = false;

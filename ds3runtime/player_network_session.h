@@ -24,6 +24,8 @@ public:
 
 	void sessionPacketSend(packet::Packet* packet);
 
+	static void queueEquipmentPacket();
+
 	static uintptr_t getInstance();
 
 	static bool hasInstance();

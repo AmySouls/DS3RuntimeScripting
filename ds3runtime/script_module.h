@@ -19,7 +19,7 @@ public:
 
 	virtual bool onAttach();
 
-	virtual void onDetach();
+	virtual bool onDetach();
 
 	virtual bool isAsync()
 	{
@@ -32,7 +32,11 @@ public:
 
 	bool isAttached();
 
+	bool isDetaching();
+
 	void tryAttach(const bool attachState);
+
+	void setDetaching(const bool detachState);
 
 	uint64_t getUniqueId();
 private:
@@ -40,6 +44,7 @@ private:
 	static uint64_t uniqueIdCounter;
 	bool removed = false;
 	bool attached = false;
+	bool detaching = false;
 };
 
 }

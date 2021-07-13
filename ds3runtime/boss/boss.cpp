@@ -4,8 +4,9 @@
 
 namespace ds3runtime {
 
-Boss::Boss(std::shared_ptr<ChrIns> chrIns) : chr(chrIns)
+Boss::Boss(uint16_t forwardId)
 {
+	this->forwardId = forwardId;
 }
 
 void Boss::execute()
@@ -14,9 +15,19 @@ void Boss::execute()
 	logic();
 }
 
-std::shared_ptr<ChrIns> Boss::getChr()
+uint16_t Boss::getForwardId()
 {
-	return chr;
+	return forwardId;
+}
+
+void Boss::setForwardId(uint16_t forwardId)
+{
+	this->forwardId = forwardId;
+}
+
+std::optional<uintptr_t> Boss::getChrAddress()
+{
+	return {}; //To be implemented
 }
 
 }

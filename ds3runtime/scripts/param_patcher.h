@@ -40,7 +40,7 @@ public:
 
 	bool onAttach();
 
-	void onDetach();
+	bool onDetach();
 
 	std::string getName()
 	{
@@ -101,15 +101,18 @@ public:
 	template<class FieldType>
 	FieldType read(uintptr_t offset)
 	{
-		return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->read<FieldType>(param, id, offset);
+		return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+			->read<FieldType>(param, id, offset);
 	}
 
 	template<class FieldType>
 	FieldType read(std::string fieldName)
 	{
-		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->getParamLayout(param)) {
+		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+				->getParamLayout(param)) {
 			if (field.fieldName != fieldName) continue;
-			return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->read<FieldType>(param, id, field.bitOffset / 8);
+			return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+				->read<FieldType>(param, id, field.bitOffset / 8);
 		}
 	}
 
@@ -118,7 +121,8 @@ public:
 	template<class FieldType>
 	FieldType readOriginal(uintptr_t offset)
 	{
-		return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->readOriginal(param, id, offset);
+		return (FieldType)((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+			->readOriginal(param, id, offset);
 	}
 
 	bool readBinaryOriginal(uintptr_t offset, uint8_t binaryOffset);
@@ -130,13 +134,15 @@ public:
 		patch.patchId = patchId;
 		memcpy(&patch.value, &value, sizeof(value));
 		patch.size = sizeof(value);
-		((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->patch(param, id, offset, patch);
+		((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+			->patch(param, id, offset, patch);
 	}
 
 	template<class FieldType>
 	void patch(std::string fieldName, FieldType value)
 	{
-		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->getParamLayout(param)) {
+		for (ParamField field : ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+				->getParamLayout(param)) {
 			if (field.fieldName != fieldName) continue;
 			patch<FieldType>(field.bitOffset / 8, value);
 			break;

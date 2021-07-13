@@ -9,17 +9,23 @@
 #include <ds3runtime/hooks/play_animation_hook.h>
 #include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
 #include <ds3runtime/hooks/session_send_hook.h>
+#include <ds3runtime/game_data_man.h>
+#include <ds3runtime/ds3_debug_variables.h>
+#include "ds3runtime/bullet_spawn.h"
 
 namespace ds3runtime {
 
-AriandarBoss::AriandarBoss(std::shared_ptr<PlayerIns> playerIns) : StandardPlayerBoss(playerIns)
+AriandarBoss::AriandarBoss() : StandardPlayerBoss(0)
 {
 }
 
 bool AriandarBoss::onAttach() {
+
+	if (!PlayerIns::isMainChrLoaded()) return false;
+	PlayerIns mainChr(PlayerIns::getMainChrAddress());
+	setForwardId(mainChr.getForwardId());
 	if (!StandardPlayerBoss::onAttach()) return false;
-	/*
-	//replacePlayerAnibndFile(std::filesystem::current_path().append("DS3RuntimeScripting\\mods\\boss_ariandar\\"));
+	DS3DebugVariables().setDebugMovementMultiplier(true);
 	giveItemAndSwap(InventorySlot::PrimaryLeftWep,
 		ItemParamIdPrefix::Weapon,
 		13270010, //Canvas Talisman
@@ -68,7 +74,10 @@ bool AriandarBoss::onAttach() {
 		119); //Way of White Circlet
 	giveGoodsAndSwap(GoodsSlot::QuickItem2,
 		296); //Undead Hunter Charm
-	PlayerIns chr(*((PlayerIns*)getChr().get()));
+	auto chrAddress = getChrAddress();
+	if (!chrAddress.has_value()) return false;
+	PlayerIns chr(chrAddress.value());
+	if (!chr.isValid() || chr.getPlayerGameData() == 0) return false;
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setGender(PlayerGameData::Gender::Male);
 	playerGameData.setClass(PlayerGameData::Class::Cleric);
@@ -87,119 +96,757 @@ bool AriandarBoss::onAttach() {
 	attributes.soulLevel = 125;
 	playerGameData.setAttributes(attributes);
 	ParamHandler dragonslayerSpear("ariandar_boss", L"EquipParamWeapon", 9220000);
-	dragonslayerSpear.patch(0x194, 200); //Weapon art
-	auto playAnimHookSharedPtr = ds3runtime_global->accessHook("play_anim_hook");
-	auto playAnimHook = (PlayAnimationHook*)playAnimHookSharedPtr.get();
-	auto damageModuleHookSharedPtr = ds3runtime_global->accessHook("sprj_chr_damage_module_hook");
-	auto damageModuleHook = (SprjChrDamageModuleHook*)damageModuleHookSharedPtr.get();
-	auto sessionSendHookSharedPtr = ds3runtime_global->accessHook("session_send_hook");
-	auto sessionSendHook = (SessionSendHook*)sessionSendHookSharedPtr.get();
+	dragonslayerSpear.patch<int32_t>(0x194, 200); //Weapon art
+	dragonslayerSpear.patch<uint8_t>(0x178, 26); //dualWeaponType -> dual hand
+	dragonslayerSpear.patch<float>(0x174, .163f); //ToughnessDamageRate -> ~Greatlance Poise
+	ParamHandler dragonSlayerSwordSpear_2h_r1_1_atk("ariandar_boss", L"AtkParam_Pc", 3611200);
+	ParamHandler dragonSlayerSpear_2h_r1_3_atk("ariandar_boss", L"AtkParam_Pc", 3600220);
+	dragonSlayerSpear_2h_r1_3_atk.patch<float>(0x4, dragonSlayerSwordSpear_2h_r1_1_atk.read<float>(0x4));
+	dragonSlayerSpear_2h_r1_3_atk.patch<float>(0x8, dragonSlayerSwordSpear_2h_r1_1_atk.read<float>(0x8));
+	dragonSlayerSpear_2h_r1_3_atk.patch<float>(0xC, dragonSlayerSwordSpear_2h_r1_1_atk.read<float>(0xC));
+	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
+	auto damageModuleHook = (SprjChrDamageModuleHook*)ds3runtime_global->accessHook("sprj_chr_damage_module_hook");
+	auto sessionSendHook = (SessionSendHook*)ds3runtime_global->accessHook("session_send_hook");
 
 	playAnimHook->installFilter("ariandar_boss_global_replaces", [this](uintptr_t hkbCharacter, int32_t animationId) -> int32_t {
-		ChrIns bossChr = *getChr().get();
+		ChrIns bossChr(getChrAddress().value());
 		
 		if (bossChr.isValid() && hkbCharacter == bossChr.getHkbCharacter()) {
-				if (animationId == 3821 || animationId == 3822) return 3815; //RollingLight & RollingLight_NoTrans replaced with BackStepLight
-				else if (animationId == 1024) return 1076; //AttackBothHeavyKick replaced with AttackRightHeavyKick
-			}
-
-			return animationId;
-			});
-
-	playAnimHook->installFilter("ariandar_boss_phase1_combos", [this](uintptr_t hkbCharacter, int32_t animationId) -> int32_t {
-		ChrIns bossChr = *getChr().get();
-		
-		if (bossChr.isValid() && hkbCharacter == bossChr.getHkbCharacter()) {
-			if (animationId == 1847 
-					&& (currentMoveTask.has_value()
-						&& currentMoveTask->taskId == dragonSlayerSpear_2h_running_r1.taskId)) {
-				currentMoveTask = phase1_2h_running_r1_followup_r2_charged;
-				return 0;
-			}
-			if (animationId == 1846 
-				&& (currentMoveTask.has_value()
-					&& currentMoveTask->taskId == phase1_2h_running_r1_followup_r2_charged.taskId)) {
-				currentMoveTask = phase1_2h_running_r1_followup_r2_uncharged;
-				return 0;
-			}
+			if (animationId == 1423 || animationId == 1425) return 0; //GuardStart & GuardEnd replaced with nothing
+			else if (animationId == 3821 || animationId == 3822) return 3815; //RollingLight & RollingLight_NoTrans replaced with BackStepLight
+			else if (animationId == 1024) return 1076; //AttackBothHeavyKick replaced with AttackRightHeavyKick
+			else if (animationId == 3775 || animationId == 3393) return 0; //Dash180 replaced with nothing
 		}
 
 		return animationId;
 		});
 
-	damageModuleHook->installFilter("ariandar_boss_global_replaces", [&](uintptr_t sprjChrDamageModule, uintptr_t attackerChr, char* attackDataBuffer) -> bool {
-		int32_t* attackIdPtr = (int32_t*)(attackDataBuffer + 0x44);
-		if (*attackIdPtr == 3600030) *attackIdPtr = 2613305; //dragon slayer spear 2h kick r2 replaced with lothric knight greatsword 2h r2 1 charged
-		else if (*attackIdPtr == 3600530) *attackIdPtr = 2600000; //dragon slayer spear 2h running r1 replaced with lothric knight greatsword 2h r1 1
-		else if (*attackIdPtr == 3600110) *attackIdPtr = 2600701; //dragon slayer spear 2h l2 r1 replaced with lothric knight greatsword l2 r2
-		else if (*attackIdPtr == 3603300) *attackIdPtr = 2613300; //dragon slayer spear 2h r2 1 uncharged replaced with lothric knight greatsword 2h r2 1 uncharged
-		else if (*attackIdPtr == 3603305) *attackIdPtr = 2600010; //dragon slayer spear 2h r2 1 charged replaced with lothric knight greatsword 2h r1 2
+	registerNeutralCombo(NeutralCombo(L"W_AttackBothLeft1", "Phase1_DSSS_2h_r1_1"));
+
+	registerNeutralCombo(NeutralCombo(L"W_AttackBothLeftDash", "Phase1_BKG_2h_r2_1_charged"));
+
+	registerBossTask(BossTask("Phase1_BKG_2h_r2_1_charged", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+			&& !isAnimationPresent(112034320)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				10150005, //Black Knight Glaive
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1847);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy1End", "Phase1_BKG_2h_r2_1_uncharged" },
+		}));
+
+	registerBossTask(BossTask("Phase1_BKG_2h_r2_1_uncharged", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+			&& !isAnimationPresent(112034321)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				10150005, //Black Knight Glaive
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1846);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLight1", "Phase1_DSSS_2h_r2_1_uncharged" },
+		}));
+
+	registerBossTask(BossTask("Phase1_DSS_2h_r1_1", 36034000, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(bossTask->baseAnimationId)) {
+			return "";
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy1SubStart", "Phase1_DSSS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft2", "Phase1_RGCS_L2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_DSS_2h_r1_2", 36034010, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(bossTask->baseAnimationId)) {
+			return "";
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLeft3", "Phase1_RGCS_L2" },
+			{ L"W_AttackBothLeft3", "Phase1_DSSS_2h_r1_2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_DSS_2h_r1_3", 36034020, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(bossTask->baseAnimationId)) {
+			return "";
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy1SubStart", "Phase1_DSSS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft2", "Phase1_RGCS_L2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RGCS_L2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(36034010) && !isAnimationPresent(151036400)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				2120000, //Rotten Ghru Curved Sword
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(2314);
+			bossChr.playAnimation(3446);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackSpinHeavy", "Phase1_RGCS_L2_R2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RGCS_L2_R2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(151036420)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				2120000, //Rotten Ghru Curved Sword
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(2312);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_L2_R2_2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_DSSS_2h_r2_1_start", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(36034320)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9160000, //Dragonslayer Swordspear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1847);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLight1", "Phase1_DSSS_2h_r1_2" },
+			{ L"W_AttackBothHeavy1End", "Phase1_DSSS_2h_r2_1_end" },
+			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft1", "Phase1_GUGS_2h_r1_3" },
+		}));
+
+	registerBossTask(BossTask("Phase1_DSSS_2h_r2_1_end", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(36034321) && !isAnimationPresent(36034321)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9160000, //Dragonslayer Swordspear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1846);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLight1", "Phase1_DSSS_2h_r1_2" },
+			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft1", "Phase1_GUGS_2h_r1_3" },
+		}));
+
+	registerBossTask(BossTask("Phase1_DSS_2h_running_r1", 36034500, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(bossTask->baseAnimationId)) {
+			return "";
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLight1", "Phase1_RKS_l2_r2_1" },
+			{ L"W_AttackBothHeavy1Start", "Phase1_RKS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft1", "Phase1_GUGS_2h_r1_3" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_2h_r2_1_start", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(252034320)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1847);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLight1", "Phase1_DSSS_2h_r1_2" },
+			{ L"W_AttackBothHeavy1End", "Phase1_RKS_2h_r2_1_end" },
+			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_2h_r2_2_start" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_2h_r2_1_end", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(252034321)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1846);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLight1", "Phase1_DSSS_2h_r1_2" },
+			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_2h_r2_2_start" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_2h_r2_2_start", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(252034340)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1849);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy2End", "Phase1_RKS_2h_r2_2_end" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_2h_r2_2_end", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(252034341)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(1848);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {}));
+
+	registerBossTask(BossTask("Phase1_2h_kick_r2", 36030600, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(bossTask->baseAnimationId)) {
+			return "";
+		}
+
+		ChrIns bossChr(getChrAddress().value());
+		auto position = bossChr.getPosition();
+
+		if (bossTask->tick >= 16 && bossTask->tick < 32) {
+			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * M_PI * 2) * .15;
+			position[1] += verticalMoveScale;
+			bossChr.setPosition(position);
+		}
+		else if (bossTask->tick >= 32 && bossTask->tick < 44) {
+			const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * M_PI * 2) * .04;
+			position[1] += verticalMoveScale;
+			bossChr.setPosition(position);
+		}
+		else if (bossTask->tick >= 44 && bossTask->tick < 56) {
+			const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * M_PI * 2) * .4;
+			position[1] += verticalMoveScale;
+			bossChr.setPosition(position);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {}));
+
+	registerBossTask(BossTask("Phase1_DSSS_2h_r1_1", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		ChrIns bossChr(getChrAddress().value());
+
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& (bossTask->tick <= 4 && bossChr.getAnimationString().find(L"Damage") != std::wstring::npos)
+				|| (bossTask->tick > 4 && !isAnimationPresent(176034000))) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9160000, //Dragonslayer Swordspear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(L"W_AttackBothLight1");
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy1SubStart", "Phase1_RKS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft2", "Phase1_DSSS_2h_r1_2" },
+		}));
+	
+	registerBossTask(BossTask("Phase1_GUGS_2h_r1_3", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		ChrIns bossChr(getChrAddress().value());
+
+		if ((!bossTask->comboSource.has_value() 
+				|| !isAnimationPresent(bossTask->comboSource.value().animationId))
+				&& !isAnimationPresent(193034020)) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				6050010, //Greatsword
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(L"W_AttackBothLight3");
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothLeft2", "Phase1_DSSS_2h_r1_2" }
+		}));
+	
+	registerBossTask(BossTask("Phase1_DSSS_2h_r1_2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(176034010)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9160000, //Dragonslayer Swordspear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(L"W_AttackBothLight2");
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy1Start", "Phase1_RKS_2h_r2_1_start" },
+			{ L"W_AttackBothLeft1", "Phase1_DSSS_2h_r1_1" },
+			{ L"W_AttackBothLeft3", "Phase1_GUGS_2h_r1_3" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_l2", 36036240, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if (!isAnimationPresent(bossTask->baseAnimationId) && !isAnimationPresent(252036701)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(3336);
+			bossChr.playAnimation(3447);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 9) {
+			ChrIns bossChr(getChrAddress().value());
+			BulletSpawn::launchBullet((int32_t)bossChr.getHandle(),
+				13490000,
+				-1,
+				bossChr.getPosition(),
+				std::vector<float>(3));
+		}
+		else if (bossTask->tick == 51) {
+			ChrIns bossChr(getChrAddress().value());
+			const float angle = bossChr.getAngle();
+			std::vector<float> spawnEffectPosition = bossChr.getPosition();
+			spawnEffectPosition[1] += .5;
+			BulletSpawn::launchBullet((int32_t)bossChr.getHandle(),
+				13550000,
+				-1,
+				spawnEffectPosition,
+				{ -sin(angle), 0, -cos(angle) });
+
+			for (int i = 0; i < 8; i++) {
+				const float displaceScale = (i > 3 ? i - 4 : i) / 4.0f;
+				const float angle = bossChr.getAngle();
+				std::vector<float> itrDirection = { -sin(angle), 0, -cos(angle) };
+				auto position = bossChr.getPosition();
+				position[0] += -sin(angle - M_PI / (i > 3 ? 2.0f : -2.0f)) * displaceScale;
+				position[1] += .7;
+				position[2] += -cos(angle - M_PI / (i > 3 ? 2.0f : -2.0f)) * displaceScale;
+				itrDirection[0] += -sin(angle - M_PI / (i > 3 ? 8.0f : -8.0f)) * displaceScale;
+				itrDirection[2] += -cos(angle - M_PI / (i > 3 ? 8.0f : -8.0f)) * displaceScale;
+				BulletSpawn::launchBullet((int32_t)bossChr.getHandle(),
+					13550100,
+					-1,
+					position,
+					itrDirection);
+			}
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_AttackBothHeavy1Start", "Phase1_DSSS_2h_r2_1_start" },
+			{ L"W_ChargeContinue", "Phase1_RKS_l2_r2_1" },
+			{ L"W_AttackBothLeft1", "Phase1_RGCS_L2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_l2_r2_1", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(252036711)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(3544);
+		}
+		else if (bossTask->tick == 16) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {
+			{ L"W_ChargeContinue2", "Phase1_RKS_l2_r2_2" },
+		}));
+
+	registerBossTask(BossTask("Phase1_RKS_l2_r2_2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+				&& !isAnimationPresent(252036721)) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9240000, //Ringed Knight Spear
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(4203);
+		}
+		else if (bossTask->tick == 16) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {}));
+
+	damageModuleHook->installFilter("ariandar_boss_global_replaces", [this](uintptr_t sprjChrDamageModule, uintptr_t attackerChr, char* attackDataBuffer) -> bool {
+		if (getChrAddress().has_value() && getChrAddress().value() == attackerChr) {
+			int32_t* attackIdPtr = (int32_t*)(attackDataBuffer + 0x44);
+			spdlog::debug("Attack id: {}", *attackIdPtr);
+			if (*attackIdPtr == 3600030) *attackIdPtr = 2613305; //dragon slayer spear 2h kick r2 replaced with lothric knight greatsword 2h r2 1 charged
+			else if (*attackIdPtr == 3600530) *attackIdPtr = 3600200; //dragon slayer spear 2h running r1 replaced with dragon slayer spear 2h r1 1
+			else if (*attackIdPtr == 3603315 || *attackIdPtr == 3603310) *attackIdPtr = 2600701; //dragon slayer spear 2h r2 2 charged & uncharged replaced with lothric knight greatsword l2 r2
+			else if (*attackIdPtr == 3603300) *attackIdPtr = 2613300; //dragon slayer spear 2h r2 1 uncharged replaced with lothric knight greatsword 2h r2 1 uncharged
+			else if (*attackIdPtr == 3603305) *attackIdPtr = 2613300; //dragon slayer spear 2h r2 1 charged replaced with lothric knight greatsword 2h r2 1 uncharged
+			else if (*attackIdPtr == 3600105) *attackIdPtr = 2600010; //dragon slayer spear 1h r2 1 charged replaced with lothric knight greatsword 2h r1 2
+																	  //2600010 lothric knight greatsword 2h r1 2
+			spdlog::debug("Attack after id: {}", *attackIdPtr);
+		}
+
 		return true;
 		});
 
-	*/
+	//replacePlayerAnibndFile(std::filesystem::current_path().append("DS3RuntimeScripting\\mods\\boss_ariandar\\"));
 	return true;
 }
 
-void AriandarBoss::onDetach()
+bool AriandarBoss::onDetach()
 {
-	/*
-	auto playAnimHookSharedPtr = ds3runtime_global->accessHook("play_anim_hook");
-	auto playAnimHook = (PlayAnimationHook*)playAnimHookSharedPtr.get();
-	auto damageModuleHookSharedPtr = ds3runtime_global->accessHook("sprj_chr_damage_module_hook");
-	auto damageModuleHook = (SprjChrDamageModuleHook*)damageModuleHookSharedPtr.get();
-	auto sessionSendHookSharedPtr = ds3runtime_global->accessHook("session_send_hook");
-	auto sessionSendHook = (SessionSendHook*)damageModuleHookSharedPtr.get();
+	if (!PlayerIns::isMainChrLoaded()) return false;
+	PlayerIns mainChr(PlayerIns::getMainChrAddress());
+	setForwardId(mainChr.getForwardId());
+	//restoreVannilaPlayerAnibndFile();
+	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
+	auto damageModuleHook = (SprjChrDamageModuleHook*)ds3runtime_global->accessHook("sprj_chr_damage_module_hook");
+	auto sessionSendHook = (SessionSendHook*)ds3runtime_global->accessHook("session_send_hook");
 	playAnimHook->uninstallFilter("ariandar_boss_global_replaces");
 	playAnimHook->uninstallFilter("ariandar_boss_phase1_combos");
 	damageModuleHook->uninstallFilter("ariandar_boss_global_replaces");
-	PlayerIns chr(*((PlayerIns*)getChr().get()));
-
-	if (chr.isValid()) {
-		SprjChrDataModule chrData(chr.getSprjChrDataModule());
-		if (chrData.isNoStaminaConsumption()) chrData.setNoStaminaConsumption(false);
-	}
-	
-	((ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get())->restore("ariandar_boss");
-	//restoreVannilaPlayerAnibndFile();
-	*/
-	StandardPlayerBoss::onDetach();
+	((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))->restore("ariandar_boss");
+	auto chrAddress = getChrAddress();
+	if (!chrAddress.has_value()) return false;
+	PlayerIns chr(chrAddress.value());
+	if (!chr.isValid()) return false;
+	SprjChrDataModule chrData(chr.getSprjChrDataModule());
+	if (chrData.isNoStaminaConsumption()) chrData.setNoStaminaConsumption(false);
+	return StandardPlayerBoss::onDetach();
 }
 
 void AriandarBoss::logic()
 {
-	/*
+	if (!getChrAddress().has_value()) return;
+	PlayerIns chr(getChrAddress().value());
+	if (!chr.isValid()) return;
 	std::optional<int32_t> animationId = getAnimationId();
-
-	if (!currentMoveTask.has_value() && animationId.has_value()) {
-		for (auto* task : allBossTasks) {
-			if (animationId.value() != -1 && animationId.value() != task->baseAnimationId) continue;
-			currentMoveTask = *task;
+	
+	if (getCurrentMoveTask() == nullptr && animationId.has_value()) {
+		for (auto task : getBossTasks()) {
+			if (animationId.value() != -1 && animationId.value() != task.baseAnimationId) continue;
+			setCurrentMoveTask(task);
 			break;
 		}
 	}
 
-	if (currentMoveTask.has_value()) {
-		std::optional<std::string> taskTransfer = currentMoveTask.value().task(this, &currentMoveTask.value());
-
+	if (getCurrentMoveTask() != nullptr) {
+		std::optional<std::string> taskTransfer = getCurrentMoveTask()->task(getCurrentMoveTask());
+		
 		if (taskTransfer.has_value() && taskTransfer.value() == "") {
-			currentMoveTask.reset();
+			setCurrentMoveTask({});
 		}
 		else if (taskTransfer.has_value()) {
-			for (auto* task : allBossTasks) {
-				if (taskTransfer.value() != task->taskId) continue;
-				currentMoveTask = *task;
+			for (auto task : getBossTasks()) {
+				if (taskTransfer.value() != task.taskId) continue;
+				setCurrentMoveTask(task);
 				break;
 			}
 		}
 	}
-	*/
 }
 
 void AriandarBoss::checks()
 {
-	/*
-	PlayerIns chr(*((PlayerIns*)getChr().get()));
+	if (!PlayerIns::isMainChrLoaded()) return;
+	PlayerIns mainChr(PlayerIns::getMainChrAddress());
+	if (!mainChr.isValid()) return;
+	setForwardId(mainChr.getForwardId());
+	if (!getChrAddress().has_value()) return;
+	PlayerIns chr(getChrAddress().value());
 	if (!chr.isValid()) return;
 	SprjChrDataModule chrData(chr.getSprjChrDataModule());
 
@@ -207,105 +854,6 @@ void AriandarBoss::checks()
 	if (chrData.getFP() < chrData.getMaxFP()) chrData.setFP(fmin((float)chrData.getMaxFP(), chrData.getFP() + fmax(1.0f, chrData.getMaxFP() / 100.0f)));
 	if (chrData.getBaseMaxHealth() != 8000) chrData.setBaseMaxHealth(8000);
 	if (!chrData.isNoStaminaConsumption()) chrData.setNoStaminaConsumption(true);
-	*/
 }
-
-/*
-BossTask AriandarBoss::dragonSlayerSpear_2h_running_r1 = BossTask("phase1_2h_running_r1", 36034500, [&](StandardPlayerBoss* boss, BossTask* bossTask) -> std::optional<std::string> {
-	if (!boss->isAnimationPresent(bossTask->baseAnimationId)) {
-		return "";
-	}
-
-	bossTask->tick++;
-	return {};
-	});
-
-BossTask AriandarBoss::phase1_2h_running_r1_followup_r2_charged = BossTask("phase1_2h_running_r1_followup_r2_charged", -1, [&](StandardPlayerBoss* boss, BossTask* bossTask) -> std::optional<std::string> {
-	if (!boss->isAnimationPresent(36034500) && !boss->isAnimationPresent(252034320)) {
-		return "";
-	}
-	
-	if (bossTask->tick == 0) {
-		boss->giveItemAndSwap(InventorySlot::PrimaryRightWep,
-			ItemParamIdPrefix::Weapon,
-			9240000, //Ringed Knight Spear
-			-1);
-	}
-	else if (bossTask->tick == 3) {
-		ChrIns bossChr = *boss->getChr();
-		bossChr.playAnimation(L"W_AttackBothHeavy1Start");
-	}
-	else if (bossTask->tick == 6) {
-		boss->giveItemAndSwap(InventorySlot::PrimaryRightWep,
-			ItemParamIdPrefix::Weapon,
-			9220005, //Dragonslayer Spear
-			-1);
-	}
-
-	bossTask->tick++;
-	return {};
-	});
-
-BossTask AriandarBoss::phase1_2h_running_r1_followup_r2_uncharged = BossTask("phase1_2h_running_r1_followup_r2_uncharged", -1, [&](StandardPlayerBoss* boss, BossTask* bossTask) -> std::optional<std::string> {
-	if (!boss->isAnimationPresent(252034320) && !boss->isAnimationPresent(252034321)) {
-		return "";
-	}
-
-	if (bossTask->tick == 0) {
-		boss->giveItemAndSwap(InventorySlot::PrimaryRightWep,
-			ItemParamIdPrefix::Weapon,
-			9240000, //Ringed Knight Spear
-			-1);
-	}
-	else if (bossTask->tick == 3) {
-		ChrIns bossChr = *boss->getChr();
-		bossChr.playAnimation(L"W_AttackBothHeavy1End");
-	}
-	else if (bossTask->tick == 6) {
-		boss->giveItemAndSwap(InventorySlot::PrimaryRightWep,
-			ItemParamIdPrefix::Weapon,
-			9220005, //Dragonslayer Spear
-			-1);
-	}
-
-	bossTask->tick++;
-	return {};
-	});
-
-BossTask AriandarBoss::dragonSlayerSpear_2h_kick_r2 = BossTask("phase1_2h_kick_r2", 36030600, [&](StandardPlayerBoss* boss, BossTask* bossTask) -> std::optional<std::string> {
-	if (!boss->isAnimationPresent(bossTask->baseAnimationId)) {
-		return "";
-	}
-
-	ChrIns bossChr = *boss->getChr();
-	auto position = bossChr.getPosition();
-
-	if (bossTask->tick >= 16 && bossTask->tick < 32) {
-		const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * M_PI * 2) * .15;
-		position[1] += verticalMoveScale;
-		bossChr.setPosition(position);
-	}
-	else if (bossTask->tick >= 32 && bossTask->tick < 44) {
-		const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * M_PI * 2) * .04;
-		position[1] += verticalMoveScale;
-		bossChr.setPosition(position);
-	}
-	else if (bossTask->tick >= 44 && bossTask->tick < 56) {
-		const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * M_PI * 2) * .4;
-		position[1] += verticalMoveScale;
-		bossChr.setPosition(position);
-	}
-
-	bossTask->tick++;
-	return {};
-	});
-
-std::vector<BossTask*> AriandarBoss::allBossTasks = {
-	&dragonSlayerSpear_2h_running_r1,
-	&phase1_2h_running_r1_followup_r2_charged,
-	&phase1_2h_running_r1_followup_r2_uncharged,
-	&dragonSlayerSpear_2h_kick_r2,
-};
-*/
 
 }

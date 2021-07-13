@@ -53,38 +53,39 @@ static bool attach()
 {
     ds3runtime_global.reset(new DS3RuntimeScripting);
     spdlog::set_default_logger(createLogger());
-    spdlog::info("Sucessfully loaded!");
-    ds3runtime_global->addHook(std::make_shared<GameFrameHook>());
-    ds3runtime_global->addHook(std::make_shared<LuaCapture>());
-    ds3runtime_global->runScript(std::make_shared<HotkeyManager>());
-    ds3runtime_global->addHook(std::make_shared<SessionReceiveHook>());
-    ds3runtime_global->addHook(std::make_shared<SessionSendHook>());
-    ds3runtime_global->addHook(std::make_shared<ThrowHook>());
-    ds3runtime_global->addHook(std::make_shared<SprjChrDamageModuleHook>());
-    ds3runtime_global->addHook(std::make_shared<PlayAnimationHook>());
-    ds3runtime_global->runScript(std::make_shared<ParamPatcher>());
-    ds3runtime_global->runScript((std::make_shared<FMODSystemHandler>()));
-    ds3runtime_global->runScript(std::make_shared<AnimationIdHandler>());
-    ds3runtime_global->runScript(std::make_shared<SyncCallScript>());
-    ds3runtime_global->runScript(std::make_shared<KingCrimsonProtections>());
-    //ds3runtime_global->runScript(std::make_shared<LatencySimulator>());
-    ds3runtime_global->runScript(std::make_shared<FaceDataCapture>());
-    //ds3runtime_global->runScript(std::make_shared<ImposterSoundCosmetic>());
-    ds3runtime_global->runScript(std::make_shared<BonkSoundCosmetic>());
-    //ds3runtime_global->runScript(std::make_shared<InterruptAttacks>());
-    //ds3runtime_global->runScript(std::make_shared<TalkWithPlayerName>());
-    //ds3runtime_global->runScript(std::make_shared<DynamicPvpPatch>());
+    ds3runtime_global->addHook(std::make_unique<GameFrameHook>());
+    ds3runtime_global->addHook(std::make_unique<LuaCapture>());
+    ds3runtime_global->runScript(std::make_unique<HotkeyManager>());
+    ds3runtime_global->addHook(std::make_unique<SessionReceiveHook>());
+    ds3runtime_global->addHook(std::make_unique<SessionSendHook>());
+    ds3runtime_global->addHook(std::make_unique<ThrowHook>());
+    ds3runtime_global->addHook(std::make_unique<SprjChrDamageModuleHook>());
+    ds3runtime_global->addHook(std::make_unique<PlayAnimationHook>());
+    ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
+    ds3runtime_global->runScript((std::make_unique<FMODSystemHandler>()));
+    ds3runtime_global->runScript(std::make_unique<AnimationIdHandler>());
+    ds3runtime_global->runScript(std::make_unique<SyncCallScript>());
+    ds3runtime_global->runScript(std::make_unique<KingCrimsonProtections>());
+    //ds3runtime_global->runScript(std::make_unique<LatencySimulator>());
+    ds3runtime_global->runScript(std::make_unique<FaceDataCapture>());
+    //ds3runtime_global->runScript(std::make_unique<ImposterSoundCosmetic>());
+    ds3runtime_global->runScript(std::make_unique<BonkSoundCosmetic>());
+    //ds3runtime_global->runScript(std::make_unique<InterruptAttacks>());
+    //ds3runtime_global->runScript(std::make_unique<TalkWithPlayerName>());
+    //ds3runtime_global->runScript(std::make_unique<DynamicPvpPatch>());
     //ds3runtime_global->setAsyncMode(true);
-    //ds3runtime_global->runScript(std::make_shared<NPCModTest>());
+    //ds3runtime_global->runScript(std::make_unique<NPCModTest>());
     ds3runtime_global->attach();
+    spdlog::info("Sucessfully loaded!");
     return true;
 }
 
 static bool detach()
 {
-    ds3runtime::ds3runtime_global->detach();
-    spdlog::info("Sucessfully unloaded!");
-    return true;
+    const bool result = ds3runtime::ds3runtime_global->detach();
+    if (result) spdlog::info("Sucessfully unloaded!");
+    else spdlog::info("Unable to unload.");
+    return result;
 }
 
 BOOL APIENTRY DllMain(HMODULE, DWORD dwReason, LPVOID)

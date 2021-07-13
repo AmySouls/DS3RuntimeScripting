@@ -8,61 +8,146 @@
 #include <ds3runtime/world_chr_man.h>
 #include <ds3runtime/game_option_man.h>
 #include "ds3runtime/scripts/animation_id_handler.h"
+#include <ds3runtime/player_network_session.h>
+#include <ds3runtime/hooks/play_animation_hook.h>
 
 namespace ds3runtime {
 
-StandardPlayerBoss::StandardPlayerBoss(std::shared_ptr<PlayerIns> playerIns) : PlayerBoss(playerIns)
+StandardPlayerBoss::StandardPlayerBoss(uint16_t forwardId) : PlayerBoss(forwardId)
 {
 
 }
 
 bool StandardPlayerBoss::onAttach()
 {
-	if (!ds3runtime_global->accessScript("fmod_system_handler").get()
-		|| !((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->getFMODSystem()) return false;
-	if (!((PlayerIns*)getChr().get())->isValid()) return false;
+	if (!ds3runtime_global->accessScript("fmod_system_handler")
+		|| !((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler"))->getFMODSystem()) return false;
+	if (!WorldChrMan::hasInstance()
+		|| !getChrAddress().has_value() 
+		|| !PlayerIns(getChrAddress().value()).isValid()) return false;
+	if (!GameOptionMan::hasInstance()) return false;
+
+	
+	if (!saveEquipment()) return false;
+	if (!unequipAllEquipment()) return false;
+	if (!saveAndDiscardItems()) return false;
+	if (!savePlayerData()) return false;
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(false);
-	saveEquipment();
-	unequipAllEquipment();
-	saveAndDiscardItems();
-	savePlayerData();
+
+	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
+
+	playAnimHook->installFilter("boss_combo_moves_" + std::to_string(getUniqueId()),
+		[this](uintptr_t hkbCharacter, int32_t animationPlayId) -> int32_t {
+			if (!getChrAddress().has_value()) return animationPlayId;
+			ChrIns bossChr(getChrAddress().value());
+			if (!bossChr.isValid() || !bossChr.hasHkbCharacter() || hkbCharacter != bossChr.getHkbCharacter()) return animationPlayId;
+
+			if (currentMoveTask.has_value()) {
+				for (auto entry : currentMoveTask->combos) {
+					const int32_t comboAnimId = bossChr.getHkbIdFromString(entry.first);
+
+					if (animationPlayId != comboAnimId) continue;
+					if (currentMoveTask.has_value()
+						&& currentMoveTask.value().taskId == entry.second) continue;
+					std::optional<BossTask> matchingBossTask;
+
+					for (BossTask bossTask : bossTasks) if (bossTask.taskId.compare(entry.second) == 0) {
+						matchingBossTask = bossTask;
+						break;
+					}
+
+					if (!matchingBossTask.has_value()) break;
+					BossTask newBossTask = matchingBossTask.value(); 
+					newBossTask.comboSource = ComboSource(animationPlayId, getAnimationId().value());
+					currentMoveTask = newBossTask;
+					return 0;
+				}
+
+				if (currentMoveTask->comboSource.has_value() 
+						&& animationPlayId == currentMoveTask->comboSource.value().animationPlayId
+						&& getAnimationId() == currentMoveTask->comboSource.value().animationId) {
+					return 0;
+				}
+			}
+			else {
+				for (NeutralCombo combo : neutralCombos) {
+					const int32_t comboAnimId = bossChr.getHkbIdFromString(combo.animationPlayString);
+					if (animationPlayId != comboAnimId) continue;
+					std::optional<BossTask> matchingBossTask;
+
+					for (BossTask bossTask : bossTasks) if (bossTask.taskId.compare(combo.taskId) == 0) {
+						matchingBossTask = bossTask;
+						break;
+					}
+
+					if (!matchingBossTask.has_value()) break;
+					BossTask newBossTask = matchingBossTask.value(); 
+					newBossTask.comboSource = ComboSource(animationPlayId, getAnimationId().value());
+					currentMoveTask = newBossTask;
+					return 0;
+				}
+			}
+
+			return animationPlayId;
+		});
+
 	return true;
 }
 
-void StandardPlayerBoss::onDetach()
+bool StandardPlayerBoss::onDetach()
 {
-	restorePlayerData();
-	unequipAllEquipment();
-	loadAndGiveSavedItems();
-	reequipSavedEquipment();
+	if (!GameOptionMan::hasInstance()) return false;
+
+	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
+
+	playAnimHook->uninstallFilter("boss_combo_moves_" + std::to_string(getUniqueId()));
+
+	if (!restorePlayerData()) return false;
+	if (!unequipAllEquipment()) return false;
+	if (!loadAndGiveSavedItems()) return false;
+	if (!reequipSavedEquipment()) return false;
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(true);
+	return true;
 }
 
-void StandardPlayerBoss::savePlayerData()
+std::optional<uintptr_t> StandardPlayerBoss::getChrAddress()
 {
-	PlayerIns chr(*((PlayerIns*)getChr().get()));
+	if (PlayerIns::isMainChrLoaded()) return PlayerIns::getMainChrAddress();
+	return {};
+}
+
+bool StandardPlayerBoss::savePlayerData()
+{
+	if (!getChrAddress().has_value()) return false;
+	PlayerIns chr(getChrAddress().value());
+	if (!chr.isValid()) return false;
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	savedAttributes = playerGameData.getAttributes();
 	savedGender = playerGameData.getGender();
 	savedClass = playerGameData.getClass();
 	savedAge = playerGameData.getAge();
 	savedVoice = playerGameData.getVoice();
+	return true;
 }
 
-void StandardPlayerBoss::restorePlayerData()
+bool StandardPlayerBoss::restorePlayerData()
 {
-	PlayerIns chr(*((PlayerIns*)getChr().get()));
+	if (!getChrAddress().has_value()) return false;
+	PlayerIns chr(getChrAddress().value());
+	if (!chr.isValid()) return false;
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setAttributes(savedAttributes);
 	playerGameData.setGender(savedGender);
 	playerGameData.setClass(savedClass);
 	playerGameData.setAge(savedAge);
 	playerGameData.setVoice(savedVoice);
+	return true;
 }
 
 void StandardPlayerBoss::giveGoodsAndSwap(GoodsSlot goodsSlot,
 	int32_t paramItemId)
 {
+	if (!GameDataMan::hasInstance()) return;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 	std::optional<int32_t> indexOfItem = findInventoryIdByGiveId((uint32_t)ItemParamIdPrefix::Goods + paramItemId);
@@ -80,7 +165,7 @@ void StandardPlayerBoss::giveGoodsAndSwap(GoodsSlot goodsSlot,
 		spdlog::error("StandardPlayerBoss::giveGoodsAndSwap: Could not give/swap item: goodsSlot = {} paramItemId = {} ",
 			(uint32_t)goodsSlot,
 			paramItemId);
-		((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->tryErrorSound();
+		((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler"))->tryErrorSound();
 	}
 }
 
@@ -101,6 +186,7 @@ void StandardPlayerBoss::giveItemAndSwap(InventorySlot inventorySlot,
 
 	if (indexOfItem.has_value()) {
 		equipGameData.equipInventoryItem(inventorySlot, indexOfItem.value());
+		PlayerNetworkSession::queueEquipmentPacket();
 	}
 	else {
 		spdlog::error("StandardPlayerBoss::giveItemAndSwap: Could not give/swap item: inventorySlot = {} itemId = {} paramIdPrefix = {}  durability = {}",
@@ -108,7 +194,7 @@ void StandardPlayerBoss::giveItemAndSwap(InventorySlot inventorySlot,
 			paramItemId,
 			(void*)paramIdPrefix,
 			durability);
-		((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->tryErrorSound();
+		((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler"))->tryErrorSound();
 	}
 }
 
@@ -130,8 +216,9 @@ std::optional<int32_t> StandardPlayerBoss::findInventoryIdByGiveId(int32_t giveI
 	return indexOfItem;
 }
 
-void StandardPlayerBoss::saveEquipment()
+bool StandardPlayerBoss::saveEquipment()
 {
+	if (!GameDataMan::hasInstance()) return false;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
@@ -162,10 +249,14 @@ void StandardPlayerBoss::saveEquipment()
 
 		savedGoods[(GoodsSlot)i] = item;
 	}
+
+	return true;
 }
 
-void StandardPlayerBoss::unequipAllEquipment()
+bool StandardPlayerBoss::unequipAllEquipment()
 {
+	if (!GameDataMan::hasInstance()) return false;
+
 	for (int32_t i = 0; i <= 21; i++) {
 		switch (i) {
 		case 0:
@@ -211,10 +302,14 @@ void StandardPlayerBoss::unequipAllEquipment()
 		EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 		equipGameData.equipGoodsInventoryItem((GoodsSlot)i, -1);
 	}
+
+	return true;
 }
 
-void StandardPlayerBoss::reequipSavedEquipment()
+bool StandardPlayerBoss::reequipSavedEquipment()
 {
+	if (!GameDataMan::hasInstance()) return false;
+
 	for (auto entry : savedEquipment) {
 		if (!entry.second.has_value()) continue;
 		const uint32_t prefix = (uint32_t)getItemParamIdPrefixFromGiveId(entry.second->giveId);
@@ -236,10 +331,13 @@ void StandardPlayerBoss::reequipSavedEquipment()
 		giveGoodsAndSwap(entry.first,
 			paramItemId);
 	}
+
+	return true;
 }
 
-void StandardPlayerBoss::saveAndDiscardItems()
+bool StandardPlayerBoss::saveAndDiscardItems()
 {
+	if (!GameDataMan::hasInstance()) return false;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
@@ -250,10 +348,13 @@ void StandardPlayerBoss::saveAndDiscardItems()
 		if (getItemParamIdPrefixFromGiveId(item->giveId) != ItemParamIdPrefix::Goods) equipInventoryData.discardInventoryItems(i, item->quantity);
 		else equipGameData.modifyInventoryItemQuantity(i, -(int32_t)item->quantity);
 	}
+
+	return true;
 }
 
-void StandardPlayerBoss::loadAndGiveSavedItems()
+bool StandardPlayerBoss::loadAndGiveSavedItems()
 {
+	if (!GameDataMan::hasInstance()) return false;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
@@ -282,6 +383,8 @@ void StandardPlayerBoss::loadAndGiveSavedItems()
 			}
 		}
 	}
+
+	return true;
 }
 
 ItemParamIdPrefix StandardPlayerBoss::getItemParamIdPrefixFromGiveId(int32_t giveId)
@@ -321,7 +424,7 @@ bool StandardPlayerBoss::isHiddenItem(const uint32_t itemId)
 
 int32_t StandardPlayerBoss::getItemMaxDurability(ItemParamIdPrefix paramIdPrefix, int32_t paramItemId)
 {
-	auto* paramPatcher = (ParamPatcher*)ds3runtime_global->accessScript("param_patcher").get();
+	auto* paramPatcher = (ParamPatcher*)ds3runtime_global->accessScript("param_patcher");
 
 	if (paramIdPrefix == ItemParamIdPrefix::Weapon 
 		&& paramPatcher->doesIdExistInParam(L"EquipParamWeapon", paramItemId)) {
@@ -373,14 +476,14 @@ void StandardPlayerBoss::tryReloadPlayerChr()
 
 std::optional<int32_t> StandardPlayerBoss::getAnimationId()
 {
-	auto* handler = (AnimationIdHandler*)ds3runtime_global->accessScript("animation_id_handler").get();
-	return handler->getAnimationId(*getChr().get());
+	auto* handler = (AnimationIdHandler*)ds3runtime_global->accessScript("animation_id_handler");
+	return handler->getAnimationId(getChrAddress().value());
 }
 
 bool StandardPlayerBoss::isAnimationPresent(int32_t animationId)
 {
-	auto* handler = (AnimationIdHandler*)ds3runtime_global->accessScript("animation_id_handler").get();
-	std::optional<std::unordered_map<int32_t, int32_t>> animIdBuffer = handler->getAnimationIdBuffer(*getChr().get());
+	auto* handler = (AnimationIdHandler*)ds3runtime_global->accessScript("animation_id_handler");
+	std::optional<std::unordered_map<int32_t, int32_t>> animIdBuffer = handler->getAnimationIdBuffer(getChrAddress().value());
 	
 	if (animIdBuffer.has_value()) {
 		for (int i = 0; i < 10; i++) {
@@ -389,6 +492,56 @@ bool StandardPlayerBoss::isAnimationPresent(int32_t animationId)
 	}
 	
 	return false;
+}
+
+void StandardPlayerBoss::setSheathState(int32_t slot)
+{
+	if (!GameDataMan::hasInstance()
+		|| GameDataMan(GameDataMan::getInstance()).getPlayerGameData() == 0) return;
+	PlayerGameData playerGameData = GameDataMan(GameDataMan::getInstance()).getPlayerGameData();
+	playerGameData.setWeaponSheathState(slot);
+	uint16_t sheathData[2] = {};
+	sheathData[0] = playerGameData.getWeaponSheathData();
+	sheathData[1] = getForwardId();
+	PlayerNetworkSession session(PlayerNetworkSession::getInstance());
+	session.sessionPacketSend(13, (char*)sheathData, 4);
+}
+
+void StandardPlayerBoss::registerNeutralCombo(NeutralCombo combo)
+{
+	neutralCombos.push_back(combo);
+}
+
+void StandardPlayerBoss::registerBossTask(BossTask bossTask)
+{
+	bossTasks.push_back(bossTask);
+}
+
+std::optional<BossTask> StandardPlayerBoss::getBossTaskByTaskId(std::string taskId)
+{
+	std::optional<BossTask> bossTask = {};
+
+	for (BossTask task : bossTasks) if (task.taskId == taskId) {
+		bossTask = task;
+		break;
+	}
+
+	return bossTask;
+}
+
+void StandardPlayerBoss::setCurrentMoveTask(std::optional<BossTask> bossTask)
+{
+	currentMoveTask = bossTask;
+}
+
+BossTask* StandardPlayerBoss::getCurrentMoveTask()
+{
+	return currentMoveTask.has_value() ? &currentMoveTask.value() : nullptr;
+}
+
+std::vector<BossTask> StandardPlayerBoss::getBossTasks()
+{
+	return bossTasks;
 }
 
 }

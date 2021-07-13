@@ -14,7 +14,7 @@ AsyncModule::AsyncModule() : ScriptModule::ScriptModule()
 {	
 }
 
-void AsyncModule::createThread(std::shared_ptr<ScriptModule> asyncModule)
+void AsyncModule::createThread(ScriptModule* asyncModule)
 {	
 	const uint64_t uniqueId = asyncModule->getUniqueId();
 	CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)AsyncModule::entryPoint, (LPVOID)uniqueId, 0, NULL);
@@ -22,9 +22,9 @@ void AsyncModule::createThread(std::shared_ptr<ScriptModule> asyncModule)
 
 DWORD WINAPI AsyncModule::entryPoint(uint64_t scriptUniqueId)
 {
-	std::shared_ptr<ScriptModule> scriptModule = ds3runtime_global->accessScript(scriptUniqueId);
+	ScriptModule* scriptModule = ds3runtime_global->accessScript(scriptUniqueId);
 	if (scriptModule == nullptr) return 0;
-	AsyncModule* asyncModule = (AsyncModule*)scriptModule.get();
+	AsyncModule* asyncModule = (AsyncModule*)scriptModule;
 	while (asyncModule != nullptr && !asyncModule->isRemoved()) asyncModule->execute();
 	return 0;
 }

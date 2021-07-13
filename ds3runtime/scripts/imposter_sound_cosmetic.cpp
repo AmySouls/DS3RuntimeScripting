@@ -11,11 +11,11 @@ namespace ds3runtime {
 bool ImposterSoundCosmetic::onAttach()
 {
 	if (!ds3runtime_global->accessScript("fmod_system_handler")
-		|| !((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->getFMODSystem()) return false;
+		|| !((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler"))->getFMODSystem()) return false;
 
 	((SessionReceiveHook*)ds3runtime_global
-		->accessHook("session_receive_hook")
-		.get())->installPacketFilter("imposter_sound_cosmetic", [&](uintptr_t networkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength, uint32_t receiveLength) -> uint32_t {
+		->accessHook("session_receive_hook"))
+		->installPacketFilter("imposter_sound_cosmetic", [&](uintptr_t networkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength, uint32_t receiveLength) -> uint32_t {
 			auto session = PlayerNetworkSession(networkSession);
 			auto sessionManager = SprjSessionManager(SprjSessionManager::getInstance());
 
@@ -24,7 +24,8 @@ bool ImposterSoundCosmetic::onAttach()
 				const int8_t summonType = packet.getField<int8_t>("summon_type");
 
 				if (summonType == 3 || summonType == 17 || summonType == 18) {
-					FMOD::System* fmodSystem = ((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler").get())->getFMODSystem();
+					FMOD::System* fmodSystem = ((FMODSystemHandler*)ds3runtime_global->accessScript("fmod_system_handler"))
+						->getFMODSystem();
 					FMOD::Sound* imposterSound = nullptr;
 					fmodSystem->createStream("DS3RuntimeScripting\\assets\\sounds\\imposter.wav", FMOD_DEFAULT, nullptr, &imposterSound);
 					fmodSystem->playSound(imposterSound, nullptr, false, nullptr);
@@ -41,11 +42,12 @@ void ImposterSoundCosmetic::execute()
 {
 }
 
-void ImposterSoundCosmetic::onDetach()
+bool ImposterSoundCosmetic::onDetach()
 {
 	((SessionReceiveHook*)ds3runtime_global
-		->accessHook("session_receive_hook")
-		.get())->uninstallPacketFilter("imposter_sound_cosmetic");
+		->accessHook("session_receive_hook"))
+		->uninstallPacketFilter("imposter_sound_cosmetic");
+	return true;
 }
 
 }

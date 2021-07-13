@@ -21,8 +21,9 @@ bool ScriptModule::onAttach()
 	return true;
 }
 
-void ScriptModule::onDetach()
+bool ScriptModule::onDetach()
 {
+	return true;
 }
 
 void ScriptModule::remove()
@@ -40,9 +41,19 @@ bool ScriptModule::isAttached()
 	return attached;
 }
 
+bool ScriptModule::isDetaching()
+{
+	return detaching;
+}
+
 void ScriptModule::tryAttach(const bool attachState)
 {
 	attached = attachState;
+}
+
+void ScriptModule::setDetaching(const bool detachState)
+{
+	detaching = detachState;
 }
 
 uint64_t ScriptModule::getUniqueId()

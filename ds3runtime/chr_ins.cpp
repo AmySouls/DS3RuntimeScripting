@@ -1,6 +1,7 @@
 #pragma once
 #include "pch.h"
 #include "chr_ins.h"
+#include "ds3runtime.h"
 
 namespace ds3runtime {
 
@@ -120,15 +121,22 @@ void ChrIns::setNoGravity(bool value)
 
 uintptr_t ChrIns::getHkbCharacter()
 {
-	return *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8);
+	return *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28, 0xB8);
+}
+
+bool ChrIns::hasHkbCharacter()
+{
+	return accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28, 0xB8);
 }
 
 void ChrIns::playAnimation(int32_t animationStringId)
 {
-	int32_t input[3] = { animationStringId, 0, 0 };
-	uintptr_t animationHandle = this->getHkbCharacter();
-	void(*playAnimationInternal)(...);
-	*(uintptr_t*)&playAnimationInternal = 0x140d84870;
+	auto hook = ds3runtime_global->accessHook("play_anim_hook");
+	int32_t input[6] = { animationStringId, 0, 0 };
+	uintptr_t animationHandle = getHkbCharacter();
+	spdlog::debug("Animation force played: {}", animationStringId);
+	void(*playAnimationInternal)(uintptr_t, int32_t*);
+	*(uintptr_t*)&playAnimationInternal = hook != nullptr ? *hook->getOriginal() : 0x140D84870;
 	playAnimationInternal(animationHandle, input);
 }
 
@@ -138,6 +146,14 @@ void ChrIns::playAnimation(std::wstring animationString)
 	void(*playAnimationStringInternal)(...);
 	*(uintptr_t*)&playAnimationStringInternal = 0x140D84450;
 	playAnimationStringInternal(animationHandle, animationString.c_str());
+}
+
+int32_t ChrIns::getHkbIdFromString(std::wstring animationString) //Should be with W_
+{
+	char arr[32] = {};
+	int32_t(*function)(...);
+	*(uintptr_t*)&function = 0x141049BD0;
+	return function(*accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28, 0xA0), ds3runtime_global->utf8_encode(animationString).c_str());
 }
 
 int32_t ChrIns::getWeightIndex()

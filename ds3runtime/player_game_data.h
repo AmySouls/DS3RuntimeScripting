@@ -134,6 +134,20 @@ public:
 	void setInvadeType(InvadeType summonType);
 
 	uintptr_t getEquipGameData();
+
+	uint16_t getWeaponSheathData();
+
+	int32_t getRightHandSlot();
+
+	void setRightHandSlot(int32_t slot);
+
+	int32_t getLeftHandSlot();
+
+	void setLeftHandSlot(int32_t slot);
+
+	int32_t getWeaponSheathState();
+
+	void setWeaponSheathState(int32_t slot);
 private:
 	uintptr_t address;
 };

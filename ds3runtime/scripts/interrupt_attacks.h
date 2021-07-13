@@ -15,7 +15,7 @@ class InterruptAttacks : public ScriptModule
 public:
 	bool onAttach();
 
-	void onDetach();
+	bool onDetach();
 
 	void execute();
 

@@ -10,9 +10,10 @@ bool HotkeyManager::onAttach()
 	return true;
 }
 
-void HotkeyManager::onDetach()
+bool HotkeyManager::onDetach()
 {
 	if (originalWindowProc) SetWindowLongPtrW(windowHandle, GWLP_WNDPROC, (LONG_PTR)originalWindowProc);
+	return true;
 }
 
 void HotkeyManager::execute()

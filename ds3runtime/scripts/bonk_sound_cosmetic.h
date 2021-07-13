@@ -15,7 +15,7 @@ class BonkSoundCosmetic : public ScriptModule
 public:
 	bool onAttach();
 
-	void onDetach();
+	bool onDetach();
 
 	void execute();
 

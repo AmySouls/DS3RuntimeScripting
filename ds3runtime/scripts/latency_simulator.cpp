@@ -19,8 +19,7 @@ LatencySimulator::LatencySimulator(LatencyAttributes latencyAttributes)
 
 bool LatencySimulator::onAttach()
 {
-	auto sharedPtr = ds3runtime_global->accessHook("session_send_hook");
-	auto sessionSendHook = (SessionSendHook*)sharedPtr.get();
+	auto sessionSendHook = (SessionSendHook*)ds3runtime_global->accessHook("session_send_hook");
 
 	sessionSendHook->installPacketFilter("latency_simulator", [&](uintptr_t networkSession, uintptr_t* networkHandle, int32_t id, char* buffer, uint32_t maxLength) {
 			DelayedPacket delayedPacket = {};
@@ -41,11 +40,11 @@ bool LatencySimulator::onAttach()
 	return true;
 }
 
-void LatencySimulator::onDetach()
+bool LatencySimulator::onDetach()
 {
-	auto sharedPtr = ds3runtime_global->accessHook("session_send_hook");
-	auto sessionSendHook = (SessionSendHook*)sharedPtr.get();
+	auto sessionSendHook = (SessionSendHook*)ds3runtime_global->accessHook("session_send_hook");
 	sessionSendHook->uninstallPacketFilter("latency_simulator");
+	return true;
 }
 
 void LatencySimulator::execute()

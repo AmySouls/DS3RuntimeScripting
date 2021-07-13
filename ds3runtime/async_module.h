@@ -13,7 +13,7 @@ class AsyncModule : public ScriptModule
 public:
 	AsyncModule();
 
-	static void createThread(std::shared_ptr<ScriptModule> asyncModule);
+	static void createThread(ScriptModule* asyncModule);
 
 	bool isAsync()
 	{

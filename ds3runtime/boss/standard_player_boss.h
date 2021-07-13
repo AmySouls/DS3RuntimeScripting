@@ -14,14 +14,73 @@
 
 namespace ds3runtime {
 
+struct ComboSource
+{
+	ComboSource(int32_t animationPlayId, int32_t animationId)
+	{
+		this->animationPlayId = animationPlayId;
+		this->animationId = animationId;
+	}
+
+	int32_t animationPlayId;
+	int32_t animationId;
+};
+
+struct BossTask
+{
+	BossTask(
+		std::string taskId,
+		int32_t baseAnimationId,
+		std::function<std::optional<std::string>(BossTask* bossTask)> task,
+		std::unordered_map<std::wstring, std::string> combos)
+	{
+		this->taskId = taskId;
+		this->baseAnimationId = baseAnimationId;
+		this->task = task;
+		this->tick = 0;
+		this->combos = combos;
+	}
+
+	int32_t baseAnimationId;
+	std::string taskId;
+	int64_t tick;
+	std::unordered_map<std::wstring, std::string> combos;
+	std::function<std::optional<std::string>(BossTask*)> task;
+	std::unordered_map<std::string, float> floatVariables;
+	std::unordered_map<std::string, int64_t> signedIntVariables;
+	std::unordered_map<std::string, uint64_t> unsignedIntVariables;
+	std::unordered_map<std::string, bool> boolVariables;
+	std::unordered_map<std::string, std::string> stringVariables;
+	std::unordered_map<std::string, std::wstring> wideStringVariables;
+	std::unordered_map<std::string, std::vector<float>> floatVectorVariables;
+	std::unordered_map<std::string, uintptr_t> addressVariables;
+	std::optional<ComboSource> comboSource;
+};
+
+struct NeutralCombo
+{
+	NeutralCombo(std::wstring animationPlayString, std::string taskId)
+	{
+		this->animationPlayString = animationPlayString;
+		this->taskId = taskId;
+	}
+
+	std::wstring animationPlayString;
+	std::string taskId;
+};
+
 class StandardPlayerBoss : public PlayerBoss
 {
 public:
-	StandardPlayerBoss(std::shared_ptr<PlayerIns> playerIns);
+	StandardPlayerBoss(uint16_t forwardId);
 
 	bool onAttach();
 
-	void onDetach();
+	bool onDetach();
+
+	void replacePlayerAnibndFile(std::filesystem::path path);
+
+	void restoreVannilaPlayerAnibndFile();
 
 	void giveItemAndSwap(InventorySlot inventorySlot,
 		ItemParamIdPrefix paramIdPrefix,
@@ -31,15 +90,27 @@ public:
 	void giveGoodsAndSwap(GoodsSlot inventorySlot,
 		int32_t paramItemId);
 
-	void replacePlayerAnibndFile(std::filesystem::path path);
-
-	void restoreVannilaPlayerAnibndFile();
-
 	void tryReloadPlayerChr();
 
 	std::optional<int32_t> getAnimationId();
 
 	bool isAnimationPresent(int32_t animationId);
+
+	std::optional<uintptr_t> getChrAddress();
+
+	void setSheathState(int32_t slot);
+
+	void registerNeutralCombo(NeutralCombo combo);
+
+	void registerBossTask(BossTask bossTask);
+
+	std::optional<BossTask> getBossTaskByTaskId(std::string taskId);
+
+	void setCurrentMoveTask(std::optional<BossTask> bossTask);
+
+	BossTask* getCurrentMoveTask();
+
+	std::vector<BossTask> getBossTasks();
 private:
 	FMOD::System* fmodSystem = nullptr;
 	std::vector<InventoryItem> savedItems;
@@ -51,51 +122,31 @@ private:
 	PlayerGameData::Class savedClass;
 	PlayerGameData::Age savedAge;
 	PlayerGameData::Voice savedVoice;
+	std::vector<BossTask> bossTasks;
+	std::optional<BossTask> currentMoveTask;
+	std::vector<NeutralCombo> neutralCombos;
 
 	std::optional<int32_t> findInventoryIdByGiveId(int32_t giveId);
 
-	void savePlayerData();
+	bool savePlayerData();
 
-	void restorePlayerData();
+	bool restorePlayerData();
 
-	void saveEquipment();
+	bool saveEquipment();
 
-	void unequipAllEquipment();
+	bool unequipAllEquipment();
 
-	void reequipSavedEquipment();
+	bool reequipSavedEquipment();
 
-	void saveAndDiscardItems();
+	bool saveAndDiscardItems();
 
-	void loadAndGiveSavedItems();
+	bool loadAndGiveSavedItems();
 
 	ItemParamIdPrefix getItemParamIdPrefixFromGiveId(int32_t giveId);
 
 	bool isHiddenItem(const uint32_t itemId);
 
 	int32_t getItemMaxDurability(ItemParamIdPrefix paramIdPrefix, int32_t paramItemId);
-};
-
-struct BossTask
-{
-	BossTask(std::string taskId, int32_t baseAnimationId, std::function<std::optional<std::string>(StandardPlayerBoss*, BossTask* bossTask)> task)
-	{
-		this->taskId = taskId;
-		this->baseAnimationId = baseAnimationId;
-		this->task = task;
-	}
-
-	int32_t baseAnimationId;
-	std::string taskId;
-	int64_t tick;
-	std::function<std::optional<std::string>(StandardPlayerBoss*, BossTask*)> task;
-	std::unordered_map<std::string, float> floatVariables;
-	std::unordered_map<std::string, int64_t> signedIntVariables;
-	std::unordered_map<std::string, uint64_t> unsignedIntVariables;
-	std::unordered_map<std::string, bool> boolVariables;
-	std::unordered_map<std::string, std::string> stringVariables;
-	std::unordered_map<std::string, std::wstring> wideStringVariables;
-	std::unordered_map<std::string, std::vector<float>> floatVectorVariables;
-	std::unordered_map<std::string, uintptr_t> addressVariables;
 };
 
 }

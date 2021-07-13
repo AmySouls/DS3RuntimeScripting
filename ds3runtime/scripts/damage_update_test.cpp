@@ -29,8 +29,8 @@ bool DamageUpdateTest::onAttach()
 	*/
 
 	((SessionSendHook*)ds3runtime_global
-		->accessHook("session_send_hook")
-		.get())->installPacketFilter("damage_update_test", [&](uintptr_t playerNetworkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength) -> uint32_t {
+		->accessHook("session_send_hook"))
+		->installPacketFilter("damage_update_test", [&](uintptr_t playerNetworkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength) -> uint32_t {
 			auto session = PlayerNetworkSession(playerNetworkSession);
 
 			if (id == 20) {
@@ -79,11 +79,12 @@ void DamageUpdateTest::execute()
 	*/
 }
 
-void DamageUpdateTest::onDetach()
+bool DamageUpdateTest::onDetach()
 {
 	((SessionReceiveHook*)ds3runtime_global
-		->accessHook("session_receive_hook")
-		.get())->uninstallPacketFilter("damage_update_test");
+		->accessHook("session_receive_hook"))
+		->uninstallPacketFilter("damage_update_test");
+	return true;
 }
 
 }
