@@ -201,6 +201,27 @@
     <ClInclude Include="ds3runtime\ds3_debug_variables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\ds3_iframe_patch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook_shockwave.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_identify.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -378,6 +399,27 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\ds3_debug_variables.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\ds3_iframe_patch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook_shockwave.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_identify.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

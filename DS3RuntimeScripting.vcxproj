@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <ProjectGuid>{a7ffff6b-e9c0-4dac-a2ba-a7c2b552d101}</ProjectGuid>
     <RootNamespace>DS3RuntimeScripting</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.19041.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -82,7 +82,9 @@
     <TargetName>DS3RuntimeScriptingB</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LinkIncremental>false</LinkIncremental>
+    <LinkIncremental>true</LinkIncremental>
+    <OutDir>D:\SteamLibrary\steamapps\common\DARK SOULS III\Game\</OutDir>
+    <TargetName>DS3RuntimeScriptingB</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -144,10 +146,12 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;DS3RUNTIMESCRIPTING_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;DS3RUNTIMESCRIPTING_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions);SPDLOG_WCHAR_TO_UTF8_SUPPORT;_USE_MATH_DEFINES</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <LanguageStandard>stdcpplatest</LanguageStandard>
+      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,6 +159,8 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalLibraryDirectories>C:\dev\vcpkg\installed\x64-windows\debug\lib;C:\Program Files\Lua;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\lib\x64</AdditionalLibraryDirectories>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies);detours.lib;client.lib;;util.lib;base.lib;spdlogd.lib;Lua.lib;fmod_vc.lib</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -177,6 +183,12 @@
     <ClInclude Include="ds3runtime\game_data_man.h" />
     <ClInclude Include="ds3runtime\game_option_man.h" />
     <ClInclude Include="ds3runtime\hook.h" />
+    <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h" />
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.h" />
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook_shockwave.h" />
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_hook.h" />
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_identify.h" />
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
     <ClInclude Include="ds3runtime\hooks\play_animation_hook.h" />
@@ -193,6 +205,7 @@
     <ClInclude Include="ds3runtime\scripts\animation_id_handler.h" />
     <ClInclude Include="ds3runtime\scripts\bonk_sound_cosmetic.h" />
     <ClInclude Include="ds3runtime\scripts\damage_update_test.h" />
+    <ClInclude Include="ds3runtime\scripts\ds3_iframe_patch.h" />
     <ClInclude Include="ds3runtime\scripts\dynamic_pvp_patch.h" />
     <ClInclude Include="ds3runtime\scripts\face_data_capture.h" />
     <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h" />
@@ -238,6 +251,12 @@
     <ClCompile Include="ds3runtime\game_data_man.cpp" />
     <ClCompile Include="ds3runtime\game_option_man.cpp" />
     <ClCompile Include="ds3runtime\hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook_shockwave.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_identify.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -255,6 +274,7 @@
     <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp" />
     <ClCompile Include="ds3runtime\scripts\bonk_sound_cosmetic.cpp" />
     <ClCompile Include="ds3runtime\scripts\damage_update_test.cpp" />
+    <ClCompile Include="ds3runtime\scripts\ds3_iframe_patch.cpp" />
     <ClCompile Include="ds3runtime\scripts\dynamic_pvp_patch.cpp" />
     <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp" />
     <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp" />

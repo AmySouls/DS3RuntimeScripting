@@ -293,6 +293,8 @@ public:
 
 	void setNoGravity(bool value);
 
+	bool isDodging();
+
 	uintptr_t getHkbCharacter();
 
 	bool hasHkbCharacter();

@@ -119,6 +119,11 @@ void ChrIns::setNoGravity(bool value)
 	else *newByte = (*newByte & ~(uint8_t)pow(2, 6));
 }
 
+bool ChrIns::isDodging()
+{
+	return (*accessMultilevelPointer<uint8_t>(address + 0x1F90, 0, 0x58) & (uint8_t)pow(2, 1)) == pow(2, 1);
+}
+
 uintptr_t ChrIns::getHkbCharacter()
 {
 	return *accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28, 0xB8);
