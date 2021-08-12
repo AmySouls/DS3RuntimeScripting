@@ -10,9 +10,20 @@
 
 namespace ds3runtime::ds3IFramePatch {
 
-struct NetHitMetaInfo
+struct HitBoxRecord
 {
-	uint64_t uniqueId;
+	int64_t uniqueId;
+	int64_t parentUniqueId;
+	int64_t siblingUniqueId;
+	int64_t childUniqueId;
+};
+
+struct ReceivedHitRecord
+{
+	int64_t uniqueId;
+	int64_t parentUniqueId;
+	int64_t siblingUniqueId;
+	int64_t childUniqueId;
 	uint64_t timeStamp;
 };
 
@@ -31,11 +42,27 @@ public:
 	}
 
 	void registerOutgoingHitBox(uintptr_t hitBoxAddress);
+
+	void unregisterOutgoingHitBox(uintptr_t hitBoxAddress);
+
+	void registerOutgoingHitBoxParent(uintptr_t hitBoxAddress, int64_t parentUniqueId);
+
+	void registerOutgoingHitBoxChild(uintptr_t hitBoxAddress, int64_t childUniqueId);
+
+	void registerOutgoingHitBoxSibling(uintptr_t hitBoxAddress, int64_t siblingUniqueId);
+
+	bool hasOutgoingHitBox(uintptr_t hitBoxAddress);
+
+	HitBoxRecord getOutgoingHitBoxRecord(uintptr_t hitBoxAddress);
 private:
-	uint64_t outgoingUniqueIdCounter = 0;
-	std::unordered_map<uintptr_t, uint64_t> outgoingHitBoxIdMap;
-	std::unordered_map<uintptr_t*, std::vector<NetHitMetaInfo>> incomingHitBoxIdMap;
-	std::vector<uint64_t> hitsToIgnoreThisFrame;
+	int64_t outgoingUniqueIdCounter = 0;
+	std::unordered_map<uintptr_t, HitBoxRecord> outgoingHitBoxIdMap;
+	std::unordered_map<uintptr_t*, std::vector<ReceivedHitRecord>> incomingHitBoxIdMap;
+	std::vector<int64_t> hitsToIgnoreThisFrame;
+
+	bool doesReceivedHitShareUniqueId(ReceivedHitRecord hitRecord, ReceivedHitRecord otherHitRecord);
+
+	bool doesReceivedHitContainUniqueId(ReceivedHitRecord hitRecord, int64_t searchUniqueId);
 };
 
 }

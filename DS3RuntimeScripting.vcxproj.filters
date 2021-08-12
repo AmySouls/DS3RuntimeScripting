@@ -222,6 +222,21 @@
     <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\yhorm_scream_on_warcry_cosmetic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_sibling_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_delete.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_attacker_effect_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_durablity_cost_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -420,6 +435,21 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\yhorm_scream_on_warcry_cosmetic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_sibling_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_delete.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_attacker_effect_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_durablity_cost_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

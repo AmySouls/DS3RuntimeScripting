@@ -94,8 +94,6 @@ void SprjSessionManager::leaveSession()
 	uintptr_t(*LeaveSessionCall)(uintptr_t sessionManager);
 	*(uintptr_t*)&LeaveSessionCall = 0x140DEB7F0;
 	LeaveSessionCall(address);
-
-	
 }
 
 SprjSessionManager::NetworkState SprjSessionManager::getState()

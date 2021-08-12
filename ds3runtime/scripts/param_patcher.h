@@ -67,6 +67,8 @@ public:
 
 	bool readBinaryOriginal(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset);
 
+	bool isValidParam(std::wstring param, int32_t id);
+
 	void patch(std::wstring param, int32_t id, uintptr_t offset, ParamPatchInfo patch);
 	
 	void patchBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset, ParamPatchInfo patch);
@@ -97,6 +99,8 @@ class ParamHandler
 {
 public:
 	ParamHandler(std::string patchId, std::wstring param, int32_t id);
+
+	bool isValidParam();
 
 	template<class FieldType>
 	FieldType read(uintptr_t offset)

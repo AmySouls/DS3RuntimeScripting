@@ -19,16 +19,17 @@ HitBoxUUIDHook::HitBoxUUIDHook()
 	instance = this;
 }
 
-uintptr_t HitBoxUUIDHook::onHitBoxStructCreate(uintptr_t hitBoxAddress, uintptr_t unk0, uintptr_t unk1, uintptr_t hitBoxOwnerIns, uintptr_t unk2)
+bool HitBoxUUIDHook::onHitBoxStructCreate(uintptr_t hitBoxAddress, uintptr_t unk0, uintptr_t unk1, uintptr_t hitBoxOwnerIns, uintptr_t unk2, uintptr_t unk3, uintptr_t unk4, uintptr_t unk5, uintptr_t unk6)
 {
 	bool (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
 	
 	if (WorldChrMan::hasInstance() && PlayerIns::isMainChrLoaded() && hitBoxOwnerIns == PlayerIns::getMainChrAddress()) {
-		((DS3IFramePatch*)ds3runtime_global->accessScript("ds3_iframe_patch"))->registerOutgoingHitBox(hitBoxAddress);
+		DS3IFramePatch* ds3IFramePatch = (DS3IFramePatch*)ds3runtime_global->accessScript("ds3_iframe_patch");
+		ds3IFramePatch->registerOutgoingHitBox(hitBoxAddress);
 	}
 
-	return originalFunction(hitBoxAddress, unk0, unk1, hitBoxOwnerIns, unk2);
+	return originalFunction(hitBoxAddress, unk0, unk1, hitBoxOwnerIns, unk2, unk3, unk4, unk5, unk6);
 }
 
 HitBoxUUIDHook* HitBoxUUIDHook::instance = nullptr;

@@ -19,7 +19,7 @@ public:
 		return "ds3_iframe_patch_hit_uuid_hook";
 	}
 
-	static uintptr_t onHitBoxStructCreate(uintptr_t hitBoxAddress, uintptr_t unk0, uintptr_t unk1, uintptr_t hitBoxOwnerIns, uintptr_t unk2);
+	static bool onHitBoxStructCreate(uintptr_t hitBoxAddress, uintptr_t unk0, uintptr_t unk1, uintptr_t hitBoxOwnerIns, uintptr_t unk2, uintptr_t unk3, uintptr_t unk4, uintptr_t unk5, uintptr_t unk6);
 private:
 	static HitBoxUUIDHook* instance;
 };

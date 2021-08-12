@@ -17,6 +17,12 @@ ParamHandler::ParamHandler(std::string patchId, std::wstring param, int32_t id)
     this->id = id;
 }
 
+bool ParamHandler::isValidParam()
+{
+    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+        ->isValidParam(param, id);
+}
+
 bool ParamHandler::readBinary(uintptr_t offset, uint8_t binaryOffset)
 {
     return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
@@ -170,6 +176,11 @@ bool ParamPatcher::onDetach()
 bool ParamPatcher::doesIdExistInParam(std::wstring param, int32_t id)
 {
     return paramIdTables[param].find(id) != paramIdTables[param].end();
+}
+
+bool ParamPatcher::isValidParam(std::wstring param, int32_t id)
+{
+    return accessMultilevelPointer<uint8_t>(paramIdTables[param][id]) != nullptr;
 }
 
 bool ParamPatcher::readBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset)
