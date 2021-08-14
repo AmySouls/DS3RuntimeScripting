@@ -30,7 +30,7 @@ void HitBoxHierarchyHook::onSetHierarchy(uintptr_t parentHitBox, uintptr_t child
 		HitBoxRecord parent = ds3IFramePatch->getOutgoingHitBoxRecord(parentHitBox);
 		HitBoxRecord child = ds3IFramePatch->getOutgoingHitBoxRecord(childHitBox);
 
-		if (child.parentUniqueId == -1) {
+		if (child.parentUniqueId == 0) {
 			ds3IFramePatch->registerOutgoingHitBoxParent(childHitBox, parent.uniqueId);
 			ds3IFramePatch->registerOutgoingHitBoxChild(parentHitBox, child.uniqueId);
 			return;

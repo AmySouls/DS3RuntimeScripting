@@ -24,7 +24,7 @@ bool HitBoxUUIDHook::onHitBoxStructCreate(uintptr_t hitBoxAddress, uintptr_t unk
 	bool (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
 	
-	if (WorldChrMan::hasInstance() && PlayerIns::isMainChrLoaded() && hitBoxOwnerIns == PlayerIns::getMainChrAddress()) {
+	if (WorldChrMan::hasInstance() && PlayerIns::isMainChrLoaded() && (hitBoxOwnerIns == PlayerIns::getMainChrAddress() || (*(uintptr_t*)hitBoxOwnerIns == 0x14287AC18 && *(uint32_t*)(hitBoxOwnerIns + 0xB98) == (uint32_t)PlayerIns::Handle::MainChr))) {
 		DS3IFramePatch* ds3IFramePatch = (DS3IFramePatch*)ds3runtime_global->accessScript("ds3_iframe_patch");
 		ds3IFramePatch->registerOutgoingHitBox(hitBoxAddress);
 	}

@@ -186,6 +186,7 @@
     <ClInclude Include="ds3runtime\hook.h" />
     <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h" />
     <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_attacker_effect_hook.h" />
+    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_ban_check.h" />
     <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_durablity_cost_hook.h" />
     <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_delete.h" />
     <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.h" />
@@ -259,6 +260,7 @@
     <ClCompile Include="ds3runtime\hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_attacker_effect_hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_ban_check.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_durablity_cost_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_delete.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.cpp" />

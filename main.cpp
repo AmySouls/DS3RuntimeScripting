@@ -33,6 +33,7 @@
 #include <ds3runtime/hooks/ds3_iframe_patch_no_player_iframes.h>
 #include <ds3runtime/hooks/ds3_iframe_patch_attacker_effect_hook.h>
 #include <ds3runtime/hooks/ds3_iframe_patch_durablity_cost_hook.h>
+#include <ds3runtime/hooks/ds3_iframe_patch_ban_check.h>
 #include <ds3runtime/scripts/ds3_iframe_patch.h>
 
 using namespace ds3runtime;
@@ -47,7 +48,7 @@ static std::shared_ptr<spdlog::logger> createLogger()
     logger->set_level(spdlog::level::info);
     logger->flush_on(spdlog::level::info);
 
-//#ifdef _DEBUG
+#ifdef _DEBUG
     AllocConsole();
     FILE* stream;
     freopen_s(&stream, "CONOUT$", "w", stdout);
@@ -55,7 +56,7 @@ static std::shared_ptr<spdlog::logger> createLogger()
 
     logger->sinks().push_back(std::make_shared<spdlog::sinks::stdout_color_sink_mt>());
     logger->set_level(spdlog::level::debug);
-//#endif
+#endif
 
     return logger;
 }
@@ -66,7 +67,7 @@ static bool attach()
     spdlog::set_default_logger(createLogger());
     ds3runtime_global->addHook(std::make_unique<GameFrameHook>());
     //ds3runtime_global->addHook(std::make_unique<LuaCapture>());
-    //ds3runtime_global->runScript(std::make_unique<HotkeyManager>());
+    ds3runtime_global->runScript(std::make_unique<HotkeyManager>());
     ds3runtime_global->addHook(std::make_unique<SessionReceiveHook>());
     ds3runtime_global->addHook(std::make_unique<SessionSendHook>());
     //ds3runtime_global->addHook(std::make_unique<ThrowHook>());
@@ -74,7 +75,7 @@ static bool attach()
     //ds3runtime_global->addHook(std::make_unique<DS1Backstabs>());
     ds3runtime_global->addHook(std::make_unique<PlayAnimationHook>());
     ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
-    //ds3runtime_global->runScript((std::make_unique<FMODSystemHandler>()));
+    ds3runtime_global->runScript((std::make_unique<FMODSystemHandler>()));
     //ds3runtime_global->runScript(std::make_unique<AnimationIdHandler>());
     //ds3runtime_global->runScript(std::make_unique<SyncCallScript>());
     //ds3runtime_global->runScript(std::make_unique<KingCrimsonProtections>());
@@ -89,6 +90,7 @@ static bool attach()
     //ds3runtime_global->runScript(std::make_unique<NPCModTest>());
     //ds3runtime_global->runScript(std::make_unique<YhormScreamOnWarcry>());
 
+    //ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::BanCheckHook>());
     ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::FixDurablityCost>());
     ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::AttackerEffectHook>());
     ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitBoxDeleteHook>());
@@ -100,7 +102,6 @@ static bool attach()
     ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitBoxUUIDHook>());
     ds3runtime_global->runScript(std::make_unique<ds3IFramePatch::DS3IFramePatch>());
     
-
     ds3runtime_global->attach();
     spdlog::info("Sucessfully loaded!");
     return true;
