@@ -39,9 +39,6 @@
     <ClInclude Include="ds3runtime\hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\lua_capture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\chr_ins.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,28 +51,13 @@
     <ClInclude Include="ds3runtime\bullet_spawn.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\sync_call_script.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\player_network_session.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ds3runtime\hooks\session_receive_hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\boss\boss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\boss\player_boss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\hooks\session_send_hook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\play_animation_hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ds3runtime\sprj_session_manager.h">
@@ -90,25 +72,10 @@
     <ClInclude Include="ds3runtime\sprj_wep_gaitem_ins.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\latency_simulator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\game_packet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\animation_id_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\throw_hook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\hotkey_manager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\misc_functions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\param_patcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="dependencies\pugiconfig.hpp">
@@ -123,49 +90,13 @@
     <ClInclude Include="dist\pugiconfig.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\reversal_ring_test.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\reversal_ring_test_send.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\sprj_chr_damage_module_hook.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\dynamic_pvp_patch.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\world_chr_man.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\boss\ariandar_boss.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\boss\standard_player_boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ds3runtime\sprj_lua_event_condition_item.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\face_data_capture.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\bonk_sound_cosmetic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\equip_game_data.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\imposter_sound_cosmetic.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\npc_mod_test.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ds3runtime\player_game_data.h">
@@ -180,19 +111,7 @@
     <ClInclude Include="ds3runtime\sprj_chr_data_module.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\player_name_talk.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\damage_update_test.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\position_hide.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="ds3runtime\sprj_chr_damage_module.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\interrupt_attacks.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ds3runtime\game_option_man.h">
@@ -201,43 +120,52 @@
     <ClInclude Include="ds3runtime\ds3_debug_variables.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h">
+    <ClInclude Include="ds3runtime\hooks\sprj_chr_damage_module_hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\ds3_iframe_patch.h">
+    <ClInclude Include="ds3runtime\scripts\param_patcher.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.h">
+    <ClInclude Include="ds3runtime\boss\ariandar_boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_hook.h">
+    <ClInclude Include="ds3runtime\boss\boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook_shockwave.h">
+    <ClInclude Include="ds3runtime\boss\player_boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_identify.h">
+    <ClInclude Include="ds3runtime\boss\standard_player_boss.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.h">
+    <ClInclude Include="ds3runtime\hooks\throw_hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\scripts\yhorm_scream_on_warcry_cosmetic.h">
+    <ClInclude Include="ds3runtime\hooks\play_animation_hook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_sibling_hook.h">
+    <ClInclude Include="ds3runtime\hooks\lua_capture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_hit_delete.h">
+    <ClInclude Include="ds3runtime\scripts\animation_id_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_attacker_effect_hook.h">
+    <ClInclude Include="ds3runtime\scripts\face_data_capture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_durablity_cost_hook.h">
+    <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ds3runtime\hooks\ds3_iframe_patch_ban_check.h">
+    <ClInclude Include="ds3runtime\scripts\hotkey_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\position_hide.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -266,9 +194,6 @@
     <ClCompile Include="ds3runtime\hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\chr_ins.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -281,25 +206,13 @@
     <ClCompile Include="ds3runtime\bullet_spawn.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\sync_call_script.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\player_network_session.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\hooks\session_receive_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\boss\boss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\boss\player_boss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\hooks\session_send_hook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\play_animation_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\sprj_session_manager.cpp">
@@ -314,76 +227,22 @@
     <ClCompile Include="ds3runtime\sprj_wep_gaitem_ins.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\latency_simulator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\game_packet.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\throw_hook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\misc_functions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\param_patcher.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="dist\pugixml.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\reversal_ring_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\reversal_ring_test_send.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\sprj_chr_damage_module_hook.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\dynamic_pvp_patch.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\world_chr_man.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\boss\ariandar_boss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\boss\standard_player_boss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\sprj_lua_event_condition_item.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\bonk_sound_cosmetic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\equip_game_data.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\imposter_sound_cosmetic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\npc_mod_test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\player_game_data.cpp">
@@ -398,19 +257,7 @@
     <ClCompile Include="ds3runtime\sprj_chr_data_module.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\player_name_talk.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\damage_update_test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\position_hide.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\sprj_chr_damage_module.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\interrupt_attacks.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\game_option_man.cpp">
@@ -419,43 +266,52 @@
     <ClCompile Include="ds3runtime\ds3_debug_variables.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp">
+    <ClCompile Include="ds3runtime\hooks\sprj_chr_damage_module_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\ds3_iframe_patch.cpp">
+    <ClCompile Include="ds3runtime\scripts\param_patcher.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook.cpp">
+    <ClCompile Include="ds3runtime\boss\ariandar_boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_hook.cpp">
+    <ClCompile Include="ds3runtime\boss\boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_reg_hook_shockwave.cpp">
+    <ClCompile Include="ds3runtime\boss\player_boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_uuid_identify.cpp">
+    <ClCompile Include="ds3runtime\boss\standard_player_boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_no_player_iframes.cpp">
+    <ClCompile Include="ds3runtime\hooks\throw_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\yhorm_scream_on_warcry_cosmetic.cpp">
+    <ClCompile Include="ds3runtime\hooks\play_animation_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_sibling_hook.cpp">
+    <ClCompile Include="ds3runtime\hooks\lua_capture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_hit_delete.cpp">
+    <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_attacker_effect_hook.cpp">
+    <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_durablity_cost_hook.cpp">
+    <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\hooks\ds3_iframe_patch_ban_check.cpp">
+    <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\position_hide.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

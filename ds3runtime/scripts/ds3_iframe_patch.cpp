@@ -9,7 +9,6 @@
 #include <ds3runtime/sprj_session_manager.h>
 #include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
 #include <ds3runtime/scripts/param_patcher.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_ban_check.h>
 #include <spdlog/fmt/bin_to_hex.h>
 
 namespace ds3runtime::ds3IFramePatch {
@@ -87,21 +86,6 @@ namespace ds3runtime::ds3IFramePatch {
 				}
 				});
 
-		((SessionReceiveHook*)ds3runtime_global
-			->accessHook("session_receive_hook"))->installPacketFilter("ds3_iframe_patch_mod_check", [&](uintptr_t networkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength, uint32_t receiveLength) -> uint32_t {
-				if (id != 73) return receiveLength;
-				
-				if (*(uint8_t*)(buffer + 1) == 69) {
-					*(uint8_t*)(buffer + 1) = 0;
-					*(uint8_t*)buffer = *(uint8_t*)(buffer + 2);
-				}
-				else { 
-					*(uint8_t*)buffer = 1;
-				}
-
-				return receiveLength;
-				});
-
 		((SessionSendHook*)ds3runtime_global
 			->accessHook("session_send_hook"))->installPacketFilter("ds3_iframe_patch_damage_fix", [&](uintptr_t playerNetworkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength) -> uint32_t {
 				if (id != 20) return maxLength;
@@ -124,15 +108,6 @@ namespace ds3runtime::ds3IFramePatch {
 					memcpy(reinterpret_cast<uint16_t*>(buffer + 0x86), &childUniqueId, 2);
 				}
 
-				return maxLength;
-				});
-
-		((SessionSendHook*)ds3runtime_global
-			->accessHook("session_send_hook"))->installPacketFilter("ds3_iframe_patch_mod_check", [&](uintptr_t playerNetworkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength) -> uint32_t {
-				if (id != 73) return maxLength;
-				*(uint8_t*)(buffer + 1) = 69;
-				*(uint8_t*)(buffer + 2) = *(uint8_t*)buffer;
-				*(uint8_t*)buffer = 1;
 				return maxLength;
 				});
 		
@@ -202,12 +177,6 @@ bool DS3IFramePatch::onDetach()
 	((SessionReceiveHook*)ds3runtime_global
 		->accessHook("session_send_hook"))
 		->uninstallPacketFilter("ds3_iframe_patch_damage_fix");
-	((SessionReceiveHook*)ds3runtime_global
-		->accessHook("session_receive_hook"))
-		->uninstallPacketFilter("ds3_iframe_patch_mod_check");
-	((SessionReceiveHook*)ds3runtime_global
-		->accessHook("session_send_hook"))
-		->uninstallPacketFilter("ds3_iframe_patch_mod_check");
 	((SprjChrDamageModuleHook*)ds3runtime_global
 		->accessHook("sprj_chr_damage_module_hook"))
 		->uninstallFilter("ds3_iframe_patch");

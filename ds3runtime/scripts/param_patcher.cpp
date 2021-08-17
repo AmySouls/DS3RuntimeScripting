@@ -241,7 +241,6 @@ void ParamPatcher::patchBinary(std::wstring param, int32_t id, uintptr_t offset,
 void ParamPatcher::restore(std::wstring param, int32_t id, uintptr_t offset, std::string patchId)
 {
     if (patchId == "original") return;
-    spdlog::debug("Step E 1");
     std::vector<ParamPatchInfo>* patchList = &patchMap[param][id][offset];
 
     patchList->erase(std::remove_if(patchList->begin(), patchList->end(), [&](auto patch) -> bool {

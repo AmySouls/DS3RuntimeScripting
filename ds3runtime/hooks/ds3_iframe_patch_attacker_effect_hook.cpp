@@ -23,7 +23,7 @@ void AttackerEffectHook::onSpEffectApply(uintptr_t chrIns, int32_t spEffectId, u
 	void (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
 	ChrIns attackerChr(chrIns);
-	if (attackerChr.getHandle() == ChrIns::Handle::MainChr && spEffectId != -1 && ParamHandler("", L"SpEffectParam", spEffectId).readBinary(0x160, 1)) return;
+	if (attackerChr.getHandle() == ChrIns::Handle::MainChr && spEffectId != -1 && ParamHandler("", L"SpEffectParam", spEffectId).isValidParam() && ParamHandler("", L"SpEffectParam", spEffectId).readBinary(0x160, 1)) return;
 	originalFunction(unk0, spEffectId, unk0, unk1, unk2, unk3, unk4, unk5, unk6, unk7);
 }
 

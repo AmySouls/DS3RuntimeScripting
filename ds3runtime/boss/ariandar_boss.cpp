@@ -12,6 +12,7 @@
 #include <ds3runtime/game_data_man.h>
 #include <ds3runtime/ds3_debug_variables.h>
 #include "ds3runtime/bullet_spawn.h"
+#include "ds3runtime/world_chr_man.h"
 
 namespace ds3runtime {
 
@@ -21,7 +22,7 @@ AriandarBoss::AriandarBoss() : StandardPlayerBoss(0)
 
 bool AriandarBoss::onAttach() {
 
-	if (!PlayerIns::isMainChrLoaded()) return false;
+	if (!PlayerIns::isMainChrLoaded() || !PlayerIns(PlayerIns::getMainChrAddress()).hasHkbCharacter()) return false;
 	PlayerIns mainChr(PlayerIns::getMainChrAddress());
 	setForwardId(mainChr.getForwardId());
 	if (!StandardPlayerBoss::onAttach()) return false;
@@ -281,6 +282,20 @@ bool AriandarBoss::onAttach() {
 				9220005, //Dragonslayer Spear
 				-1);
 			setSheathState(3);
+		}
+
+		ChrIns bossChr(getChrAddress().value());
+		auto position = bossChr.getPosition();
+
+		if (bossTask->tick >= 16 && bossTask->tick < 32) {
+			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * M_PI * 2) * .1;
+			position[1] += verticalMoveScale;
+			bossChr.setPosition(position);
+		}
+		if (bossTask->tick >= 50 && bossTask->tick < 60) {
+			const float verticalMoveScale = sin((bossTask->tick - 40) / 20.0f * M_PI * 2) * .16;
+			position[1] += verticalMoveScale;
+			bossChr.setPosition(position);
 		}
 
 		bossTask->tick++;
@@ -782,7 +797,7 @@ bool AriandarBoss::onAttach() {
 		return true;
 		});
 
-	//replacePlayerAnibndFile(std::filesystem::current_path().append("DS3RuntimeScripting\\mods\\boss_ariandar\\"));
+	replacePlayerAnibndFile(std::filesystem::current_path().append("DS3RuntimeScripting\\mods\\boss_ariandar\\"));
 	return true;
 }
 
@@ -791,7 +806,7 @@ bool AriandarBoss::onDetach()
 	if (!PlayerIns::isMainChrLoaded()) return false;
 	PlayerIns mainChr(PlayerIns::getMainChrAddress());
 	setForwardId(mainChr.getForwardId());
-	//restoreVannilaPlayerAnibndFile();
+	restoreVannilaPlayerAnibndFile();
 	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
 	auto damageModuleHook = (SprjChrDamageModuleHook*)ds3runtime_global->accessHook("sprj_chr_damage_module_hook");
 	auto sessionSendHook = (SessionSendHook*)ds3runtime_global->accessHook("session_send_hook");
@@ -848,8 +863,23 @@ void AriandarBoss::checks()
 	if (!getChrAddress().has_value()) return;
 	PlayerIns chr(getChrAddress().value());
 	if (!chr.isValid()) return;
-	SprjChrDataModule chrData(chr.getSprjChrDataModule());
+	WorldChrMan worldChrMan(WorldChrMan::getInstance());
+	uintptr_t paintedGuardian1Ptr = worldChrMan.getInsByHandle(10058001);
+	uintptr_t paintedGuardian2Ptr = worldChrMan.getInsByHandle(10058002);
 
+	if (paintedGuardian1Ptr) {
+		ChrIns paintedGuardian(paintedGuardian1Ptr);
+		paintedGuardian.setPosition(std::vector<float>({ 0, 0, 0 }));
+		SprjChrDataModule(paintedGuardian.getSprjChrDataModule()).setHealth(0);
+	}
+
+	if (paintedGuardian2Ptr) {
+		ChrIns paintedGuardian(paintedGuardian2Ptr);
+		paintedGuardian.setPosition(std::vector<float>({ 0, 0, 0 }));
+		SprjChrDataModule(paintedGuardian.getSprjChrDataModule()).setHealth(0);
+	}
+
+	SprjChrDataModule chrData(chr.getSprjChrDataModule());
 	if (chr.getWeightIndex() != 1) chr.setWeightIndex(1);
 	if (chrData.getFP() < chrData.getMaxFP()) chrData.setFP(fmin((float)chrData.getMaxFP(), chrData.getFP() + fmax(1.0f, chrData.getMaxFP() / 100.0f)));
 	if (chrData.getBaseMaxHealth() != 8000) chrData.setBaseMaxHealth(8000);

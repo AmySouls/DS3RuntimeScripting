@@ -19,6 +19,8 @@ public:
 
 	void findEntityTest(int32_t id);
 
+	uintptr_t getInsByHandle(int32_t handle);
+
 	static uintptr_t getInstance();
 
 	static bool hasInstance();

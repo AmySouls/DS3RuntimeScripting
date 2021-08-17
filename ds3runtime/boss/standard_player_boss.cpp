@@ -470,7 +470,7 @@ void StandardPlayerBoss::tryReloadPlayerChr()
 {
 	std::optional<WorldChrMan> worldChrMan;
 	if (WorldChrMan::hasInstance()) worldChrMan = WorldChrMan::getInstance();
-	if (!worldChrMan.has_value() || !PlayerIns::isMainChrLoaded() || !accessMultilevelPointer<uintptr_t>(WorldChrMan::getInstance(), 0x80, 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8)) return;
+	if (!worldChrMan.has_value() || !PlayerIns::isMainChrLoaded() || !accessMultilevelPointer<uintptr_t>(PlayerIns::getMainChrAddress() + 0x1F90, 0x58, 0x8, 0x1F90, 0x28, 0x10, 0x28, 0xB8)) return;
 	worldChrMan->reloadCharacterFiles(L"c0000");
 }
 

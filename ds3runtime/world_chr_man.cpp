@@ -28,6 +28,13 @@ void WorldChrMan::findEntityTest(int32_t id)
 	spdlog::debug("Contents: {} {} {}", buffer[0], buffer[1], *(uintptr_t*)buffer);
 }
 
+uintptr_t WorldChrMan::getInsByHandle(int32_t handle)
+{
+	uintptr_t (*GetInsByHandle)(int32_t handle);
+	*(uintptr_t*)&GetInsByHandle = 0x140601fc0;
+	return GetInsByHandle(handle);
+}
+
 uintptr_t WorldChrMan::getInstance()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan);
