@@ -8,7 +8,7 @@ DS3RuntimeScripting::DS3RuntimeScripting()
 {
 }
 
-void DS3RuntimeScripting::setAsyncMode(bool async)
+void DS3RuntimeScripting::setAsyncMode(const bool& async)
 {
 	this->async = async;
 }
@@ -72,7 +72,7 @@ void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule> script)
 	scripts.insert(scripts.begin(), std::move(script));
 }
 
-bool DS3RuntimeScripting::removeScript(uint64_t uniqueId)
+bool DS3RuntimeScripting::removeScript(const uint64_t& uniqueId)
 {
 	for (int i = 0; i < scripts.size(); i++) if (uniqueId == scripts[i]->getUniqueId()) {
 		bool detachResult = true;
@@ -85,7 +85,7 @@ bool DS3RuntimeScripting::removeScript(uint64_t uniqueId)
 	return true;
 }
 
-bool DS3RuntimeScripting::removeScript(std::string name)
+bool DS3RuntimeScripting::removeScript(const std::string& name)
 {
 	for (int i = 0; i < scripts.size(); i++) if (name == scripts[i]->getName()) {
 		bool detachResult = true;
@@ -117,7 +117,7 @@ void DS3RuntimeScripting::executeScripts()
 	}
 }
 
-ScriptModule* DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
+ScriptModule* DS3RuntimeScripting::accessScript(const uint64_t& scriptUniqueId)
 {
 	ScriptModule* matchingScript = nullptr;
 
@@ -130,7 +130,7 @@ ScriptModule* DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
 	return matchingScript;
 }
 
-ScriptModule* DS3RuntimeScripting::accessScript(std::string name)
+ScriptModule* DS3RuntimeScripting::accessScript(const std::string& name)
 {
 	ScriptModule* matchingScript = nullptr;
 
@@ -143,7 +143,7 @@ ScriptModule* DS3RuntimeScripting::accessScript(std::string name)
 	return matchingScript;
 }
 
-Hook* DS3RuntimeScripting::accessHook(std::string name)
+Hook* DS3RuntimeScripting::accessHook(constbcstd::string& name)
 {
 	Hook* matchingHook = nullptr;
 
@@ -156,7 +156,7 @@ Hook* DS3RuntimeScripting::accessHook(std::string name)
 	return matchingHook;
 }
 
-void DS3RuntimeScripting::setGameThreadId(DWORD threadId)
+void DS3RuntimeScripting::setGameThreadId(const DWORD& threadId)
 {
 	gameThreadId = threadId;
 }

@@ -69,14 +69,14 @@ struct NeutralCombo
 	std::string taskId;
 };
 
-class StandardPlayerBoss : public PlayerBoss
+class StandardPlayerBoss : public Boss
 {
 public:
-	StandardPlayerBoss(uint16_t forwardId);
-
 	bool onAttach();
 
 	bool onDetach();
+	
+	virtual std::optional<uintptr_t> getChrAddress();
 
 	void replacePlayerAnibndFile(std::filesystem::path path);
 

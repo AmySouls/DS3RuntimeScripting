@@ -12,8 +12,6 @@ namespace ds3runtime {
 class AriandarBoss : public StandardPlayerBoss
 {
 public:
-	AriandarBoss();
-
 	bool onAttach();
 
 	bool onDetach();

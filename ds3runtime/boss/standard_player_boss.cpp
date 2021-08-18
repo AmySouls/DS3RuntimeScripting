@@ -13,11 +13,6 @@
 
 namespace ds3runtime {
 
-StandardPlayerBoss::StandardPlayerBoss(uint16_t forwardId) : PlayerBoss(forwardId)
-{
-
-}
-
 bool StandardPlayerBoss::onAttach()
 {
 	if (!ds3runtime_global->accessScript("fmod_system_handler")
@@ -26,12 +21,17 @@ bool StandardPlayerBoss::onAttach()
 		|| !getChrAddress().has_value() 
 		|| !PlayerIns(getChrAddress().value()).isValid()) return false;
 	if (!GameOptionMan::hasInstance()) return false;
-
-	
-	if (!saveEquipment()) return false;
-	if (!unequipAllEquipment()) return false;
-	if (!saveAndDiscardItems()) return false;
-	if (!savePlayerData()) return false;
+	else if (!GameDataMan::hasInstance()) return false;
+	GameDataMan gameDataMan(GameDataMan::getInstance());
+	if (gameDataMan.getPlayerGameData() == 0) return false;
+	PlayerGameData playerGameData(gameData.getPlayerGameData());
+	if (playerGameData.getEquipGameData() == 0) return false;
+	EquipGameData equipGameData(playerGameData.getEquipGameData);
+	if (equipGameData.getEquipInventoryData() == 0) return false;
+	saveEquipment(); 
+	unequipAllEquipment();
+	saveAndDiscardItems();
+	savePlayerData();
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(false);
 
 	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
@@ -97,15 +97,19 @@ bool StandardPlayerBoss::onAttach()
 bool StandardPlayerBoss::onDetach()
 {
 	if (!GameOptionMan::hasInstance()) return false;
-
+	else if (!GameDataMan::hasInstance()) return false;
+	GameDataMan gameDataMan(GameDataMan::getInstance());
+	if (gameDataMan.getPlayerGameData() == 0) return false;
+	PlayerGameData playerGameData(gameData.getPlayerGameData());
+	if (playerGameData.getEquipGameData() == 0) return false;
+	EquipGameData equipGameData(playerGameData.getEquipGameData);
+	if (equipGameData.getEquipInventoryData() == 0) retirn false;
+	restorePlayerData();
+	unequipAllEquipment();
+	loadAndGiveSavedItems();
+	reequipSavedEquipment();
 	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
-
 	playAnimHook->uninstallFilter("boss_combo_moves_" + std::to_string(getUniqueId()));
-
-	if (!restorePlayerData()) return false;
-	if (!unequipAllEquipment()) return false;
-	if (!loadAndGiveSavedItems()) return false;
-	if (!reequipSavedEquipment()) return false;
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(true);
 	return true;
 }
@@ -116,7 +120,7 @@ std::optional<uintptr_t> StandardPlayerBoss::getChrAddress()
 	return {};
 }
 
-bool StandardPlayerBoss::savePlayerData()
+void StandardPlayerBoss::savePlayerData()
 {
 	if (!getChrAddress().has_value()) return false;
 	PlayerIns chr(getChrAddress().value());
@@ -130,11 +134,8 @@ bool StandardPlayerBoss::savePlayerData()
 	return true;
 }
 
-bool StandardPlayerBoss::restorePlayerData()
+void StandardPlayerBoss::restorePlayerData()
 {
-	if (!getChrAddress().has_value()) return false;
-	PlayerIns chr(getChrAddress().value());
-	if (!chr.isValid()) return false;
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setAttributes(savedAttributes);
 	playerGameData.setGender(savedGender);

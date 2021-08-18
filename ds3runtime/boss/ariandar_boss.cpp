@@ -16,15 +16,10 @@
 
 namespace ds3runtime {
 
-AriandarBoss::AriandarBoss() : StandardPlayerBoss(0)
-{
-}
-
 bool AriandarBoss::onAttach() {
 
-	if (!PlayerIns::isMainChrLoaded() || !PlayerIns(PlayerIns::getMainChrAddress()).hasHkbCharacter()) return false;
-	PlayerIns mainChr(PlayerIns::getMainChrAddress());
-	setForwardId(mainChr.getForwardId());
+	if (!getChrAddress().has_value() || !PlayerIns(getChrAddress().value()).hasHkbCharacter()) return false;
+	PlayerIns chr(getChrAddress().value());
 	if (!StandardPlayerBoss::onAttach()) return false;
 	DS3DebugVariables().setDebugMovementMultiplier(true);
 	giveItemAndSwap(InventorySlot::PrimaryLeftWep,

@@ -13,17 +13,11 @@ namespace ds3runtime {
 class Boss : public ScriptModule
 {
 public:
-	Boss(uint16_t forwardId);
-
 	void execute();
 
-	uint16_t getForwardId();
-
-	void setForwardId(uint16_t forwardId);
-
-	std::optional<uintptr_t> getChrAddress();
+	virtual std::optional<uintptr_t> getChrAddress() = 0;
 private:
-	uint16_t forwardId;
+    std::function<std::optional<uintptr_t>()> findChr;
 protected:
 	virtual void logic() = 0;
 

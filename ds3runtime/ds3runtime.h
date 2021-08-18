@@ -12,7 +12,7 @@ class DS3RuntimeScripting
 public:
 	DS3RuntimeScripting();
 
-	void setAsyncMode(bool async);
+	void setAsyncMode(const bool& async);
 
 	void attach();
 
@@ -22,19 +22,19 @@ public:
 
 	void runScript(std::unique_ptr<ScriptModule> script);
 
-	bool removeScript(uint64_t uniqueId);
+	bool removeScript(const uint64_t& uniqueId);
 
-	bool removeScript(std::string name);
+	bool removeScript(const std::string& name);
 
 	void executeScripts();
 
-	ScriptModule* accessScript(uint64_t scriptUniqueId);
+	ScriptModule* accessScript(const uint64_t& scriptUniqueId);
 
-	ScriptModule* accessScript(std::string name);
+	ScriptModule* accessScript(const std::string& name);
 
-	Hook* accessHook(std::string name);
+	Hook* accessHook(const std::string& name);
 
-	void setGameThreadId(DWORD gameThreadId);
+	void setGameThreadId(const DWORD& gameThreadId);
 
 	DWORD getGameThreadId();
 
