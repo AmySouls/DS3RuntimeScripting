@@ -7,39 +7,11 @@
 #include "ds3runtime/hooks/session_send_hook.h"
 #include "ds3runtime/hooks/lua_capture.h"
 #include "ds3runtime/scripts/animation_id_handler.h"
-#include <ds3runtime/scripts/face_data_capture.h>
 #include <ds3runtime/hooks/play_animation_hook.h>
 #include <ds3runtime/hooks/throw_hook.h>
 #include <ds3runtime/scripts/hotkey_manager.h>
-#include <ds3runtime/scripts/imposter_sound_cosmetic.h>
 #include <ds3runtime/scripts/fmod_system_handler.h>
-#include "ds3runtime/scripts/king_crimson_protections.h"
-/*
-#include "ds3runtime/scripts/latency_simulator.h"
-#include "ds3runtime/scripts/sync_call_script.h"
-#include <ds3runtime/scripts/dynamic_pvp_patch.h>
-#include <ds3runtime/scripts/bonk_sound_cosmetic.h>
-#include <ds3runtime/scripts/npc_mod_test.h>
-#include <ds3runtime/scripts/player_name_talk.h>
-#include <ds3runtime/scripts/damage_update_test.h>
-#include <ds3runtime/scripts/interrupt_attacks.h>
-#include <ds3runtime/hooks/ds1_backstabs.h>
-*/
 #include <ds3runtime/scripts/param_patcher.h>
-#include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
-/*
-#include <ds3runtime/hooks/ds3_iframe_patch_hit_reg_hook.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_hit_reg_hook_shockwave.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_hit_uuid_hook.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_hit_uuid_identify.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_hit_sibling_hook.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_hit_delete.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_no_player_iframes.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_attacker_effect_hook.h>
-#include <ds3runtime/hooks/ds3_iframe_patch_durablity_cost_hook.h>
-#include <ds3runtime/scripts/ds3_iframe_patch.h>
-#include <ds3runtime/scripts/mod_p2p_filter.h>
-*/
 
 using namespace ds3runtime;
 
@@ -76,39 +48,10 @@ static bool attach()
     ds3runtime_global->addHook(std::make_unique<SessionReceiveHook>());
     ds3runtime_global->addHook(std::make_unique<SessionSendHook>());
     ds3runtime_global->addHook(std::make_unique<ThrowHook>());
-    ds3runtime_global->addHook(std::make_unique<SprjChrDamageModuleHook>());
-    //ds3runtime_global->addHook(std::make_unique<DS1Backstabs>());
     ds3runtime_global->addHook(std::make_unique<PlayAnimationHook>());
     ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
     ds3runtime_global->runScript(std::make_unique<FMODSystemHandler>());
     ds3runtime_global->runScript(std::make_unique<AnimationIdHandler>());
-    //ds3runtime_global->runScript(std::make_unique<SyncCallScript>());
-    ds3runtime_global->runScript(std::make_unique<KingCrimsonProtections>());
-    //ds3runtime_global->runScript(std::make_unique<LatencySimulator>());
-    //ds3runtime_global->runScript(std::make_unique<FaceDataCapture>());
-    //ds3runtime_global->runScript(std::make_unique<ImposterSoundCosmetic>());
-    //ds3runtime_global->runScript(std::make_unique<BonkSoundCosmetic>());
-    //ds3runtime_global->runScript(std::make_unique<InterruptAttacks>());
-    //ds3runtime_global->runScript(std::make_unique<TalkWithPlayerName>());
-    //ds3runtime_global->runScript(std::make_unique<DynamicPvpPatch>());
-    //ds3runtime_global->setAsyncMode(true);
-    //ds3runtime_global->runScript(std::make_unique<NPCModTest>());
-    //ds3runtime_global->runScript(std::make_unique<YhormScreamOnWarcry>());
-
-    /*
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::FixDurablityCost>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::AttackerEffectHook>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitBoxDeleteHook>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitBoxHierarchyHook>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::NoPlayerIFrames>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitUUIDIdentifyHook>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitRegHook>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitRegHookShockwave>());
-    ds3runtime_global->addHook(std::make_unique<ds3IFramePatch::HitBoxUUIDHook>());
-    ds3runtime_global->runScript(std::make_unique<ds3IFramePatch::DS3IFramePatch>());
-    ds3runtime_global->runScript(std::make_unique<ModP2PFilter>());
-    */
-    
     ds3runtime_global->attach();
     spdlog::info("Sucessfully loaded!");
     return true;
