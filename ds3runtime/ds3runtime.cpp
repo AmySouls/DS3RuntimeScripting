@@ -81,8 +81,7 @@ bool DS3RuntimeScripting::removeScript(const uint64_t& uniqueId)
 		else scripts[i]->setDetaching();
 		return detachResult;
 	}
-
-	throw ScriptNotFoundException;
+	
 	return false;
 }
 
@@ -95,8 +94,7 @@ bool DS3RuntimeScripting::removeScript(const std::string& name)
 		else scripts[i]->setDetaching();
 		return detachResult;
 	}
-
-	throw ScriptNotFoundException;
+	
 	return false;
 }
 
@@ -129,7 +127,6 @@ ScriptModule* DS3RuntimeScripting::accessScript(const uint64_t& scriptUniqueId)
 		break;
 	}
 	
-	if (matchingScript == nullptr) throw ScriptNotFoundException;
 	return matchingScript;
 }
 
@@ -142,8 +139,7 @@ ScriptModule* DS3RuntimeScripting::accessScript(const std::string& name)
 		matchingScript = script.get();
 		break;
 	}
-
-	if (matchingScript == nullptr) throw ScriptNotFoundException;
+	
 	return matchingScript;
 }
 
@@ -156,8 +152,7 @@ Hook* DS3RuntimeScripting::accessHook(const std::string& name)
 		matchingHook = hook.get();
 		break;
 	}
-
-	if (matchingHook == nullptr) throw HookNotFoundException;
+	
 	return matchingHook;
 }
 
@@ -174,18 +169,18 @@ DWORD DS3RuntimeScripting::getGameThreadId()
 std::string DS3RuntimeScripting::utf8_encode(const std::wstring &wstr)
 {
 	if (wstr.empty()) return std::string();
-	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), NULL, 0, NULL, NULL);
+	int size_needed = WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), NULL, 0, NULL, NULL);
 	std::string strTo(size_needed, 0);
-	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], (int)wstr.size(), &strTo[0], size_needed, NULL, NULL);
+	WideCharToMultiByte(CP_UTF8, 0, &wstr[0], static_cast<int>(wstr.size()), &strTo[0], size_needed, NULL, NULL);
 	return strTo;
 }
 
 std::wstring DS3RuntimeScripting::utf8_decode(const std::string &str)
 {
 	if (str.empty()) return std::wstring();
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), NULL, 0);
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), NULL, 0);
 	std::wstring wstrTo(size_needed, 0);
-	MultiByteToWideChar(CP_UTF8, 0, &str[0], (int)str.size(), &wstrTo[0], size_needed);
+	MultiByteToWideChar(CP_UTF8, 0, &str[0], static_cast<int>(str.size()), &wstrTo[0], size_needed);
 	return wstrTo;
 }
 
