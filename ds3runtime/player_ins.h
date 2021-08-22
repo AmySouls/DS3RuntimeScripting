@@ -42,25 +42,25 @@ public:
 
 	uintptr_t* getNetworkPointer();
 
-	int32_t getLeftHandWeapon(uint32_t slotNumber);
+	int32_t getLeftHandWeapon(const uint32_t& slotNumber) const;
 
-	void setLeftHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId);
+	void setLeftHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
-	int32_t getRightHandWeapon(uint32_t slotNumber);
+	int32_t getRightHandWeapon(const uint32_t& slotNumber);
 
-	void setRightHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId);
+	void setRightHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
 	int32_t getHead();
 
-	void setHead(int32_t equipParamProtectorId);
+	void setHead(const int32_t& equipParamProtectorId);
 
 	int32_t getChest();
 
-	void setChest(int32_t equipParamProtectorId);
+	void setChest(const int32_t&equipParamProtectorId);
 
 	int32_t getHands();
 
-	void setHands(int32_t equipParamProtectorId);
+	void setHands(const int32_t& equipParamProtectorId);
 
 	int32_t getLegs();
 
@@ -73,28 +73,40 @@ public:
 	* @param offsetNumber The PlayerIns number to get the address of
 	* @return The base address of the specified PlayerIns if they exist in memory, otherwise this returns 0.
 	*/
-	void setLegs(int32_t equipParamProtectorId);
+	void setLegs(const int32_t& equipParamProtectorId);
 
-	int32_t getRing(uint32_t slotNumber);
+	int32_t getRing(const uint32_t& slotNumber);
 
-	void setRing(uint32_t slotNumber, int32_t equipParamAccessoryId);
+	void setRing(const uint32_t& slotNumber, const int32_t& equipParamAccessoryId);
 
+	/**
+	* Checks if the "No Goods Consume" debug flag is set for this Player. This flag prevents consumption of inventory goods which may allow them to be used 
+	  infintely.
+	* 
+	* @return True if the "No Goods Consume" debug flag is set for this Player.
+	*/
 	bool isNoGoodsConsume();
-
-	void setNoGoodsConsume(bool value);
+	
+	/**
+	* Sets the "No Goods Consume" debug flag on or off for this Player. This flag prevents consumption of inventory goods which may allow them to be used 
+	  infintely.
+	* 
+	* @param value The state to set for the flag.
+	*/
+	void setNoGoodsConsume(const bool& value);
 
 	uintptr_t getPlayerCtrl();
 
-	/*
-	* Gets a handle to this player's network handle on the game's peer-to-peer network.
+	/**
+	* Gets a pointer to this player's network handle on the game's peer-to-peer network.
 	* 
-	* @return handle to this player's network handle on the game's peer-to-peer network.
+	* @return Pointer to this player's network handle on the game's peer-to-peer network.
 	*/
 	uintptr_t* getNetworkHandle();
 
 	bool isValid();
 
-	/*
+	/**
 	* Get the base address of PlayerIns by the offset multiplier in memory. 
 	* 
 	* 0 is the main character you control in the game, 1-5 are the PlayerInss 
@@ -103,25 +115,37 @@ public:
 	* @param offsetNumber The PlayerIns number to get the address of
 	* @return The base address of the specified PlayerIns if they exist in memory, otherwise this returns 0.
 	*/
-	static uintptr_t getAddressByOffsetNumber(OffsetNumber offsetNumber);
+	static uintptr_t getAddressByOffsetNumber(const OffsetNumber& offsetNumber);
 
-	/*
-	* Check if an address is the base address of a PlayerIns. 
+	/**
+	* Check if an address is the virtual address of a PlayerIns. 
 	* 
-	* Compares this address with the base addresses of PlayerInss in memory, 
-	* and calls isEntity to verify that the PlayerIns is also a valid entity
-	* 
-	* @param address Base address to check.
+	* @param address Virtual address to check.
 	* @return True if address is the base address of a PlayerIns.
 	*/
-	static bool isPlayer(uintptr_t address);
+	static bool isPlayer(const uintptr_t& address);
 
+	/**
+	* Get the virtual address of the main chr(The player charater the game takes the perspective of and allows you to control).
+	* 
+	* @return Virtual address of the main chr.
+	*/
 	static uintptr_t getMainChrAddress();
 
-	static bool isMainChr(uintptr_t address);
+	/**
+	* Check if an address matches the virtual address of the main chr. 
+	* 
+	* @param address Virtual address to check.
+	* @return True if address is the virtual address of the main chr.
+	*/
+	static bool isMainChr(const uintptr_t& address);
 
+	/**
+	* Check if the main chr is loaded(The player charater the game takes the perspective of and allows you to control).
+	* 
+	* @return True if the main chr is loaded
+	*/
 	static bool isMainChrLoaded();
-private:
 };
 
 }
