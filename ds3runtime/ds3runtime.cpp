@@ -4,10 +4,6 @@
 
 namespace ds3runtime {
 
-DS3RuntimeScripting::DS3RuntimeScripting()
-{
-}
-
 void DS3RuntimeScripting::setAsyncMode(const bool& async)
 {
 	this->async = async;
