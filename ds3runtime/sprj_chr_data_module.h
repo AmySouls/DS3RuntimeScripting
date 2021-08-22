@@ -335,15 +335,15 @@ public:
 	void setNoDead(const bool& value);
 
 	/**
-	* Sets the "No Stamina Consumption" debug flag on or off for this Chr. This flag prevents consumption of stamina on preforming actions.
+	* Checks if the "No Stamina Consumption" debug flag is set for this Chr. This flag prevents consumption of stamina on preforming actions.
 	* 
 	* @return True if the "No Stamina Consumption" debug flag is set for this Chr.
 	*/
 	bool isNoStaminaConsumption() const;
 
 	/**
-	* Checks if the "No Stamina Consumption" debug flag is set for this Chr. This flag prevents consumption of stamina on preforming actions.
-	* 
+	* Sets the "No Stamina Consumption" debug flag on or off for this Chr. This flag prevents consumption of stamina on preforming actions.
+	*
 	* @param value The state to set for the flag.
 	*/
 	void setNoStaminaConsumption(const bool& value);
