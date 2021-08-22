@@ -5,41 +5,35 @@
 
 namespace ds3runtime {
 
-Hook::Hook(uintptr_t original, uintptr_t replacement)
+Hook::Hook(uintptr_t originalFunc, uintptr_t replacementFunc) 
+    : original(std::make_unique<uintptr_t>(originalFunc))
+      replacement(std::make_unique<uintptr_t>(replacementFunc))
 {
-    this->original = new uintptr_t;
-    *this->original = original;
-    this->replacement = new uintptr_t;
-    *this->replacement = replacement;
-}
-
-Hook::~Hook()
-{
-    delete original;
-    delete replacement;
 }
 
 bool Hook::install()
 {
     auto txn_status = DetourTransactionBegin();
     if (txn_status != NO_ERROR) throw std::runtime_error("Unable to create a Detours transaction");
-    txn_status = DetourAttach((PVOID*)original, (PVOID)*replacement);
-    if (txn_status != NO_ERROR) (void)DetourTransactionAbort();
+    txn_status = DetourAttach(reinterpret_cast<PVOID*>(original), reinterpret_cast<PVOID>(*replacement));
+    if (txn_status != NO_ERROR) DetourTransactionAbort();
     txn_status = DetourTransactionCommit();
     return txn_status == NO_ERROR;
 }
 
 bool Hook::uninstall()
 {
-    DetourTransactionBegin();
-    DetourDetach((PVOID*)original, (PVOID)*replacement);
-    DetourTransactionCommit();
-    return true;
+    auto txn_status = DetourTransactionBegin();
+    if (txn_status != NO_ERROR) throw std::runtime_error("Unable to create a Detours transaction");
+    txn_status = DetourDetach(reinterpret_cast<PVOID*>(original), reinterpret_cast<PVOID>(*replacement));
+    if (txn_status != NO_ERROR) DetourTransactionAbort();
+    txn_status = DetourTransactionCommit();
+    return txn_status == NO_ERROR;
 }
 
 uintptr_t* Hook::getOriginal()
 {
-    return original;
+    return original.get();
 }
 
 }
