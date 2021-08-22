@@ -306,21 +306,68 @@ public:
 	*/
 	void setBaseMaxFP(const uint32_t& baseMaxFp);
 
+	/**
+	* Checks if the "No Damage" debug flag is set for this Chr. This flag prevents health from being changed by received attacks on this Chr.
+	* 
+	* @return True if the "No Damage" debug flag is set for this Chr.
+	*/
 	bool isNoDamage() const;
 
+	/**
+	* Sets the "No Damage" flag on or off for this Chr. This flag prevents health from being changed by received attacks on this Chr.
+	* 
+	* @param value The state to set for the flag.
+	*/
 	void setNoDamage(const bool& value);
 
+	/**
+	* Sets the "No Dead" debug flag on or off for this Chr. This flag protects this Chr from several sources of death and doesn't allow health to reach 0.
+	* 
+	* @return True if the "No Dead" debug flag is set for this Chr.
+	*/
 	bool isNoDead() const;
 
+	/**
+	* Checks if the "No Dead" debug flag is set for this Chr. This flag protects this Chr from several sources of death and doesn't allow health to reach 0.
+	* 
+	* @param value The state to set for the flag.
+	*/
 	void setNoDead(const bool& value);
 
+	/**
+	* Sets the "No Stamina Consumption" debug flag on or off for this Chr. This flag prevents consumption of stamina on preforming actions.
+	* 
+	* @return True if the "No Stamina Consumption" debug flag is set for this Chr.
+	*/
 	bool isNoStaminaConsumption() const;
 
+	/**
+	* Checks if the "No Stamina Consumption" debug flag is set for this Chr. This flag prevents consumption of stamina on preforming actions.
+	* 
+	* @param value The state to set for the flag.
+	*/
 	void setNoStaminaConsumption(const bool& value);
 
+	/**
+	* Checks if the "No FP Consumption" debug flag is set for this Chr. This flag prevents consumption of FP on preforming weapon arts and magic.
+	* 
+	* @return True if the "No FP Consumption" debug flag is set for this Chr.
+	*/
 	bool isNoFPConsumption() const;
 
+	/**
+	* Sets the "No FP Consumption" debug flag is set for this Chr. This flag prevents consumption of FP on preforming weapon arts and magic.
+	*
+	* @param value The state to set for the flag.
+	*/
 	void setNoFPConsumption(const bool& value);
+	
+	/**
+	* Gets the virtual address of the object this class is handling.
+	* 
+	* @return Virtual address of this SprjChrDataModule.
+	*/
+	uintptr_t getAddress();
 private:
 	uintptr_t address;
 };
