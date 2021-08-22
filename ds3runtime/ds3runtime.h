@@ -10,8 +10,6 @@ namespace ds3runtime {
 class DS3RuntimeScripting
 {
 public:
-	DS3RuntimeScripting();
-
 	/**
 	 * Sets if DS3RuntimeScripting should run in async mode, by default it does not.
 	 *
@@ -68,12 +66,35 @@ public:
 	 */
 	void executeScripts();
 
+	/**
+	 * Retrieves a pointer to the script associated with this unique id if exists and is installed.
+	 *
+	 * @param scriptUniqueId Unique id of the script to retrieve.
+	 * @return Pointer to the target script, or nullptr if there is no script with this id installed.
+	 */
 	ScriptModule* accessScript(const uint64_t& scriptUniqueId);
 
+	/**
+	 * Retrieves a pointer to this script if there is one of this name installed.
+	 *
+	 * @param name Name of the script to retrieve.
+	 * @return Pointer to the target script, or nullptr if there is no script with this name installed.
+	 */
 	ScriptModule* accessScript(const std::string& name);
 
+	/**
+	 * Retrieves a pointer to this hook if there is one of this name installed.
+	 *
+	 * @param name Name of the hook to retrieve.
+	 * @return Pointer to the target hook, or nullptr if there is no hook with this name installed.
+	 */
 	Hook* accessHook(const std::string& name);
 
+	/**
+	 * Tells DS3RuntimeScripting what thread id identifies the game's main thread.
+	 *
+	 * @param gameThreadId Thread id of the game's main thread.
+	 */
 	void setGameThreadId(const DWORD& gameThreadId);
 
 	/**
@@ -83,8 +104,22 @@ public:
 	 */
 	DWORD getGameThreadId();
 
+	/**
+	 * Useful function for creating a utf-8 encoded copy of a utf-16 string. Uses windows API.
+	   Takes a std::wstring and returns a std::string copy.
+	 *
+	 * @param wstr Wide string to convert.
+	 * @return Conversted string.
+	 */
 	std::string utf8_encode(const std::wstring& wstr);
 
+	/**
+	 * Useful function for creating a utf-16 string copy of a utf-8 string. Uses windows API.
+	   Takes a std::string and returns a std::wstring copy.
+	 * 
+	 * @param str String to convert.
+	 * @return Converted string.
+	 */
 	std::wstring utf8_decode(const std::string& str);
 private:
 	std::vector<std::unique_ptr<Hook>> hooks;
