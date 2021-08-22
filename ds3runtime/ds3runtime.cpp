@@ -23,7 +23,7 @@ void DS3RuntimeScripting::attach()
 		}
 	}
 	else {
-		asyncModeThreadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)asyncModeThreadProc, NULL, 0, NULL);
+		asyncModeThreadHandle = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(asyncModeThreadProc), NULL, 0, NULL);
 	}
 }
 
@@ -47,7 +47,7 @@ bool DS3RuntimeScripting::detach()
 			if (detachResult) script->remove();
 			else {
 				spdlog::warn("Script {} was unable to detach...", script->getName());
-				script->setDetaching(true);
+				script->setDetaching();
 			}
 
 			return detachResult;
@@ -61,14 +61,14 @@ bool DS3RuntimeScripting::detach()
 	return true;
 }
 
-void DS3RuntimeScripting::addHook(std::unique_ptr<Hook> hook)
+void DS3RuntimeScripting::addHook(std::unique_ptr<Hook>& hook)
 {
 	hooks.push_back(std::move(hook));
 }
 
-void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule> script)
+void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule>& script)
 {
-	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script.get());
+	if (script->isAsync()) (reinterpret_cast<AsyncModule*>(script.get())->createThread(script.get());
 	scripts.insert(scripts.begin(), std::move(script));
 }
 
@@ -78,11 +78,12 @@ bool DS3RuntimeScripting::removeScript(const uint64_t& uniqueId)
 		bool detachResult = true;
 		if (scripts[i]->isAttached()) detachResult = scripts[i]->onDetach();
 		if (detachResult) scripts[i]->remove();
-		else scripts[i]->setDetaching(true);
+		else scripts[i]->setDetaching();
 		return detachResult;
 	}
 
-	return true;
+	throw ScriptNotFoundException;
+	return false;
 }
 
 bool DS3RuntimeScripting::removeScript(const std::string& name)
@@ -91,11 +92,12 @@ bool DS3RuntimeScripting::removeScript(const std::string& name)
 		bool detachResult = true;
 		if (scripts[i]->isAttached()) detachResult = scripts[i]->onDetach();
 		if (detachResult) scripts[i]->remove();
-		else scripts[i]->setDetaching(true);
+		else scripts[i]->setDetaching();
 		return detachResult;
 	}
 
-	return true;
+	throw ScriptNotFoundException;
+	return false;
 }
 
 void DS3RuntimeScripting::executeScripts()
@@ -111,7 +113,7 @@ void DS3RuntimeScripting::executeScripts()
 	}
 
 	for (auto&& script : scripts) if (!script->isAsync()) {
-		if (!script->isAttached()) script->tryAttach(script->onAttach());
+		if (!script->isAttached() && script->onAttach()) script->setAttached();
 		else if (script->isDetaching() && script->onDetach()) script->remove();
 		else script->execute();
 	}
@@ -126,7 +128,8 @@ ScriptModule* DS3RuntimeScripting::accessScript(const uint64_t& scriptUniqueId)
 		matchingScript = script.get();
 		break;
 	}
-
+	
+	if (matchingScript == nullptr) throw ScriptNotFoundException;
 	return matchingScript;
 }
 
@@ -140,10 +143,11 @@ ScriptModule* DS3RuntimeScripting::accessScript(const std::string& name)
 		break;
 	}
 
+	if (matchingScript == nullptr) throw ScriptNotFoundException;
 	return matchingScript;
 }
 
-Hook* DS3RuntimeScripting::accessHook(constbcstd::string& name)
+Hook* DS3RuntimeScripting::accessHook(const std::string& name)
 {
 	Hook* matchingHook = nullptr;
 
@@ -153,6 +157,7 @@ Hook* DS3RuntimeScripting::accessHook(constbcstd::string& name)
 		break;
 	}
 
+	if (matchingHook == nullptr) throw HookNotFoundException;
 	return matchingHook;
 }
 

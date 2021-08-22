@@ -10,9 +10,8 @@
 
 namespace ds3runtime {
 
-ScriptModule::ScriptModule()
+ScriptModule::ScriptModule() : uniqueId(uniqueIdCounter)
 {
-	uniqueId = uniqueIdCounter;
 	uniqueIdCounter++;
 }
 
@@ -46,14 +45,14 @@ bool ScriptModule::isDetaching()
 	return detaching;
 }
 
-void ScriptModule::tryAttach(const bool attachState)
+void ScriptModule::setAttached()
 {
-	attached = attachState;
+	attached = true;
 }
 
-void ScriptModule::setDetaching(const bool detachState)
+void ScriptModule::setDetaching()
 {
-	detaching = detachState;
+	detaching = true;
 }
 
 uint64_t ScriptModule::getUniqueId()

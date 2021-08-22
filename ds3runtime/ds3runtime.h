@@ -18,9 +18,9 @@ public:
 
 	bool detach();
 
-	void addHook(std::unique_ptr<Hook> hook);
+	void addHook(std::unique_ptr<Hook>& hook);
 
-	void runScript(std::unique_ptr<ScriptModule> script);
+	void runScript(std::unique_ptr<ScriptModule>& script);
 
 	bool removeScript(const uint64_t& uniqueId);
 
