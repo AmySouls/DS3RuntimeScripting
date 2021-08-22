@@ -5,9 +5,7 @@ namespace ds3runtime {
 
 class Hook {
 public:
-	Hook(uintptr_t original, uintptr_t replacement);
-
-	~Hook();
+	Hook(uintptr_t originalFunc, uintptr_t replacementFunc);
 	
 	/**
 	 * Preforms the attaching of this hook via a Detours transaction.
@@ -37,8 +35,8 @@ public:
 	 */
 	uintptr_t* getOriginal();
 protected:
-	uintptr_t* original;
-	uintptr_t* replacement;
+	std::unique_ptr<uintptr_t> original;
+	std::unique_ptr<uintptr_t> replacement;
 };
 
-}
+
