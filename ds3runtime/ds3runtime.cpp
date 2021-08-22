@@ -47,7 +47,7 @@ bool DS3RuntimeScripting::detach()
 			if (detachResult) script->remove();
 			else {
 				spdlog::warn("Script {} was unable to detach...", script->getName());
-				script->setDetaching(true);
+				script->setDetaching();
 			}
 
 			return detachResult;
@@ -78,7 +78,7 @@ bool DS3RuntimeScripting::removeScript(const uint64_t& uniqueId)
 		bool detachResult = true;
 		if (scripts[i]->isAttached()) detachResult = scripts[i]->onDetach();
 		if (detachResult) scripts[i]->remove();
-		else scripts[i]->setDetaching(true);
+		else scripts[i]->setDetaching();
 		return detachResult;
 	}
 
@@ -92,7 +92,7 @@ bool DS3RuntimeScripting::removeScript(const std::string& name)
 		bool detachResult = true;
 		if (scripts[i]->isAttached()) detachResult = scripts[i]->onDetach();
 		if (detachResult) scripts[i]->remove();
-		else scripts[i]->setDetaching(true);
+		else scripts[i]->setDetaching();
 		return detachResult;
 	}
 
@@ -113,7 +113,7 @@ void DS3RuntimeScripting::executeScripts()
 	}
 
 	for (auto&& script : scripts) if (!script->isAsync()) {
-		if (!script->isAttached()) script->setAttach(script->onAttach());
+		if (!script->isAttached() && script->onAttach()) script->setAttached();
 		else if (script->isDetaching() && script->onDetach()) script->remove();
 		else script->execute();
 	}
