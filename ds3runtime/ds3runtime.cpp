@@ -8,7 +8,7 @@ DS3RuntimeScripting::DS3RuntimeScripting()
 {
 }
 
-void DS3RuntimeScripting::setAsyncMode(bool async)
+void DS3RuntimeScripting::setAsyncMode(const bool& async)
 {
 	this->async = async;
 }
@@ -61,18 +61,18 @@ bool DS3RuntimeScripting::detach()
 	return true;
 }
 
-void DS3RuntimeScripting::addHook(std::unique_ptr<Hook> hook)
+void DS3RuntimeScripting::addHook(std::unique_ptr<Hook>& hook)
 {
 	hooks.push_back(std::move(hook));
 }
 
-void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule> script)
+void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule>& script)
 {
 	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script.get());
 	scripts.insert(scripts.begin(), std::move(script));
 }
 
-bool DS3RuntimeScripting::removeScript(uint64_t uniqueId)
+bool DS3RuntimeScripting::removeScript(const uint64_t& uniqueId)
 {
 	for (int i = 0; i < scripts.size(); i++) if (uniqueId == scripts[i]->getUniqueId()) {
 		bool detachResult = true;
@@ -82,10 +82,11 @@ bool DS3RuntimeScripting::removeScript(uint64_t uniqueId)
 		return detachResult;
 	}
 
-	return true;
+	throw ScriptNotFoundException;
+	return false;
 }
 
-bool DS3RuntimeScripting::removeScript(std::string name)
+bool DS3RuntimeScripting::removeScript(const std::string& name)
 {
 	for (int i = 0; i < scripts.size(); i++) if (name == scripts[i]->getName()) {
 		bool detachResult = true;
@@ -95,7 +96,8 @@ bool DS3RuntimeScripting::removeScript(std::string name)
 		return detachResult;
 	}
 
-	return true;
+	throw ScriptNotFoundException;
+	return false;
 }
 
 void DS3RuntimeScripting::executeScripts()
@@ -117,7 +119,7 @@ void DS3RuntimeScripting::executeScripts()
 	}
 }
 
-ScriptModule* DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
+ScriptModule* DS3RuntimeScripting::accessScript(const uint64_t& scriptUniqueId)
 {
 	ScriptModule* matchingScript = nullptr;
 
@@ -126,11 +128,12 @@ ScriptModule* DS3RuntimeScripting::accessScript(uint64_t scriptUniqueId)
 		matchingScript = script.get();
 		break;
 	}
-
+	
+	if (matchingScript == nullptr) throw ScriptNotFoundException;
 	return matchingScript;
 }
 
-ScriptModule* DS3RuntimeScripting::accessScript(std::string name)
+ScriptModule* DS3RuntimeScripting::accessScript(const std::string& name)
 {
 	ScriptModule* matchingScript = nullptr;
 
@@ -140,10 +143,11 @@ ScriptModule* DS3RuntimeScripting::accessScript(std::string name)
 		break;
 	}
 
+	if (matchingScript == nullptr) throw ScriptNotFoundException;
 	return matchingScript;
 }
 
-Hook* DS3RuntimeScripting::accessHook(std::string name)
+Hook* DS3RuntimeScripting::accessHook(const std::string& name)
 {
 	Hook* matchingHook = nullptr;
 
@@ -153,10 +157,11 @@ Hook* DS3RuntimeScripting::accessHook(std::string name)
 		break;
 	}
 
+	if (matchingHook == nullptr) throw HookNotFoundException;
 	return matchingHook;
 }
 
-void DS3RuntimeScripting::setGameThreadId(DWORD threadId)
+void DS3RuntimeScripting::setGameThreadId(const DWORD& threadId)
 {
 	gameThreadId = threadId;
 }
