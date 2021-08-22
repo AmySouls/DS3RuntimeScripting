@@ -38,16 +38,56 @@ public:
 
 	PlayerIns(uintptr_t address);
 
+	/**
+	* Gets the virtual address of this Player's PlayerGameData object.
+	* 
+	* @return Virtual address of this Player's PlayerGameData object.
+	*/
 	uintptr_t getPlayerGameData();
 
+	/**
+	* Gets the virtual address of this Player's NetworkPointer object.
+	* 
+	* @return Virtual address of this Player's NetworkPointer object.
+	*/
 	uintptr_t* getNetworkPointer();
 
+	/**
+	* Gets the item in the specified left weapon slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The weapon slot to get the weapon from, must be a integer ranging 1-3.
+	* @return equipParamId of the weapon in this slot.
+	*/
 	int32_t getLeftHandWeapon(const uint32_t& slotNumber) const;
 
+	/**
+	* Sets the item in the specified left hand weapon slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param slotNumber The weapon slot to put the weapon in, must be an integer ranging 1-3.
+	* @param equipParamWeaponId equipParamId of the weapon to put in this slot.
+	*/
 	void setLeftHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
+	/**
+	* Gets the item in the specified right weapon slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The weapon slot to get the weapon from, must be a integer ranging 1-3.
+	* @return equipParamId of the weapon in this slot.
+	*/
 	int32_t getRightHandWeapon(const uint32_t& slotNumber) const;
 
+	/**
+	* Sets the item in the specified right hand weapon slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param slotNumber The weapon slot to put the weapon in, must be an integer ranging 1-3.
+	* @param equipParamWeaponId equipParamId of the weapon to put in this slot.
+	*/
 	void setRightHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
 	/**
@@ -132,7 +172,7 @@ public:
 	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
  	  at the top of the file.
 	* 
-	* @param slotNumber The ring slot to put the ring in, must be a integer ranging 1-4.
+	* @param slotNumber The ring slot to put the ring in, must be an integer ranging 1-4.
 	* @param equipParamAccessoryId equipParamId of the ring to put in this slot.
 	*/
 	void setRing(const uint32_t& slotNumber, const int32_t& equipParamAccessoryId);
