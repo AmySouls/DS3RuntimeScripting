@@ -23,7 +23,7 @@ void DS3RuntimeScripting::attach()
 		}
 	}
 	else {
-		asyncModeThreadHandle = CreateThread(NULL, 0, (LPTHREAD_START_ROUTINE)asyncModeThreadProc, NULL, 0, NULL);
+		asyncModeThreadHandle = CreateThread(NULL, 0, reinterpret_cast<LPTHREAD_START_ROUTINE>(asyncModeThreadProc), NULL, 0, NULL);
 	}
 }
 
@@ -68,7 +68,7 @@ void DS3RuntimeScripting::addHook(std::unique_ptr<Hook>& hook)
 
 void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule>& script)
 {
-	if (script->isAsync()) ((AsyncModule*)script.get())->createThread(script.get());
+	if (script->isAsync()) (reinterpret_cast<AsyncModule*>(script.get())->createThread(script.get());
 	scripts.insert(scripts.begin(), std::move(script));
 }
 
