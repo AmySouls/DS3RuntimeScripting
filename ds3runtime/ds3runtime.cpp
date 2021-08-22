@@ -113,7 +113,7 @@ void DS3RuntimeScripting::executeScripts()
 	}
 
 	for (auto&& script : scripts) if (!script->isAsync()) {
-		if (!script->isAttached()) script->tryAttach(script->onAttach());
+		if (!script->isAttached()) script->setAttach(script->onAttach());
 		else if (script->isDetaching() && script->onDetach()) script->remove();
 		else script->execute();
 	}
