@@ -26,7 +26,7 @@ ChrIns::ChrType ChrIns::getChrType() const
 	return static_cast<ChrType>(*accessMultilevelPointer<uint32_t>(address + 0x70));
 }
 
-void ChrIns::setChrType(const ChrType &chrType)
+void ChrIns::setChrType(const ChrType& chrType)
 {
 	*accessMultilevelPointer<uint32_t>(address + 0x70) = static_cast<uint32_t>(chrType);
 }
