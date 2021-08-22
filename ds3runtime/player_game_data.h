@@ -93,61 +93,131 @@ public:
 	enum class Age : uint8_t {
 		Young = 0,
 		Mature = 1,
-		Age = 2,
+		Aged = 2,
 		Gael = 3
 	};
 
 	PlayerGameData(uintptr_t address);
 
-	int32_t getPlayerNo();
+	/**
+	* Gets this players numeber, which is used to identify unique players in online sessions.
+	* 
+	* @return The player number.
+	*/
+	int32_t getPlayerNo() const;
 
-	Voice getVoice();
+	/**
+	* Gets the voice type of his player. 
+	* 
+	* @return The player's voice type.
+	*/
+	Voice getVoice() const;
 
-	void setVoice(Voice voice);
+	/**
+	* Sets the voice type of his player. 
+	* 
+	* @param voice The voice type to give to the player.
+	*/
+	void setVoice(const Voice& voice);
 
-	Class getClass();
+	/**
+	* Gets the starting class of this player. 
+	* 
+	* @return The starting class of this player.
+	*/
+	Class getClass() const;
 
-	void setClass(Class chrClass);
+	/**
+	* Sets the starting class of this player. 
+	* 
+	* @param chrClass The starting class to set for this player.
+	*/
+	void setClass(const Class& chrClass);
 
-	Gender getGender();
+	/**
+	* Gets the gender of this player. 
+	* 
+	* @return This player's gender.
+	*/
+	Gender getGender() const;
 
-	void setGender(Gender gender);
+	/**
+	* Sets the gender of this player. 
+	* 
+	* @param gender The gender to set for this player.
+	*/
+	void setGender(const Gender& gender);
 
-	Age getAge();
+	/**
+	* Gets the age type of this player. 
+	* 
+	* @return The age type of this player.
+	*/
+	Age getAge() const;
 
-	void setAge(Age age);
+	/**
+	* Sets the age type of this player. 
+	* 
+	* @param age The age type to set for this player.
+	*/
+	void setAge(const Age& age);
 
-	Attributes getAttributes();
+	/**
+	* Gets the attributes(also known as stats) of this player. 
+	* 
+	* @return The attributes of this player.
+	*/
+	Attributes getAttributes() const;
 
-	void setAttributes(Attributes attributes);
+	/**
+	* Sets the attributes(also known as stats) of this player. 
+	* 
+	* @param attributes The attributes to set for this player.
+	*/
+	void setAttributes(const Attributes& attributes);
 
-	std::wstring getName();
+	/**
+	* Gets the name of this player. 
+	* 
+	* @return This player's name.
+	*/
+	std::wstring getName() const;
 
-	void setName(std::wstring name);
+	/**
+	* Sets the name of this player. 
+	* 
+	* @param name The name to set for this player.
+	*/
+	void setName(const std::wstring& name);
 
-	Covenant getCovenant();
+	Covenant getCovenant() const;
 
-	void setCovenant(Covenant covenant);
+	void setCovenant(const Covenant& covenant);
 
-	InvadeType getInvadeType();
+	InvadeType getInvadeType() const;
 
-	void setInvadeType(InvadeType summonType);
+	void setInvadeType(const InvadeType& summonType);
 
+	/**
+	* Gets the virtual address of this player's EquipGameData.
+	* 
+	* @return The virtual address of this player's EquipGameData.
+	*/
 	uintptr_t getEquipGameData();
 
-	uint16_t getWeaponSheathData();
+	uint16_t getWeaponSheathData() const;
 
-	int32_t getRightHandSlot();
+	int32_t getRightHandSlot() const;
 
-	void setRightHandSlot(int32_t slot);
+	void setRightHandSlot(const int32_t& slot);
 
-	int32_t getLeftHandSlot();
+	int32_t getLeftHandSlot() const;
 
-	void setLeftHandSlot(int32_t slot);
+	void setLeftHandSlot(const int32_t& slot);
 
-	int32_t getWeaponSheathState();
+	int32_t getWeaponSheathState() const;
 
-	void setWeaponSheathState(int32_t slot);
+	void setWeaponSheathState(const int32_t& slot);
 private:
 	uintptr_t address;
 };
