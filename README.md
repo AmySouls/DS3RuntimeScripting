@@ -1,5 +1,5 @@
 # DS3RuntimeScripting
-DS3RuntimeScripting is a DLL you can compile for easy creation of mods for DARK SOULS III that interact with the game at runtime.
+DS3RuntimeScripting is a DLL you can compile for easy creation of mods for DARK SOULS III that runs code on the game's main thread and interacts with the game and it's objects at runtime.
 ```cpp
 static bool attach()
 {
@@ -54,14 +54,14 @@ private:
 ```
 
 ## Game Object Handle Classes
-You can use these for accessing class objects, structs, arrays and lists contained in the game.
+You can use these for accessing class objects, structs, arrays, lists, other data structures and functions contained in the game.
 ```cpp
-uint32_t ChrIns::getHealth()
+uint32_t SprjChrDataModule::getHealth()
 {
 	return *accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xD8);
 }
 
-void ChrIns::setHealth(uint32_t health)
+void SprjChrDataModule:setHealth(const uint32_t& health)
 {
 	*accessMultilevelPointer<uint32_t>(address + 0x1F90, 0x18, 0xD8) = health;
 }
