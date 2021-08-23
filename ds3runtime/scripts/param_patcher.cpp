@@ -10,45 +10,45 @@ extern "C" {
 
 namespace ds3runtime {
 
-ParamHandler::ParamHandler(std::string patchId, std::wstring param, int32_t id)
+ParamHandler::ParamHandler(const std::string& patchId, const std::wstring& param, const int32_t& id)
 {
     this->patchId = patchId;
     this->param = param;
     this->id = id;
 }
 
-bool ParamHandler::isValidParam()
+bool ParamHandler::isValidParam() const
 {
-    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+    return (dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
         ->isValidParam(param, id);
 }
 
-bool ParamHandler::readBinary(uintptr_t offset, uint8_t binaryOffset)
+bool ParamHandler::readBinary(const uintptr_t& offset, const uint8_t& binaryOffset) const
 {
-    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+    return (dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
         ->readBinary(param, id, offset, binaryOffset);
 }
 
-bool ParamHandler::readBinaryOriginal(uintptr_t offset, uint8_t binaryOffset)
+bool ParamHandler::readBinaryOriginal(const uintptr_t& offset, const uint8_t& binaryOffset) const
 {
-    return ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+    return (dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
         ->readBinaryOriginal(param, id, offset, binaryOffset);
 }
 
-void ParamHandler::patchBinary(uintptr_t offset, int8_t binaryOffset, bool value)
+void ParamHandler::patchBinary(const uintptr_t& offset, const int8_t& binaryOffset, const bool& value)
 {
     ParamPatchInfo patch = {};
     patch.patchId = patchId;
     patch.value = value;
     patch.size = sizeof(value);
-    ((ParamPatcher*)ds3runtime_global->accessScript("param_patcher"))
+    (dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
         ->patchBinary(param, id, offset, binaryOffset, patch);
 }
 
-void ParamHandler::patchBinary(std::string fieldName, bool value)
+void ParamHandler::patchBinary(const std::string& fieldName, const bool& value)
 {
-    for (ParamField field : ((ParamPatcher*)ds3runtime_global
-            ->accessScript("param_patcher"))->getParamLayout(param)) {
+    for (ParamField field : (dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
+	 	->getParamLayout(param)) {
         if (field.fieldName != fieldName) continue;
         patchBinary(field.bitOffset - field.bitOffset % 8, field.bitOffset % 8, value);
         break;
@@ -173,34 +173,34 @@ bool ParamPatcher::onDetach()
     return true;
 }
 
-bool ParamPatcher::doesIdExistInParam(std::wstring param, int32_t id)
+bool ParamPatcher::doesIdExistInParam(const std::wstring& param, const int32_t& id) const
 {
     return paramIdTables[param].find(id) != paramIdTables[param].end();
 }
 
-bool ParamPatcher::isValidParam(std::wstring param, int32_t id)
+bool ParamPatcher::isValidParam(const std::wstring& param, const int32_t& id) const
 {
     return accessMultilevelPointer<uint8_t>(paramIdTables[param][id]) != nullptr;
 }
 
-bool ParamPatcher::readBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset)
+bool ParamPatcher::readBinary(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const uint8_t& binaryOffset)
 {
-    return (*accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset) & (uint8_t)pow(2, binaryOffset)) == pow(2, binaryOffset);
+    return (*accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset) & static_cast<uint8_t>(pow(2, binaryOffset))) == pow(2, binaryOffset);
 }
 
-bool ParamPatcher::readBinaryOriginal(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset)
+bool ParamPatcher::readBinaryOriginal(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const uint8_t& binaryOffset)
 {
     std::vector<ParamPatchInfo>* patchList = &binaryPatchMap[param][id][offset][binaryOffset];
 
     if (patchList->size() == 0) {
-        return (*accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset) & (uint8_t)pow(2, binaryOffset)) == pow(2, binaryOffset);
+        return (*accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset) & static_cast<uint8_t>(pow(2, binaryOffset))) == pow(2, binaryOffset);
     }
     else {
-        return (patchList->at(0).value & (uint8_t)pow(2, binaryOffset)) == pow(2, binaryOffset);
+        return (patchList->at(0).value & static_cast<uint8_t>(pow(2, binaryOffset))) == pow(2, binaryOffset);
     }
 }
 
-void ParamPatcher::patch(std::wstring param, int32_t id, uintptr_t offset, ParamPatchInfo patch)
+void ParamPatcher::patch(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const ParamPatchInfo& patch)
 {
     if (patch.patchId == "original") return;
     std::unordered_map<int32_t,std::unordered_map<uintptr_t, std::vector<ParamPatchInfo>>> mapHuh = patchMap[param];
@@ -218,7 +218,7 @@ void ParamPatcher::patch(std::wstring param, int32_t id, uintptr_t offset, Param
     patchMap[param][id][offset] = patchList;
 }
 
-void ParamPatcher::patchBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset, ParamPatchInfo patch)
+void ParamPatcher::patchBinary(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const uint8_t& binaryOffset, const ParamPatchInfo& patch)
 {
     if (patch.patchId == "original") return;
     std::vector<ParamPatchInfo>* patchList = &binaryPatchMap[param][id][offset][binaryOffset];
@@ -227,18 +227,18 @@ void ParamPatcher::patchBinary(std::wstring param, int32_t id, uintptr_t offset,
     if (patchList->size() == 0) {
         ParamPatchInfo original = patch;
         original.patchId = "original";
-        original.value = (currentByte & (uint8_t)pow(2, binaryOffset)) == pow(2, binaryOffset);
+        original.value = (currentByte & static_cast<uint8_t>(pow(2, binaryOffset))) == pow(2, binaryOffset);
         patchList->push_back(original);
     }
 
     uint8_t newByte = currentByte;
-    if (patch.value) newByte = newByte | (uint8_t)pow(2, binaryOffset);
-    else newByte = (newByte & ~(uint8_t)pow(2, binaryOffset));
+    if (patch.value) newByte = newByte | static_cast<uint8_t>(pow(2, binaryOffset));
+    else newByte = (newByte & ~static_cast<uint8_t>(pow(2, binaryOffset)));
     *accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset) = newByte;
     patchList->push_back(patch);
 }
 
-void ParamPatcher::restore(std::wstring param, int32_t id, uintptr_t offset, std::string patchId)
+void ParamPatcher::restore(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const std::string& patchId)
 {
     if (patchId == "original") return;
     std::vector<ParamPatchInfo>* patchList = &patchMap[param][id][offset];
@@ -255,7 +255,7 @@ void ParamPatcher::restore(std::wstring param, int32_t id, uintptr_t offset, std
     memcpy((void*)(paramIdTables[param][id] + offset), &patch.value, patch.size);
 }
 
-void ParamPatcher::restoreBinary(std::wstring param, int32_t id, uintptr_t offset, uint8_t binaryOffset, std::string patchId)
+void ParamPatcher::restoreBinary(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const uint8_t& binaryOffset, const std::string& patchId)
 {
     if (patchId == "original") return;
     std::vector<ParamPatchInfo>* patchList = &binaryPatchMap[param][id][offset][binaryOffset];
@@ -270,12 +270,12 @@ void ParamPatcher::restoreBinary(std::wstring param, int32_t id, uintptr_t offse
     const ParamPatchInfo patch = (*patchList)[patchList->size() - 1];
     const uint8_t currentByte = *accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset);
     uint8_t newByte = currentByte;
-    if (patch.value) newByte = newByte | (uint8_t)pow(2, binaryOffset);
-    else newByte = (newByte & ~(uint8_t)pow(2, binaryOffset));
+    if (patch.value) newByte = newByte | static_cast<uint8_t>(pow(2, binaryOffset));
+    else newByte = (newByte & ~static_cast<uint8_t>(pow(2, binaryOffset)));
     *accessMultilevelPointer<uint8_t>(paramIdTables[param][id] + offset) = newByte;
 }
 
-void ParamPatcher::restore(std::string patchId)
+void ParamPatcher::restore(const std::string& patchId)
 {
     for (auto param : patchMap) {
         for (auto ids : param.second) {
@@ -296,7 +296,7 @@ void ParamPatcher::restore(std::string patchId)
     }
 }
 
-std::unordered_map<int32_t, uint64_t> ParamPatcher::createParamIdTable(uintptr_t paramPointer)
+std::unordered_map<int32_t, uint64_t> ParamPatcher::createParamIdTable(const uintptr_t& paramPointer)
 {
 	uintptr_t paramAddress = *accessMultilevelPointer<uintptr_t>(paramPointer + 0x68, 0x68);
 	int32_t tableSize = *accessMultilevelPointer<unsigned short>(paramAddress + 0xA);
@@ -311,7 +311,7 @@ std::unordered_map<int32_t, uint64_t> ParamPatcher::createParamIdTable(uintptr_t
 	return table;
 }
 
-uintptr_t ParamPatcher::getIdAddress(const std::unordered_map<int, uintptr_t>& idTable, int id)
+uintptr_t ParamPatcher::getIdAddress(const std::unordered_map<int, uintptr_t>& idTable, int& id)
 {
     uintptr_t result = 0;
 
@@ -324,7 +324,7 @@ uintptr_t ParamPatcher::getIdAddress(const std::unordered_map<int, uintptr_t>& i
     return result;
 }
 
-int32_t ParamPatcher::getIdFromAddress(const std::unordered_map<int, uintptr_t>& idTable, uintptr_t address)
+int32_t ParamPatcher::getIdFromAddress(const std::unordered_map<int, uintptr_t>& idTable, const uintptr_t& address)
 {
     int32_t result = 0;
 
@@ -337,7 +337,7 @@ int32_t ParamPatcher::getIdFromAddress(const std::unordered_map<int, uintptr_t>&
     return result;
 }
 
-std::vector<ParamField> ParamPatcher::getParamLayout(std::wstring paramName)
+std::vector<ParamField> ParamPatcher::getParamLayout(const std::wstring& paramName)
 {
     return paramLayoutTable[paramName];
 }
