@@ -16,8 +16,6 @@ public:
 	void execute();
 
 	virtual std::optional<uintptr_t> getChrAddress() = 0;
-private:
-    std::function<std::optional<uintptr_t>()> findChr;
 protected:
 	virtual void logic() = 0;
 

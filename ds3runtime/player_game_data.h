@@ -78,7 +78,7 @@ public:
 		Warrior = 2,
 		Herald = 3,
 		Thief = 4,
-		Assasin = 5,
+		Assassin = 5,
 		Sorcerer = 6,
 		Pyromancer = 7,
 		Cleric = 8,
@@ -93,61 +93,213 @@ public:
 	enum class Age : uint8_t {
 		Young = 0,
 		Mature = 1,
-		Age = 2,
+		Aged = 2,
 		Gael = 3
 	};
 
 	PlayerGameData(uintptr_t address);
 
-	int32_t getPlayerNo();
+	/**
+	* Gets this players numeber, which is used to identify unique players in online sessions.
+	* 
+	* @return The player number.
+	*/
+	int32_t getPlayerNo() const;
 
-	Voice getVoice();
+	/**
+	* Gets the voice type of his player. 
+	* 
+	* @return The player's voice type.
+	*/
+	Voice getVoice() const;
 
-	void setVoice(Voice voice);
+	/**
+	* Sets the voice type of his player. 
+	* 
+	* @param voice The voice type to give to the player.
+	*/
+	void setVoice(const Voice& voice);
 
-	Class getClass();
+	/**
+	* Gets the starting class of this player. 
+	* 
+	* @return The starting class of this player.
+	*/
+	Class getClass() const;
 
-	void setClass(Class chrClass);
+	/**
+	* Sets the starting class of this player. 
+	* 
+	* @param chrClass The starting class to set for this player.
+	*/
+	void setClass(const Class& chrClass);
 
-	Gender getGender();
+	/**
+	* Gets the gender of this player. 
+	* 
+	* @return This player's gender.
+	*/
+	Gender getGender() const;
 
-	void setGender(Gender gender);
+	/**
+	* Sets the gender of this player. 
+	* 
+	* @param gender The gender to set for this player.
+	*/
+	void setGender(const Gender& gender);
 
-	Age getAge();
+	/**
+	* Gets the age type of this player. 
+	* 
+	* @return The age type of this player.
+	*/
+	Age getAge() const;
 
-	void setAge(Age age);
+	/**
+	* Sets the age type of this player. 
+	* 
+	* @param age The age type to set for this player.
+	*/
+	void setAge(const Age& age);
 
-	Attributes getAttributes();
+	/**
+	* Gets the attributes(also known as stats) of this player. 
+	* 
+	* @return The attributes of this player.
+	*/
+	Attributes getAttributes() const;
 
-	void setAttributes(Attributes attributes);
+	/**
+	* Sets the attributes(also known as stats) of this player. 
+	* 
+	* If you wish to edit the attributes and still have them add up, you'll need to add up the attributes up and use a formula to determine the soul level.
+     	  Do not add the values of humanity and unknown1 as those are both unused. Here is the formula:
+	*
+	* SoulLevel = AttributesTotal - 89
+	*
+	* @param attributes The attributes to set for this player.
+	*/
+	void setAttributes(const Attributes& attributes);
 
-	std::wstring getName();
+	/**
+	* Gets the name of this player. 
+	* 
+	* @return This player's name.
+	*/
+	std::wstring getName() const;
 
-	void setName(std::wstring name);
+	/**
+	* Sets the name of this player. 
+	* 
+	* @param name The name to set for this player.
+	*/
+	void setName(const std::wstring& name);
 
-	Covenant getCovenant();
+	/**
+	* Gets the current covenant of this player. 
+	* 
+	* @return The current covenant of this player.
+	*/
+	Covenant getCovenant() const;
 
-	void setCovenant(Covenant covenant);
+	/**
+	* Sets the current covenant of this player. 
+	*
+	* If you to modify this you'll also need to patch the code writing to this value. It's constantly being updated to match the equippd covenant item.
+	*
+	* @param covenant The covenant to set for this player.
+	*/
+	void setCovenant(const Covenant& covenant);
 
-	InvadeType getInvadeType();
+	/**
+	* Gets the invasion type of this player.
+	*
+	* The invasion type simply identifies a catagory which describes how & why a player entered a session, what they are there to do, and how they
+	* interact with others and objects within the session.
+	* 
+	* @return The invasion type of this player.
+	*/
+	InvadeType getInvadeType() const;
 
-	void setInvadeType(InvadeType summonType);
+	/**
+	* Sets the invasion type of this player.
+	*
+	* The invasion type simply identifies a catagory which describes how & why a player entered a session, what they are there to do, and how they
+	* interact with others and objects within the session.
+	* 
+	* @param invadeType The invasion type to set for this player.
+	*/
+	void setInvadeType(const InvadeType& invadeType);
 
+	/**
+	* Gets the virtual address of this player's EquipGameData.
+	* 
+	* @return The virtual address of this player's EquipGameData.
+	*/
 	uintptr_t getEquipGameData();
 
-	uint16_t getWeaponSheathData();
+	/**
+	* Gets the weapon sheath data of this player.
+	*
+	* This is a combination of the weapon sheath state and selected weapon slots compressed down into 2 bytes for a network packet.
+	* 
+	* @return The weapon sheath data of this player.
+	*/
+	uint16_t getWeaponSheathData() const;
 
-	int32_t getRightHandSlot();
+	/**
+	* Gets the selected right hand weapon slot number of this player.
+	*
+	* The slot numbers range 0-2.
+	*
+	* @return The selected right hand slot number.
+	*/
+	int32_t getRightHandSlot() const;
 
-	void setRightHandSlot(int32_t slot);
+	/**
+	* Sets the selected right hand weapon slot number of this player.
+	*
+	* The slot numbers range 0-2.
+	*
+	* @param slot The slot to set as currently selected.
+	*/
+	void setRightHandSlot(const int32_t& slot);
 
-	int32_t getLeftHandSlot();
+	/**
+	* Gets the selected left hand weapon slot number of this player.
+	*
+	* The slot numbers range 0-2.
+	*
+	* @return The selected left hand slot number.
+	*/
+	int32_t getLeftHandSlot() const;
 
-	void setLeftHandSlot(int32_t slot);
+	/**
+	* Sets the selected left hand weapon slot number of this player.
+	*
+	* The slot numbers range 0-2.
+	*
+	* @param slot The slot to set as currently selected.
+	*/
+	void setLeftHandSlot(const int32_t& slot);
 
-	int32_t getWeaponSheathState();
+	/**
+	* Gets the weapon sheath state of this player.
+	*
+	* The weapon sheath state simply identifies the way the player is holding their weapon, or they way have their right and left hand weapons sheathed.
+	* 
+	* @return The weapon sheath state of this player.
+	*/
+	int32_t getWeaponSheathState() const;
 
-	void setWeaponSheathState(int32_t slot);
+	/**
+	* Sets the weapon sheath state of this player.
+	*
+	* The weapon sheath state simply identifies the way the player is holding their weapon, or they way have their right and left hand weapons sheathed.
+	* 
+	* @param state The weapon sheath state to set for this player.
+	*/
+	void setWeaponSheathState(const int32_t& state);
 private:
 	uintptr_t address;
 };

@@ -77,7 +77,7 @@ public:
 		Crab = 33
 	};
 
-	/*
+	/**
 	* Check if this ChrIns and it's base address is valid. 
 	* 
 	* Peformes several multi-level pointer checks.
@@ -86,7 +86,7 @@ public:
 	*/
 	bool isValid() const;
 
-	/*
+	/**
 	* Gets the handle of this ChrIns. 
 	* 
 	* The handle seems to be an identifier used by things such as bullets to reference entities.
@@ -95,7 +95,7 @@ public:
 	*/
 	Handle getHandle() const;
 
-	/*
+	/**
 	* Get's the ChrInsType of this ChrIns. 
 	* 
 	* ChrInsType controls apperance and roles of entities.
@@ -104,7 +104,7 @@ public:
 	*/
 	ChrType getChrType() const;
 
-	/*
+	/**
 	* Set's the ChrInsType of this ChrIns. 
 	* 
 	* ChrInsType controls apperance and roles of entities.
@@ -117,7 +117,7 @@ public:
 	*/
 	void setChrType(const ChrType& chrType);
 
-	/*
+	/**
 	* Get's the Team of this ChrIns. 
 	* 
 	* Team controls combat alliances of entities.
@@ -126,7 +126,7 @@ public:
 	*/
 	Team getTeam() const;
 
-	/*
+	/**
 	* Set's the Team of this ChrIns. 
 	* 
 	* Team controls combat alliances of entities.
@@ -137,9 +137,9 @@ public:
 	* 
 	* @param team Team to assign to this ChrIns.
 	*/
-	void setTeam(Team team) const;
+	void setTeam(const Team& team) const;
 
-	/*
+	/**
 	* Get's the forward id of this ChrIns. 
 	* 
 	* The forward id seems to be used as a identifier to communicate ChrIns related events
@@ -150,7 +150,7 @@ public:
 	*/
 	unsigned short getForwardId() const;
 
-	/*
+	/**
 	* Get's the character string of this ChrIns 
 	* 
 	* The character string contains the character id of an ChrIns which is the same as the 
@@ -163,7 +163,7 @@ public:
 	*/
 	std::wstring getCharacterString() const;
 
-	/*
+	/**
 	* Get's the current animation string of this ChrIns. 
 	* 
 	* Animation strings are the strings defined in hks files which give descriptions of an animation's moveset 
@@ -174,21 +174,21 @@ public:
 	*/
 	std::wstring getAnimationString() const;
 
-	/*
+	/**
 	* Get's the time elapsed since the current animation of this ChrIns started.
 	* 
 	* @return The time elapsed since the current animation of this ChrIns started.
 	*/
 	float getAnimationTime() const;
 
-	/*
+	/**
 	* Get's the maximum time this animation can last.
 	* 
 	* @return Maximum time this animation can last.
 	*/
 	float getMaxAnimationTime() const;
 
-	/*
+	/**
 	* Get's the current turn rate of this animation. 
 	* 
 	* The turn rate is a float value that measures turn rate in degrees per second. 
@@ -198,7 +198,7 @@ public:
 	*/
 	float getTurnRate() const;
 
-	/*
+	/**
 	* Get's the current X-Y-Z position of this ChrIns. 
 	* 
 	* This is the absolute root position of this ChrIns in the game's virtual 3d space. 
@@ -210,7 +210,7 @@ public:
 	*/
 	std::vector<float> getPosition() const;
 
-	/*
+	/**
 	* Set's the current X-Y-Z position of this ChrIns.
 	*
 	* This is the absolute root position of this ChrIns in the game's virtual 3d space.
@@ -230,7 +230,7 @@ public:
 	*/
 	void setPosition(const std::vector<float>& position);
 
-	/*
+	/**
 	* Get's the current angle of this ChrIns. 
 	* 
 	* This is the absolute root rotation of this ChrIns in the game's virtual 3d space.
@@ -239,7 +239,7 @@ public:
 	*/
 	float getAngle() const;
 
-	/*
+	/**
 	* Get's the current angle of this ChrIns. 
 	* 
 	* This is the absolute root rotation of this ChrIns in the game's virtual 3d space. 
@@ -259,21 +259,21 @@ public:
 	*/
 	void setAngle(const float& angle);
 
-	/*
+	/**
 	* Gets the virtual address of this Chr's SprjChrDataModule object.
 	* 
 	* @return Virtual address of this Chr's SprjChrDataModule object.
 	*/
 	uintptr_t getSprjChrDataModule();
 
-	/*
+	/**
 	* Gets the virtual address of this Chr's SprjChrDamageModule object.
 	* 
 	* @return Virtual address of this Chr's SprjChrDamageModule object.
 	*/
 	uintptr_t getSprjChrDamageModule();
 
-	/*
+	/**
 	* Get's this ChrIns's death state. 
 	* 
 	* Online limitations: 
@@ -285,7 +285,7 @@ public:
 	*/
 	int32_t isDead() const;
 
-	/*
+	/**
 	* Get's this ChrIns's death state. 
 	* 
 	* Online limitations: 
@@ -299,17 +299,42 @@ public:
 	*/
 	void setIsDead(const int32_t& isDead);
 
+	/**
+	* Checks if the "No Gravity" debug flag is set for this Chr. This flag prevents falling of all kinds.
+	* 
+	* @return True if the "No Gravity" debug flag is set for this Chr.
+	*/
 	bool isNoGravity() const;
-
+	
+	/**
+	* Sets the "No Gravity" debug flag is set for this Chr. This flag prevents consumption of FP on preforming weapon arts and magic.
+	*
+	* @return True if the "No Gravity" debug flag is set for this Chr.
+	*/
 	void setNoGravity(const bool& value);
 
+	/**
+	* Checks if the "Dodging" flag is set for this Chr. While this is active a chr cannot be hit by most attacks.
+	* 
+	* @return True if the "Dodging" flag is set for this Chr.
+	*/
 	bool isDodging() const;
 
+	/**
+	* Gets the virtual address of this Chr's hkbCharacter object.
+	* 
+	* @return The virtual address of this Chr's hkbCharacter object.
+	*/
 	uintptr_t getHkbCharacter();
 
+	/**
+	* Checks if this chr has a loaded hkbCharater object.
+	* 
+	* @return True if this chr has a loaded hkbCharacter object.
+	*/
 	bool hasHkbCharacter() const;
 
-	/*
+	/**
 	* Play's an animation on this ChrIns via ingame function it's hkbCharacter class.
 	* 
 	* Online limitations: 
@@ -339,7 +364,7 @@ public:
 	*/
 	void playAnimation(const std::wstring& animationString);
 
-	/*
+	/**
 	* Gets the integer id which matches a specified Havok Behaivor String.
 	* 
 	* @param animationString The specified Havok Behaivor String.
@@ -347,7 +372,7 @@ public:
 	*/
 	int32_t getHkbIdFromString(const std::wstring& animationString) const;
 	
-	/*
+	/**
 	* Plays a specified idle animation id via writing to a debug pointer. The game reads this pointer and unless a throw animation is underway, 
 	* it will override the current animation. 
 	* 
@@ -362,21 +387,21 @@ public:
 	*/
 	void playDebugIdle(const int32_t& animationId);
 
-	/*
+	/**
 	* Gets the weight index of this ChrIns, which is a variable used for determing how Player Characters should be set to move among other things.
 	* 
 	* @return The weight index of this ChrIns;
 	*/
 	int32_t getWeightIndex() const;
 	
-	/*
+	/**
 	* Sets the weight index of this ChrIns, which is a variable used for determing how Player Characters should be set to move among other things.
 	* 
 	* @return The weight index of this ChrIns;
 	*/
 	void setWeightIndex(const int32_t& weightIndex);
 
-	/*
+	/**
 	* Multiplies the animation speed of this ChrIns's animations. 
 	* 
 	* Online limitations: 
@@ -390,7 +415,7 @@ public:
 	*/
 	void setDebugAnimSpeed(const float& speedModifier);
 
-	/*
+	/**
 	* Gets a list of dummy poly positions on this ChrIns associated with the specified dummy poly id.
 	* 
 	* @param dummyPolyId The dummy poly id of the target dummy polys.
@@ -399,14 +424,14 @@ public:
 	*/
 	std::vector<std::array<float, 4>> getDummyPolyPositions(const int32_t& dummyPolyId, const uint32_t& polyCount);
 	
-	/*
+	/**
 	* Gets the virtual address of this ChrIns.
 	* 
 	* @return The virtual address of this ChrIns.
 	*/
 	uintptr_t getAddress();
 
-	/*
+	/**
 	* Check if an address is the base address of an ChrIns.
 	* 
 	* Peformes several multi-level pointer checks.

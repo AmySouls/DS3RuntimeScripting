@@ -38,63 +38,185 @@ public:
 
 	PlayerIns(uintptr_t address);
 
+	/**
+	* Gets the virtual address of this Player's PlayerGameData object.
+	* 
+	* @return Virtual address of this Player's PlayerGameData object.
+	*/
 	uintptr_t getPlayerGameData();
 
+	/**
+	* Gets the virtual address of this Player's NetworkPointer object.
+	* 
+	* @return Virtual address of this Player's NetworkPointer object.
+	*/
 	uintptr_t* getNetworkPointer();
 
-	int32_t getLeftHandWeapon(uint32_t slotNumber);
+	/**
+	* Gets the item in the specified left weapon slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The weapon slot to get the weapon from, must be a integer ranging 1-3.
+	* @return equipParamId of the weapon in this slot.
+	*/
+	int32_t getLeftHandWeapon(const uint32_t& slotNumber) const;
 
-	void setLeftHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId);
+	/**
+	* Sets the item in the specified left hand weapon slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param slotNumber The weapon slot to put the weapon in, must be an integer ranging 1-3.
+	* @param equipParamWeaponId equipParamId of the weapon to put in this slot.
+	*/
+	void setLeftHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
-	int32_t getRightHandWeapon(uint32_t slotNumber);
+	/**
+	* Gets the item in the specified right weapon slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The weapon slot to get the weapon from, must be a integer ranging 1-3.
+	* @return equipParamId of the weapon in this slot.
+	*/
+	int32_t getRightHandWeapon(const uint32_t& slotNumber) const;
 
-	void setRightHandWeapon(uint32_t slotNumber, int32_t equipParamWeaponId);
+	/**
+	* Sets the item in the specified right hand weapon slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param slotNumber The weapon slot to put the weapon in, must be an integer ranging 1-3.
+	* @param equipParamWeaponId equipParamId of the weapon to put in this slot.
+	*/
+	void setRightHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
-	int32_t getHead();
+	/**
+	* Gets the item in the head slot of this PlayerIns in the game's memory. 
+	* 
+	* @return equipParamId of the protector(Armor) in the head slot.
+	*/
+	int32_t getHead() const;
 
-	void setHead(int32_t equipParamProtectorId);
+	/**
+	* Sets the item in the head slot of this PlayerIns in the game's memory. 
+	* 
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param equipParamProtectorId equipParamId of the protector(Armor) to put into the head slot.
+	*/
+	void setHead(const int32_t& equipParamProtectorId);
 
-	int32_t getChest();
+	/**
+	* Gets the item in the chest slot of this PlayerIns in the game's memory. 
+	* 
+	* @return equipParamId of the protector(Armor) in the chest slot.
+	*/
+	int32_t getChest() const;
 
-	void setChest(int32_t equipParamProtectorId);
+	/**
+	* Sets the item in the chest slot of this PlayerIns in the game's memory. 
+	* 
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param equipParamProtectorId equipParamId of the protector(Armor) to put into the chest slot.
+	*/
+	void setChest(const int32_t& equipParamProtectorId);
 
-	int32_t getHands();
+	/**
+	* Gets the item in the hands slot of this PlayerIns in the game's memory. 
+	* 
+	* @return equipParamId of the protector(Armor) in the hands slot.
+	*/
+	int32_t getHands() const;
 
-	void setHands(int32_t equipParamProtectorId);
+	/**
+	* Sets the item in the hands slot of this PlayerIns in the game's memory. 
+	* 
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param equipParamProtectorId equipParamId of the protector(Armor) to put into the hands slot.
+	*/
+	void setHands(const int32_t& equipParamProtectorId);
 
-	int32_t getLegs();
+	/**
+	* Gets the item in the legs slot of this PlayerIns in the game's memory. 
+	* 
+	* @return equipParamId of the protector(Armor) in the legs slot.
+	*/
+	int32_t getLegs() const;
 
-	/*
+	/**
 	* Sets the item in the legs slot of this PlayerIns in the game's memory. 
 	* 
 	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
-	* at the top of the file.
+ 	  at the top of the file.
 	* 
-	* @param offsetNumber The PlayerIns number to get the address of
-	* @return The base address of the specified PlayerIns if they exist in memory, otherwise this returns 0.
+	* @param equipParamProtectorId equipParamId of the protector(Armor) to put into the legs slot.
 	*/
-	void setLegs(int32_t equipParamProtectorId);
+	void setLegs(const int32_t& equipParamProtectorId);
 
-	int32_t getRing(uint32_t slotNumber);
+	/**
+	* Gets the item in the specified ring slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The ring slot to get the ring from, must be a integer ranging 1-4.
+	* @return equipParamId of the ring in this slot.
+	*/
+	int32_t getRing(const uint32_t& slotNumber) const;
 
-	void setRing(uint32_t slotNumber, int32_t equipParamAccessoryId);
+	/**
+	* Sets the item in the specified ring slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @param slotNumber The ring slot to put the ring in, must be an integer ranging 1-4.
+	* @param equipParamAccessoryId equipParamId of the ring to put in this slot.
+	*/
+	void setRing(const uint32_t& slotNumber, const int32_t& equipParamAccessoryId);
 
-	bool isNoGoodsConsume();
+	/**
+	* Checks if the "No Goods Consume" debug flag is set for this Player. This flag prevents consumption of inventory goods which may allow them to be used 
+	  infintely.
+	* 
+	* @return True if the "No Goods Consume" debug flag is set for this Player.
+	*/
+	bool isNoGoodsConsume() const;
+	
+	/**
+	* Sets the "No Goods Consume" debug flag on or off for this Player. This flag prevents consumption of inventory goods which may allow them to be used 
+	  infintely.
+	* 
+	* @param value The state to set for the flag.
+	*/
+	void setNoGoodsConsume(const bool& value);
 
-	void setNoGoodsConsume(bool value);
-
+	/**
+	* Gets the virtual address of this Player's PlayerCtrl object.
+	* 
+	* @return Virtual address of this Player's PlayerCtrl object.
+	*/
 	uintptr_t getPlayerCtrl();
 
-	/*
-	* Gets a handle to this player's network handle on the game's peer-to-peer network.
+	/**
+	* Gets a pointer to this player's network handle on the game's peer-to-peer network.
 	* 
-	* @return handle to this player's network handle on the game's peer-to-peer network.
+	* @return Pointer to this player's network handle on the game's peer-to-peer network.
 	*/
 	uintptr_t* getNetworkHandle();
 
-	bool isValid();
+	/**
+	* Check if this refers to a valid PlayerIns object.
+	* 
+	* Peformes several multi-level pointer checks.
+	* 
+	* @return True if PlayerIns is valid.
+	*/
+	bool isValid() const;
 
-	/*
+	/**
 	* Get the base address of PlayerIns by the offset multiplier in memory. 
 	* 
 	* 0 is the main character you control in the game, 1-5 are the PlayerInss 
@@ -103,25 +225,37 @@ public:
 	* @param offsetNumber The PlayerIns number to get the address of
 	* @return The base address of the specified PlayerIns if they exist in memory, otherwise this returns 0.
 	*/
-	static uintptr_t getAddressByOffsetNumber(OffsetNumber offsetNumber);
+	static uintptr_t getAddressByOffsetNumber(const OffsetNumber& offsetNumber);
 
-	/*
-	* Check if an address is the base address of a PlayerIns. 
+	/**
+	* Check if an address is the virtual address of a PlayerIns. 
 	* 
-	* Compares this address with the base addresses of PlayerInss in memory, 
-	* and calls isEntity to verify that the PlayerIns is also a valid entity
-	* 
-	* @param address Base address to check.
+	* @param address Virtual address to check.
 	* @return True if address is the base address of a PlayerIns.
 	*/
-	static bool isPlayer(uintptr_t address);
+	static bool isPlayer(const uintptr_t& address);
 
+	/**
+	* Get the virtual address of the main chr(The player charater the game takes the perspective of and allows you to control).
+	* 
+	* @return Virtual address of the main chr.
+	*/
 	static uintptr_t getMainChrAddress();
 
-	static bool isMainChr(uintptr_t address);
+	/**
+	* Check if an address matches the virtual address of the main chr. 
+	* 
+	* @param address Virtual address to check.
+	* @return True if address is the virtual address of the main chr.
+	*/
+	static bool isMainChr(const uintptr_t& address);
 
+	/**
+	* Check if the main chr is loaded(The player charater the game takes the perspective of and allows you to control).
+	* 
+	* @return True if the main chr is loaded
+	*/
 	static bool isMainChrLoaded();
-private:
 };
 
 }

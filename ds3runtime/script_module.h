@@ -20,6 +20,7 @@ public:
 
 	/**
 	 * Get's the name of this script. If you are intent on running more than one of the same script, prefer retrievel by unique id instead.
+	 *
 	 * @return The name of this script.
 	 */
 	virtual std::string getName() = 0;
@@ -29,6 +30,7 @@ public:
 	   If it returns false, the script should not be attached and instead wait for the next game frame to conditions to change. For example, if
 	   a script that modifies the player character once on attaching is ran while in a loading screen, it will need to wait for the player
 	   character to load to make these changes and properly attach.
+	 *
 	 * @return true on successfully preforming the attach events.
 	 */
 	virtual bool onAttach();
@@ -37,6 +39,7 @@ public:
 	 * Execute this script's removal logic. It should preform all nessessary checks to see if it can preform all the events meant to be called when 
 	   this script detaches.
 	   If it returns false, it should similarly to onAttach() wait until conditions allow it to call it's events and detach.
+	 *
 	 * @return true on successfully detaching.
 	 */
 	virtual bool onDetach();
@@ -57,18 +60,21 @@ public:
 
 	/**
 	 * Checks wheather or not this script has been marked to be removed.
+	 *
 	 * @return true if this script is marked for removal.
 	 */
 	bool isRemoved();
 
 	/**
 	 * Checks wheather or not this script has been successfully attached.
+	 *
 	 * @return true if this script has successfully attached.
 	 */
 	bool isAttached();
 
 	/**
 	 * Checks if this script is trying to detach. See onAttach() and onDetach() for more details about how the attach and detach process work.
+	 *
 	 * @return true if this script is trying to detach.
 	 */
 	bool isDetaching();
@@ -85,6 +91,7 @@ public:
 
 	/**
 	 * Get's the unique id associated with this script instance.
+	 *
 	 * @return The unique id associated with this script instance.
 	 */
 	uint64_t getUniqueId();

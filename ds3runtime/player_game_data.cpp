@@ -11,29 +11,29 @@ PlayerGameData::PlayerGameData(uintptr_t address)
 	this->address = address;
 }
 
-int32_t PlayerGameData::getPlayerNo()
+int32_t PlayerGameData::getPlayerNo() const
 {
 	return *accessMultilevelPointer<int32_t>(address + 0x10);
 }
 
-PlayerGameData::Voice PlayerGameData::getVoice()
+PlayerGameData::Voice PlayerGameData::getVoice() const
 {
-	return (Voice)*accessMultilevelPointer<uint8_t>(address + 0xAB);
+	return static_Cast<Voice>(*accessMultilevelPointer<uint8_t>(address + 0xAB));
 }
 
-void PlayerGameData::setVoice(Voice voice)
+void PlayerGameData::setVoice(const Voice& voice)
 {
-	*accessMultilevelPointer<uint8_t>(address + 0xAB) = (uint8_t)voice;
+	*accessMultilevelPointer<uint8_t>(address + 0xAB) = static_cast<uint8_t>(voice);
 }
 
 PlayerGameData::Class PlayerGameData::getClass()
 {
-	return (Class)*accessMultilevelPointer<uint8_t>(address + 0xAE);
+	return static_cast<Class>(*accessMultilevelPointer<uint8_t>(address + 0xAE));
 }
 
-void PlayerGameData::setClass(Class chrClass)
+void PlayerGameData::setClass(const Class& chrClass)
 {
-	*accessMultilevelPointer<uint8_t>(address + 0xAE) = (uint8_t)chrClass;
+	*accessMultilevelPointer<uint8_t>(address + 0xAE) = static_cast<uint8_t>(chrClass);
 }
 
 PlayerGameData::Gender PlayerGameData::getGender()
@@ -41,19 +41,19 @@ PlayerGameData::Gender PlayerGameData::getGender()
 	return (Gender)*accessMultilevelPointer<uint8_t>(address + 0xAA);
 }
 
-void PlayerGameData::setGender(Gender gender)
+void PlayerGameData::setGender(const Gender& gender)
 {
-	*accessMultilevelPointer<uint8_t>(address + 0xAA) = (uint8_t)gender;
+	*accessMultilevelPointer<uint8_t>(address + 0xAA) = static_cast<uint8_t>(gender);
 }
 
 PlayerGameData::Age PlayerGameData::getAge()
 {
-	return (Age)*accessMultilevelPointer<uint8_t>(address + 0x6B8);
+	return static_cast<Age>(*accessMultilevelPointer<uint8_t>(address + 0x6B8));
 }
 
-void PlayerGameData::setAge(Age age)
+void PlayerGameData::setAge(const Age& age)
 {
-	*accessMultilevelPointer<uint8_t>(address + 0x6B8) = (uint8_t)age;
+	*accessMultilevelPointer<uint8_t>(address + 0x6B8) = static_cast<uint8_t>(age);
 }
 
 Attributes PlayerGameData::getAttributes()
@@ -61,7 +61,7 @@ Attributes PlayerGameData::getAttributes()
 	return *reinterpret_cast<Attributes*>(accessMultilevelPointer<uintptr_t>(address + 0x44));
 }
 
-void PlayerGameData::setAttributes(Attributes attributes)
+void PlayerGameData::setAttributes(const Attributes& attributes)
 {
 	*reinterpret_cast<Attributes*>(accessMultilevelPointer<uintptr_t>(address + 0x44)) = attributes;
 }
@@ -71,7 +71,7 @@ std::wstring PlayerGameData::getName()
 	return std::wstring(accessMultilevelPointer<wchar_t>(address + 0x88));
 }
 
-void PlayerGameData::setName(std::wstring name)
+void PlayerGameData::setName(const std::wstring& name)
 {
 	wchar_t* namePointer = accessMultilevelPointer<wchar_t>(address + 0x88);
 	memset(namePointer, 0, 16);
@@ -80,20 +80,20 @@ void PlayerGameData::setName(std::wstring name)
 
 PlayerGameData::Covenant PlayerGameData::getCovenant()
 {
-	return (Covenant)*accessMultilevelPointer<uint32_t>(address + 0xF7);
+	return static_cast<Covenant>(*accessMultilevelPointer<uint32_t>(address + 0xF7));
 }
 
-void PlayerGameData::setCovenant(Covenant covenant)
+void PlayerGameData::setCovenant(const Covenant& covenant)
 {
-	*accessMultilevelPointer<uint32_t>(address + 0xF7) = (uint32_t)covenant;
+	*accessMultilevelPointer<uint32_t>(address + 0xF7) = static_cast<uint32_t>(covenant);
 }
 
 PlayerGameData::InvadeType PlayerGameData::getInvadeType()
 {
-	return (InvadeType)*accessMultilevelPointer<uint32_t>(address + 0xFC);
+	return static_cast<InvadeType>(*accessMultilevelPointer<uint32_t>(address + 0xFC));
 }
 
-void PlayerGameData::setInvadeType(PlayerGameData::InvadeType invadeType)
+void PlayerGameData::setInvadeType(const PlayerGameData::InvadeType& invadeType)
 {
 	*accessMultilevelPointer<uint32_t>(address + 0xFC) = (uint32_t)invadeType;
 }
@@ -106,7 +106,7 @@ uintptr_t PlayerGameData::getEquipGameData()
 uint16_t PlayerGameData::getWeaponSheathData()
 {
 	uint16_t(*function)(uintptr_t);
-	*(uintptr_t*)&function = 0x1409EBA70;
+	*reinterpret_cast<uintptr_t*>(&function) = 0x1409EBA70;
 	return function(address + 0x2B8);
 }
 
@@ -115,7 +115,7 @@ int32_t PlayerGameData::getRightHandSlot()
 	return *accessMultilevelPointer<int32_t>(address + 0x2BC);
 }
 
-void PlayerGameData::setRightHandSlot(int32_t slot)
+void PlayerGameData::setRightHandSlot(const int32_t& slot)
 {
 	*accessMultilevelPointer<int32_t>(address + 0x2BC) = slot;
 }
@@ -125,7 +125,7 @@ int32_t PlayerGameData::getLeftHandSlot()
 	return *accessMultilevelPointer<int32_t>(address + 0x2C0);
 }
 
-void PlayerGameData::setLeftHandSlot(int32_t slot)
+void PlayerGameData::setLeftHandSlot(const int32_t& slot)
 {
 	*accessMultilevelPointer<int32_t>(address + 0x2C0) = slot;
 }
@@ -135,7 +135,7 @@ int32_t PlayerGameData::getWeaponSheathState()
 	return *accessMultilevelPointer<int32_t>(address + 0x2B8);
 }
 
-void PlayerGameData::setWeaponSheathState(int32_t slot)
+void PlayerGameData::setWeaponSheathState(const int32_t& slot)
 {
 	*accessMultilevelPointer<int32_t>(address + 0x2B8) = slot;
 }
