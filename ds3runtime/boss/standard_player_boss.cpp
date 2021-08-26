@@ -24,9 +24,9 @@ bool StandardPlayerBoss::onAttach()
 	else if (!GameDataMan::hasInstance()) return false;
 	GameDataMan gameDataMan(GameDataMan::getInstance());
 	if (gameDataMan.getPlayerGameData() == 0) return false;
-	PlayerGameData playerGameData(gameData.getPlayerGameData());
+	PlayerGameData playerGameData(gameDataMan.getPlayerGameData());
 	if (playerGameData.getEquipGameData() == 0) return false;
-	EquipGameData equipGameData(playerGameData.getEquipGameData);
+	EquipGameData equipGameData(playerGameData.getEquipGameData());
 	if (equipGameData.getEquipInventoryData() == 0) return false;
 	saveEquipment(); 
 	unequipAllEquipment();
@@ -100,10 +100,10 @@ bool StandardPlayerBoss::onDetach()
 	else if (!GameDataMan::hasInstance()) return false;
 	GameDataMan gameDataMan(GameDataMan::getInstance());
 	if (gameDataMan.getPlayerGameData() == 0) return false;
-	PlayerGameData playerGameData(gameData.getPlayerGameData());
+	PlayerGameData playerGameData(gameDataMan.getPlayerGameData());
 	if (playerGameData.getEquipGameData() == 0) return false;
-	EquipGameData equipGameData(playerGameData.getEquipGameData);
-	if (equipGameData.getEquipInventoryData() == 0) retirn false;
+	EquipGameData equipGameData(playerGameData.getEquipGameData());
+	if (equipGameData.getEquipInventoryData() == 0) return false;
 	restorePlayerData();
 	unequipAllEquipment();
 	loadAndGiveSavedItems();
@@ -122,33 +122,29 @@ std::optional<uintptr_t> StandardPlayerBoss::getChrAddress()
 
 void StandardPlayerBoss::savePlayerData()
 {
-	if (!getChrAddress().has_value()) return false;
 	PlayerIns chr(getChrAddress().value());
-	if (!chr.isValid()) return false;
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	savedAttributes = playerGameData.getAttributes();
 	savedGender = playerGameData.getGender();
 	savedClass = playerGameData.getClass();
 	savedAge = playerGameData.getAge();
 	savedVoice = playerGameData.getVoice();
-	return true;
 }
 
 void StandardPlayerBoss::restorePlayerData()
 {
+	PlayerIns chr(getChrAddress().value());
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setAttributes(savedAttributes);
 	playerGameData.setGender(savedGender);
 	playerGameData.setClass(savedClass);
 	playerGameData.setAge(savedAge);
 	playerGameData.setVoice(savedVoice);
-	return true;
 }
 
 void StandardPlayerBoss::giveGoodsAndSwap(GoodsSlot goodsSlot,
 	int32_t paramItemId)
 {
-	if (!GameDataMan::hasInstance()) return;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 	std::optional<int32_t> indexOfItem = findInventoryIdByGiveId((uint32_t)ItemParamIdPrefix::Goods + paramItemId);
@@ -217,9 +213,8 @@ std::optional<int32_t> StandardPlayerBoss::findInventoryIdByGiveId(int32_t giveI
 	return indexOfItem;
 }
 
-bool StandardPlayerBoss::saveEquipment()
+void StandardPlayerBoss::saveEquipment()
 {
-	if (!GameDataMan::hasInstance()) return false;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
@@ -250,14 +245,10 @@ bool StandardPlayerBoss::saveEquipment()
 
 		savedGoods[(GoodsSlot)i] = item;
 	}
-
-	return true;
 }
 
-bool StandardPlayerBoss::unequipAllEquipment()
+void StandardPlayerBoss::unequipAllEquipment()
 {
-	if (!GameDataMan::hasInstance()) return false;
-
 	for (int32_t i = 0; i <= 21; i++) {
 		switch (i) {
 		case 0:
@@ -303,14 +294,10 @@ bool StandardPlayerBoss::unequipAllEquipment()
 		EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 		equipGameData.equipGoodsInventoryItem((GoodsSlot)i, -1);
 	}
-
-	return true;
 }
 
-bool StandardPlayerBoss::reequipSavedEquipment()
+void StandardPlayerBoss::reequipSavedEquipment()
 {
-	if (!GameDataMan::hasInstance()) return false;
-
 	for (auto entry : savedEquipment) {
 		if (!entry.second.has_value()) continue;
 		const uint32_t prefix = (uint32_t)getItemParamIdPrefixFromGiveId(entry.second->giveId);
@@ -332,13 +319,10 @@ bool StandardPlayerBoss::reequipSavedEquipment()
 		giveGoodsAndSwap(entry.first,
 			paramItemId);
 	}
-
-	return true;
 }
 
-bool StandardPlayerBoss::saveAndDiscardItems()
+void StandardPlayerBoss::saveAndDiscardItems()
 {
-	if (!GameDataMan::hasInstance()) return false;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
@@ -349,13 +333,10 @@ bool StandardPlayerBoss::saveAndDiscardItems()
 		if (getItemParamIdPrefixFromGiveId(item->giveId) != ItemParamIdPrefix::Goods) equipInventoryData.discardInventoryItems(i, item->quantity);
 		else equipGameData.modifyInventoryItemQuantity(i, -(int32_t)item->quantity);
 	}
-
-	return true;
 }
 
-bool StandardPlayerBoss::loadAndGiveSavedItems()
+void StandardPlayerBoss::loadAndGiveSavedItems()
 {
-	if (!GameDataMan::hasInstance()) return false;
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
@@ -384,8 +365,6 @@ bool StandardPlayerBoss::loadAndGiveSavedItems()
 			}
 		}
 	}
-
-	return true;
 }
 
 ItemParamIdPrefix StandardPlayerBoss::getItemParamIdPrefixFromGiveId(int32_t giveId)
@@ -503,7 +482,7 @@ void StandardPlayerBoss::setSheathState(int32_t slot)
 	playerGameData.setWeaponSheathState(slot);
 	uint16_t sheathData[2] = {};
 	sheathData[0] = playerGameData.getWeaponSheathData();
-	sheathData[1] = getForwardId();
+	sheathData[1] = PlayerIns(getChrAddress().value()).getForwardId();
 	PlayerNetworkSession session(PlayerNetworkSession::getInstance());
 	session.sessionPacketSend(13, (char*)sheathData, 4);
 }

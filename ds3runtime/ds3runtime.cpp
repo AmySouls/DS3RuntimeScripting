@@ -57,14 +57,14 @@ bool DS3RuntimeScripting::detach()
 	return true;
 }
 
-void DS3RuntimeScripting::addHook(std::unique_ptr<Hook>& hook)
+void DS3RuntimeScripting::addHook(std::unique_ptr<Hook> hook)
 {
 	hooks.push_back(std::move(hook));
 }
 
-void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule>& script)
+void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule> script)
 {
-	if (script->isAsync()) (reinterpret_cast<AsyncModule*>(script.get())->createThread(script.get());
+	if (script->isAsync()) reinterpret_cast<AsyncModule*>(script.get())->createThread(script.get());
 	scripts.insert(scripts.begin(), std::move(script));
 }
 

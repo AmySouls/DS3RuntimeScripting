@@ -137,7 +137,7 @@ public:
 	* 
 	* @param team Team to assign to this ChrIns.
 	*/
-	void setTeam(const Team& team) const;
+	void setTeam(const Team& team);
 
 	/**
 	* Get's the forward id of this ChrIns. 
@@ -422,14 +422,14 @@ public:
 	* @param polyCount Max amount of dummy poly positions to return.
 	* @return A vector containing the found dummy poly positions, stored in own std::array objects.
 	*/
-	std::vector<std::array<float, 4>> getDummyPolyPositions(const int32_t& dummyPolyId, const uint32_t& polyCount);
+	std::vector<std::array<float, 4>> getDummyPolyPositions(const int32_t& dummyPolyId, const uint32_t& polyCount) const;
 	
 	/**
 	* Gets the virtual address of this ChrIns.
 	* 
 	* @return The virtual address of this ChrIns.
 	*/
-	uintptr_t getAddress();
+	uintptr_t getAddress() const;
 
 	/**
 	* Check if an address is the base address of an ChrIns.

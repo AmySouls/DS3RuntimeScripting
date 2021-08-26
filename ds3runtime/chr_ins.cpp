@@ -62,7 +62,7 @@ float ChrIns::getAnimationTime() const
 }
 
 float ChrIns::getMaxAnimationTime() const
-	
+{
 	return *accessMultilevelPointer<float>(address + 0x1F90, 0x10, 0x2C);
 }
 
@@ -183,31 +183,31 @@ void ChrIns::setDebugAnimSpeed(const float& speedModifier)
 
 std::vector<std::array<float, 4>> ChrIns::getDummyPolyPositions(const int32_t& dummyPolyId, const uint32_t& polyCount) const
 {
-	std::vector<float> resultBuffer(16 * polyCount);
+	std::vector<float> resultBuffer(16 * static_cast<size_t>(polyCount));
 	std::vector<int32_t> inputBuffer(4);
 	inputBuffer[0] = dummyPolyId;
 	void(*getBodyNodePositionInternal)(...);
 	*reinterpret_cast<uintptr_t*>(&getBodyNodePositionInternal) = *accessMultilevelPointer<uintptr_t>(address, 0x400);
 	getBodyNodePositionInternal(address, &resultBuffer[0], &inputBuffer[0], polyCount);
-	std::vector<std::vector<float>> returnVector(polyCount);
+	std::vector<std::array<float, 4>> returnVector(polyCount);
 
 	for (uint32_t i = 0; i < polyCount; i++) {
-		std::array<float, 4> position(4);
-		position[0] = resultBuffer[3 + i * 12];
-		position[1] = resultBuffer[7 + i * 12];
-		position[2] = resultBuffer[11 + i * 12];
+		std::array<float, 4> position;
+		position[0] = resultBuffer[3 + static_cast<size_t>(i) * 12];
+		position[1] = resultBuffer[7 + static_cast<size_t>(i) * 12];
+		position[2] = resultBuffer[11 + static_cast<size_t>(i) * 12];
 		returnVector[i] = position;
 	}
 
 	return returnVector;
 }
 
-uintptr_t ChrIns::getAddress()
+uintptr_t ChrIns::getAddress() const
 {
 	return address;
 }
 
-bool ChrIns::isChrIns(uintptr_t address) const
+bool ChrIns::isChrIns(const uintptr_t& address)
 {
 	const uintptr_t* bodyNodeFunction = accessMultilevelPointer<uintptr_t>(address, 0x400);
 	return bodyNodeFunction && (*bodyNodeFunction == 0x14087D320 || *bodyNodeFunction == 0x1408AF650);

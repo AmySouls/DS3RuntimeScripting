@@ -154,25 +154,25 @@ public:
 	template<class FieldType>
 	FieldType readOriginal(const uintptr_t& offset) const
 	{
-		return dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
+		return dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher"))
 			->readOriginal<FieldType>(param, id, offset);
 	}
 	
 	bool readBinaryOriginal(const uintptr_t& offset, const uint8_t& binaryOffset) const;
 
 	template<class FieldType>
-	void patch(const uintptr_t& offset, const FieldType& value) const
+	void patch(const uintptr_t& offset, const FieldType& value)
 	{
 		ParamPatchInfo patch = {};
 		patch.patchId = patchId;
 		memcpy(&patch.value, &value, sizeof(value));
 		patch.size = sizeof(value);
 		(dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
-			->patch<FieldType>(param, id, offset, patch);
+			->patch(param, id, offset, patch);
 	}
 
 	template<class FieldType>
-	void patch(const std::string& fieldName, const FieldType& value) const
+	void patch(const std::string& fieldName, const FieldType& value)
 	{
 		for (ParamField field : (dynamic_cast<ParamPatcher*>(ds3runtime_global->accessScript("param_patcher")))
 				->getParamLayout(param)) {
@@ -182,9 +182,9 @@ public:
 		}
 	}
 
-	void patchBinary(const uintptr_t& offset, const int8_t& binaryOffset, const bool& value) const;
+	void patchBinary(const uintptr_t& offset, const int8_t& binaryOffset, const bool& value);
 
-	void patchBinary(const std::string& fieldName, const bool& value) const;
+	void patchBinary(const std::string& fieldName, const bool& value);
 private:
 	std::string patchId;
 	std::wstring param;

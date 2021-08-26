@@ -6,7 +6,7 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/ds3runtime.h"
-#include "player_boss.h"
+#include "boss.h"
 #include "ds3runtime/equip_game_data.h"
 #include "ds3runtime/player_game_data.h"
 #include <ds3runtime/sprj_lua_event_condition_item.h>
@@ -96,8 +96,6 @@ public:
 
 	bool isAnimationPresent(int32_t animationId);
 
-	std::optional<uintptr_t> getChrAddress();
-
 	void setSheathState(int32_t slot);
 
 	void registerNeutralCombo(NeutralCombo combo);
@@ -128,19 +126,19 @@ private:
 
 	std::optional<int32_t> findInventoryIdByGiveId(int32_t giveId);
 
-	bool savePlayerData();
+	void savePlayerData();
 
-	bool restorePlayerData();
+	void restorePlayerData();
 
-	bool saveEquipment();
+	void saveEquipment();
 
-	bool unequipAllEquipment();
+	void unequipAllEquipment();
 
-	bool reequipSavedEquipment();
+	void reequipSavedEquipment();
 
-	bool saveAndDiscardItems();
+	void saveAndDiscardItems();
 
-	bool loadAndGiveSavedItems();
+	void loadAndGiveSavedItems();
 
 	ItemParamIdPrefix getItemParamIdPrefixFromGiveId(int32_t giveId);
 

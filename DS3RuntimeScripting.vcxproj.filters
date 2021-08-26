@@ -278,9 +278,6 @@
     <ClCompile Include="ds3runtime\boss\boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\boss\player_boss.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\boss\standard_player_boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -312,6 +309,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\boss\player_boss.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

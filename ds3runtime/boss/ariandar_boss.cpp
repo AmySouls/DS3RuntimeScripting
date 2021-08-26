@@ -70,10 +70,6 @@ bool AriandarBoss::onAttach() {
 		119); //Way of White Circlet
 	giveGoodsAndSwap(GoodsSlot::QuickItem2,
 		296); //Undead Hunter Charm
-	auto chrAddress = getChrAddress();
-	if (!chrAddress.has_value()) return false;
-	PlayerIns chr(chrAddress.value());
-	if (!chr.isValid() || chr.getPlayerGameData() == 0) return false;
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setGender(PlayerGameData::Gender::Male);
 	playerGameData.setClass(PlayerGameData::Class::Cleric);
@@ -283,12 +279,12 @@ bool AriandarBoss::onAttach() {
 		auto position = bossChr.getPosition();
 
 		if (bossTask->tick >= 16 && bossTask->tick < 32) {
-			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * M_PI * 2) * .1;
+			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * static_cast<float>(M_PI) * 2) * .1f;
 			position[1] += verticalMoveScale;
 			bossChr.setPosition(position);
 		}
 		if (bossTask->tick >= 50 && bossTask->tick < 60) {
-			const float verticalMoveScale = sin((bossTask->tick - 40) / 20.0f * M_PI * 2) * .16;
+			const float verticalMoveScale = sin((bossTask->tick - 40) / 20.0f * static_cast<float>(M_PI) * 2) * .16f;
 			position[1] += verticalMoveScale;
 			bossChr.setPosition(position);
 		}
@@ -515,17 +511,17 @@ bool AriandarBoss::onAttach() {
 		auto position = bossChr.getPosition();
 
 		if (bossTask->tick >= 16 && bossTask->tick < 32) {
-			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * M_PI * 2) * .15;
+			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * static_cast<float>(M_PI) * 2) * .15f;
 			position[1] += verticalMoveScale;
 			bossChr.setPosition(position);
 		}
 		else if (bossTask->tick >= 32 && bossTask->tick < 44) {
-			const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * M_PI * 2) * .04;
+			const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * static_cast<float>(M_PI) * 2) * .04f;
 			position[1] += verticalMoveScale;
 			bossChr.setPosition(position);
 		}
 		else if (bossTask->tick >= 44 && bossTask->tick < 56) {
-			const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * M_PI * 2) * .4;
+			const float verticalMoveScale = sin((bossTask->tick - 32) / 24.0f * static_cast<float>(M_PI) * 2) * .4f;
 			position[1] += verticalMoveScale;
 			bossChr.setPosition(position);
 		}
@@ -694,11 +690,11 @@ bool AriandarBoss::onAttach() {
 				const float angle = bossChr.getAngle();
 				std::vector<float> itrDirection = { -sin(angle), 0, -cos(angle) };
 				auto position = bossChr.getPosition();
-				position[0] += -sin(angle - M_PI / (i > 3 ? 2.0f : -2.0f)) * displaceScale;
-				position[1] += .7;
-				position[2] += -cos(angle - M_PI / (i > 3 ? 2.0f : -2.0f)) * displaceScale;
-				itrDirection[0] += -sin(angle - M_PI / (i > 3 ? 8.0f : -8.0f)) * displaceScale;
-				itrDirection[2] += -cos(angle - M_PI / (i > 3 ? 8.0f : -8.0f)) * displaceScale;
+				position[0] += -sin(angle - static_cast<float>(M_PI) / (i > 3 ? 2.0f : -2.0f)) * displaceScale;
+				position[1] += .7f;
+				position[2] += -cos(angle - static_cast<float>(M_PI) / (i > 3 ? 2.0f : -2.0f)) * displaceScale;
+				itrDirection[0] += -sin(angle - static_cast<float>(M_PI) / (i > 3 ? 8.0f : -8.0f)) * displaceScale;
+				itrDirection[2] += -cos(angle - static_cast<float>(M_PI) / (i > 3 ? 8.0f : -8.0f)) * displaceScale;
 				BulletSpawn::launchBullet((int32_t)bossChr.getHandle(),
 					13550100,
 					-1,
@@ -800,7 +796,6 @@ bool AriandarBoss::onDetach()
 {
 	if (!PlayerIns::isMainChrLoaded()) return false;
 	PlayerIns mainChr(PlayerIns::getMainChrAddress());
-	setForwardId(mainChr.getForwardId());
 	restoreVannilaPlayerAnibndFile();
 	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
 	auto damageModuleHook = (SprjChrDamageModuleHook*)ds3runtime_global->accessHook("sprj_chr_damage_module_hook");
@@ -851,10 +846,6 @@ void AriandarBoss::logic()
 
 void AriandarBoss::checks()
 {
-	if (!PlayerIns::isMainChrLoaded()) return;
-	PlayerIns mainChr(PlayerIns::getMainChrAddress());
-	if (!mainChr.isValid()) return;
-	setForwardId(mainChr.getForwardId());
 	if (!getChrAddress().has_value()) return;
 	PlayerIns chr(getChrAddress().value());
 	if (!chr.isValid()) return;
@@ -876,7 +867,7 @@ void AriandarBoss::checks()
 
 	SprjChrDataModule chrData(chr.getSprjChrDataModule());
 	if (chr.getWeightIndex() != 1) chr.setWeightIndex(1);
-	if (chrData.getFP() < chrData.getMaxFP()) chrData.setFP(fmin((float)chrData.getMaxFP(), chrData.getFP() + fmax(1.0f, chrData.getMaxFP() / 100.0f)));
+	if (chrData.getFP() < chrData.getMaxFP()) chrData.setFP(static_cast<uint32_t>(fmin(static_cast<float>(chrData.getMaxFP()), chrData.getFP() + fmax(1.0f, chrData.getMaxFP() / 100.0f))));
 	if (chrData.getBaseMaxHealth() != 8000) chrData.setBaseMaxHealth(8000);
 	if (!chrData.isNoStaminaConsumption()) chrData.setNoStaminaConsumption(true);
 }

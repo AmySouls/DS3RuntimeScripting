@@ -222,7 +222,6 @@
     <ClCompile Include="ds3runtime\async_module.cpp" />
     <ClCompile Include="ds3runtime\boss\ariandar_boss.cpp" />
     <ClCompile Include="ds3runtime\boss\boss.cpp" />
-    <ClCompile Include="ds3runtime\boss\player_boss.cpp" />
     <ClCompile Include="ds3runtime\boss\standard_player_boss.cpp" />
     <ClCompile Include="ds3runtime\bullet_spawn.cpp" />
     <ClCompile Include="ds3runtime\databaseaddress.cpp" />

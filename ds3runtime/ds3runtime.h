@@ -36,14 +36,14 @@ public:
 	 *
 	 * @param hook Unique Hook to install.
 	 */
-	void addHook(std::unique_ptr<Hook>& hook);
+	void addHook(std::unique_ptr<Hook> hook);
 
 	/**
 	 * Adds a script to DS3RuntimeScripting. Scripts are practially a task/timer system. To attach and activate them call attach().
 	 *
 	 * @param script Script to install.
 	 */
-	void runScript(std::unique_ptr<ScriptModule>& script);
+	void runScript(std::unique_ptr<ScriptModule> script);
 
 	/**
 	 * Removes a script based off this particular script instance's unique id. Returns false if the script wasn't able to immediatly detach.

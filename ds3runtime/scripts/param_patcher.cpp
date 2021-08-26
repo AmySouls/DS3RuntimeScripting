@@ -173,12 +173,12 @@ bool ParamPatcher::onDetach()
     return true;
 }
 
-bool ParamPatcher::doesIdExistInParam(const std::wstring& param, const int32_t& id) const
+bool ParamPatcher::doesIdExistInParam(const std::wstring& param, const int32_t& id)
 {
-    return paramIdTables[param].find(id) != paramIdTables[param].end();
+    return paramIdTables[const_cast<std::wstring&>(param)].find(id) != paramIdTables[const_cast<std::wstring&>(param)].end();
 }
 
-bool ParamPatcher::isValidParam(const std::wstring& param, const int32_t& id) const
+bool ParamPatcher::isValidParam(const std::wstring& param, const int32_t& id)
 {
     return accessMultilevelPointer<uint8_t>(paramIdTables[param][id]) != nullptr;
 }
@@ -311,7 +311,7 @@ std::unordered_map<int32_t, uint64_t> ParamPatcher::createParamIdTable(const uin
 	return table;
 }
 
-uintptr_t ParamPatcher::getIdAddress(const std::unordered_map<int, uintptr_t>& idTable, int& id)
+uintptr_t ParamPatcher::getIdAddress(const std::unordered_map<int, uintptr_t>& idTable, const int32_t& id)
 {
     uintptr_t result = 0;
 

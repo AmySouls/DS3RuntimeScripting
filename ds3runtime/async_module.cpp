@@ -10,7 +10,7 @@
 
 namespace ds3runtime {
 
-AsyncModule::AsyncModule() : ScriptModule::ScriptModule()
+AsyncModule::AsyncModule()
 {	
 }
 

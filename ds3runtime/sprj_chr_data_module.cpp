@@ -66,7 +66,7 @@ uint32_t SprjChrDataModule::getMaxFP() const
 	return *accessMultilevelPointer<uint32_t>(address + 0xE8);
 }
 
-void SprjChrDataModule::setMaxFP(uint32_t& maxFP)
+void SprjChrDataModule::setMaxFP(const uint32_t& maxFP)
 {
 	*accessMultilevelPointer<uint32_t>(address + 0xE8) = maxFP;
 }
