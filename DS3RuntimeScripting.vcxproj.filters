@@ -168,6 +168,21 @@
     <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ds3runtime\scripts\ds1_passive_poise.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds1_no_hyperarmor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\better_swordspear_hook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\boss\build_copy.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -311,7 +326,19 @@
     <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\boss\player_boss.cpp">
+    <ClCompile Include="ds3runtime\scripts\ds1_passive_poise.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds1_no_hyperarmor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\better_swordspear_hook.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\boss\build_copy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -23,12 +23,26 @@ struct Attributes
 	int32_t humanity;
 	int32_t vitality;
 	int32_t soulLevel;
+
+	bool operator==(const Attributes& other) const
+	{
+		return vigor == other.vigor
+			&& attunement == other.attunement
+			&& endurance == other.endurance
+			&& strength == other.dexterity
+			&& dexterity == other.dexterity
+			&& intelligence == other.intelligence
+			&& faith == other.faith
+			&& luck == other.luck
+			&& vitality == other.vitality
+			&& soulLevel == other.soulLevel;
+	}
 };
 
 class PlayerGameData
 {
 public:
-	enum class Covenant {
+	enum class Covenant : uint8_t {
 		None = 0,
 		BladeOfTheDarkmoon = 1,
 		WarriorsOfSunlight = 2,
@@ -41,7 +55,7 @@ public:
 		BlueSentinels = 9
 	};
 
-	enum class InvadeType {
+	enum class InvadeType : int32_t {
 		Host = 0,
 		SummonWhite = 1,
 		SummonRed = 2,

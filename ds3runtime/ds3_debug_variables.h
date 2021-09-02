@@ -20,6 +20,8 @@ public:
 	void setDebugMovementMultiplier(bool value);
 
 	void setGlobalMovementMultiplier(float value);
+
+	uint8_t getOverallBonfireLevel() const;
 };
 
 }

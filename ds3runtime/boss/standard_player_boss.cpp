@@ -116,7 +116,7 @@ bool StandardPlayerBoss::onDetach()
 
 std::optional<uintptr_t> StandardPlayerBoss::getChrAddress()
 {
-	if (PlayerIns::isMainChrLoaded()) return PlayerIns::getMainChrAddress();
+	if (PlayerIns::isMainChrLoaded() && PlayerIns(PlayerIns::getMainChrAddress()).hasHkbCharacter()) return PlayerIns::getMainChrAddress();
 	return {};
 }
 
@@ -143,19 +143,18 @@ void StandardPlayerBoss::restorePlayerData()
 }
 
 void StandardPlayerBoss::giveGoodsAndSwap(GoodsSlot goodsSlot,
-	int32_t paramItemId)
+	int32_t paramItemId, int32_t quantity)
 {
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 	std::optional<int32_t> indexOfItem = findInventoryIdByGiveId((uint32_t)ItemParamIdPrefix::Goods + paramItemId);
 	
 	if (!indexOfItem.has_value()) {
-		equipInventoryData.addItem(ItemParamIdPrefix::Goods, paramItemId, 1, 0);
+		equipInventoryData.addItem(ItemParamIdPrefix::Goods, paramItemId, quantity, 0);
 		indexOfItem = findInventoryIdByGiveId((uint32_t)ItemParamIdPrefix::Goods + paramItemId);
 	}
 
 	if (indexOfItem.has_value()) {
-
 		equipGameData.equipGoodsInventoryItem(goodsSlot, indexOfItem.value());
 	}
 	else {
@@ -317,7 +316,7 @@ void StandardPlayerBoss::reequipSavedEquipment()
 		if (prefix != 0) paramItemId = paramItemId % prefix;
 
 		giveGoodsAndSwap(entry.first,
-			paramItemId);
+			paramItemId, entry.second->quantity);
 	}
 }
 
@@ -522,6 +521,18 @@ BossTask* StandardPlayerBoss::getCurrentMoveTask()
 std::vector<BossTask> StandardPlayerBoss::getBossTasks()
 {
 	return bossTasks;
+}
+
+void StandardPlayerBoss::clearInventory() {
+	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
+	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
+
+	for (int32_t i = 0; i < equipInventoryData.getInventoryItemCount(); i++) {
+		auto* item = equipInventoryData.getInventoryItemById(i);
+		if (item == nullptr || isHiddenItem(item->giveId)) continue;
+		if (getItemParamIdPrefixFromGiveId(item->giveId) != ItemParamIdPrefix::Goods) equipInventoryData.discardInventoryItems(i, item->quantity);
+		else equipGameData.modifyInventoryItemQuantity(i, -(int32_t)item->quantity);
+	}
 }
 
 }

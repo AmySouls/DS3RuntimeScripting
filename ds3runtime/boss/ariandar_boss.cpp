@@ -67,9 +67,9 @@ bool AriandarBoss::onAttach() {
 		10090, //Spears of the Church
 		-1);
 	giveGoodsAndSwap(GoodsSlot::QuickItem1,
-		119); //Way of White Circlet
+		119, 1); //Way of White Circlet
 	giveGoodsAndSwap(GoodsSlot::QuickItem2,
-		296); //Undead Hunter Charm
+		296, 5); //Undead Hunter Charm
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setGender(PlayerGameData::Gender::Male);
 	playerGameData.setClass(PlayerGameData::Class::Cleric);

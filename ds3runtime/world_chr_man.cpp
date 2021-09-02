@@ -35,6 +35,13 @@ uintptr_t WorldChrMan::getInsByHandle(int32_t handle)
 	return GetInsByHandle(handle);
 }
 
+std::array<float, 3> WorldChrMan::getCamVector() const
+{
+	std::array<float, 3> quaternion;
+	memcpy(&quaternion[0], accessMultilevelPointer<float>(address + 0x31A0, 0x30), sizeof(float) * 3);
+	return quaternion;
+}
+
 uintptr_t WorldChrMan::getInstance()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan);

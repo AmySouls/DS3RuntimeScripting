@@ -12,6 +12,11 @@
 #include <ds3runtime/scripts/hotkey_manager.h>
 #include <ds3runtime/scripts/fmod_system_handler.h>
 #include <ds3runtime/scripts/param_patcher.h>
+#include <ds3runtime/hooks/ds1_backstabs.h>
+#include <ds3runtime/hooks/ds1_no_hyperarmor.h>
+#include <ds3runtime/hooks/better_swordspear_hook.h>
+#include <ds3runtime/scripts/ds1_passive_poise.h>
+#include <ds3runtime/boss/build_copy.h>
 
 using namespace ds3runtime;
 
@@ -42,8 +47,8 @@ static bool attach()
 {
     ds3runtime_global.reset(new DS3RuntimeScripting);
     spdlog::set_default_logger(createLogger());
+
     ds3runtime_global->addHook(std::make_unique<GameFrameHook>());
-    ds3runtime_global->addHook(std::make_unique<LuaCapture>());
     ds3runtime_global->runScript(std::make_unique<HotkeyManager>());
     ds3runtime_global->addHook(std::make_unique<SessionReceiveHook>());
     ds3runtime_global->addHook(std::make_unique<SessionSendHook>());
@@ -52,6 +57,19 @@ static bool attach()
     ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
     ds3runtime_global->runScript(std::make_unique<FMODSystemHandler>());
     ds3runtime_global->runScript(std::make_unique<AnimationIdHandler>());
+    ds3runtime_global->runScript(std::make_unique<BuildCopy>());
+
+    /*
+    ds3runtime_global->runScript(std::make_unique<DS1PassivePoise>());
+    ds3runtime_global->addHook(std::make_unique<GameFrameHook>());
+    ds3runtime_global->addHook(std::make_unique<ThrowHook>());
+    ds3runtime_global->addHook(std::make_unique<PlayAnimationHook>());
+    ds3runtime_global->addHook(std::make_unique<DS1Backstabs>());
+    ds3runtime_global->addHook(std::make_unique<DS1NoHyperArmor>());
+    ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
+    ds3runtime_global->runScript(std::make_unique<FMODSystemHandler>());
+    */
+
     ds3runtime_global->attach();
     spdlog::info("Sucessfully loaded!");
     return true;

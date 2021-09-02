@@ -172,10 +172,65 @@ public:
 	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
  	  at the top of the file.
 	* 
-	* @param slotNumber The ring slot to put the ring in, must be an integer ranging 1-4.
+	* @param slotNumber The ammo slot to put the ring in, must be an integer ranging 1-4.
 	* @param equipParamAccessoryId equipParamId of the ring to put in this slot.
 	*/
 	void setRing(const uint32_t& slotNumber, const int32_t& equipParamAccessoryId);
+
+	/**
+	* Gets the item in the specified ammo slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The ammo slot to get the ring from, must be a integer ranging 1-4.
+	* @return equipParamId of the ammo in this slot.
+	*/
+	int32_t getAmmo(const uint32_t& slotNumber) const;
+
+	/**
+	* Sets the item in the specified ammo slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+	at the top of the file.
+	* 
+	* @param slotNumber The ammo slot to put the ammo in, must be an integer ranging 1-4.
+	* @param equipParamWeaponId equipParamId of the ammo to put in this slot.
+	*/
+	void setAmmo(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
+
+	/**
+	* Gets the spell in the specified spell slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The spell slot to get the ring from, must be a integer ranging 1-14.
+	* @return magicParamId of the spell in this slot.
+	*/
+	int32_t getSpell(const uint32_t& slotNumber) const;
+
+	/**
+	* Sets the spell in the specified attunment slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+	* at the top of the file.
+	* 
+	* @param slotNumber The attunement slot to put the spell in, must be an integer ranging 1-14.
+	* @param magicId magicParamId of the spell to put in this slot.
+	*/
+	void setSpell(const uint32_t& slotNumber, const int32_t& magicId);
+
+	/**
+	* Gets the covenant item of this PlayerIns in the game's memory. 
+	* 
+	* @return equipParamId of this player's covenant.
+	*/
+	int32_t getCovenant() const;
+
+	/**
+	* Sets the covenant item for this PlayerIns in the game's memory. 
+	* 
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+ 	  at the top of the file.
+	* 
+	* @papram equipParamAccessoryId equipParamId of the new covenant to give this player.
+	*/
+	void setCovenant(const int32_t& equipParamAccessoryId);
 
 	/**
 	* Checks if the "No Goods Consume" debug flag is set for this Player. This flag prevents consumption of inventory goods which may allow them to be used 

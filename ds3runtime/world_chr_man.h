@@ -21,6 +21,13 @@ public:
 
 	uintptr_t getInsByHandle(int32_t handle);
 
+	/**
+	* Gets the camera quaternion angle.
+	* 
+	* @return The camera quaternion angle.
+	*/
+	std::array<float, 3> getCamVector() const;
+
 	static uintptr_t getInstance();
 
 	static bool hasInstance();

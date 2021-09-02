@@ -22,72 +22,102 @@ uintptr_t* PlayerIns::getNetworkPointer()
 
 int32_t PlayerIns::getLeftHandWeapon(const uint32_t& slotNumber) const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x32C + (slotNumber - 1) * 8);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x32C + (slotNumber - 1) * 8);
 }
 
 void PlayerIns::setLeftHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x32C + (slotNumber - 1) * 8) = equipParamWeaponId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x32C + (slotNumber - 1) * 8) = equipParamWeaponId;
 }
 
 int32_t PlayerIns::getRightHandWeapon(const uint32_t& slotNumber) const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x330 + (slotNumber - 1) * 8);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x330 + (slotNumber - 1) * 8);
 }
 
 void PlayerIns::setRightHandWeapon(const uint32_t& slotNumber, const int32_t& equipParamWeaponId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x330 + (slotNumber - 1) * 8) = equipParamWeaponId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x330 + (slotNumber - 1) * 8) = equipParamWeaponId;
 }
 
 int32_t PlayerIns::getHead() const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x35C);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x35C);
 }
 
 void PlayerIns::setHead(const int32_t& equipParamProtectorId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x35C) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x35C) = equipParamProtectorId;
 }
 
 int32_t PlayerIns::getChest() const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x360);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x360);
 }
 
 void PlayerIns::setChest(const int32_t& equipParamProtectorId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x360) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x360) = equipParamProtectorId;
 }
 
 int32_t PlayerIns::getHands() const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x364);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x364);
 }
 
 void PlayerIns::setHands(const int32_t& equipParamProtectorId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x364) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x364) = equipParamProtectorId;
 }
 
 int32_t PlayerIns::getLegs() const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x368);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x368);
 }
 
 void PlayerIns::setLegs(const int32_t& equipParamProtectorId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x368) = equipParamProtectorId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x368) = equipParamProtectorId;
 }
 
 int32_t PlayerIns::getRing(const uint32_t& slotNumber) const
 {
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x330 + (slotNumber - 1) * 8);
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x370 + (slotNumber - 1) * 4);
 }
 
 void PlayerIns::setRing(const uint32_t& slotNumber, const int32_t& equipParamAccessoryId)
 {
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FD0, 0x330 + (slotNumber - 1) * 8) = equipParamAccessoryId;
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x370 + (slotNumber - 1) * 4) = equipParamAccessoryId;
+}
+
+int32_t PlayerIns::getAmmo(const uint32_t& slotNumber) const
+{
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x344 + (slotNumber - 1) * 4);
+}
+
+void PlayerIns::setAmmo(const uint32_t& slotNumber, const int32_t& equipParamAccessoryId)
+{
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x344 + (slotNumber - 1) * 4) = equipParamAccessoryId;
+}
+
+int32_t PlayerIns::getSpell(const uint32_t& slotNumber) const
+{
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x470, 0x18 + (slotNumber - 1) * 8);
+}
+
+void PlayerIns::setSpell(const uint32_t& slotNumber, const int32_t& spellId)
+{
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x470, 0x18 + (slotNumber - 1) * 8) = spellId;
+}
+
+int32_t PlayerIns::getCovenant() const
+{
+	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x380);
+}
+
+void PlayerIns::setCovenant(const int32_t& equipParamAccessoryId)
+{
+	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x380) = equipParamAccessoryId;
 }
 
 bool PlayerIns::isNoGoodsConsume() const

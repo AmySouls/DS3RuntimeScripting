@@ -23,4 +23,9 @@ void DS3DebugVariables::setGlobalMovementMultiplier(float value)
 	*accessMultilevelPointer<float>(0x1405DFC5C) = value;
 }
 
+uint8_t DS3DebugVariables::getOverallBonfireLevel() const
+{
+	return *accessMultilevelPointer<uint8_t>(0x14454A228);
+}
+
 };

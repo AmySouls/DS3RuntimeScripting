@@ -3,9 +3,6 @@
 #include "param_patcher.h"
 #include "dist/pugixml.hpp"
 #include <ds3runtime/world_chr_man.h>
-extern "C" { 
-#include <lua.h> 
-}
 #include "ds3runtime/databaseaddress.h"
 
 namespace ds3runtime {
@@ -340,6 +337,13 @@ int32_t ParamPatcher::getIdFromAddress(const std::unordered_map<int, uintptr_t>&
 std::vector<ParamField> ParamPatcher::getParamLayout(const std::wstring& paramName)
 {
     return paramLayoutTable[paramName];
+}
+
+std::vector<int32_t> ParamPatcher::getIdsInParam(const std::wstring& paramName)
+{
+    std::vector<int32_t> ids(paramIdTables[paramName].size());
+    for (auto entry : paramIdTables[paramName]) ids.push_back(entry.first);
+    return ids;
 }
 
 std::unordered_map<std::wstring, std::wstring> ParamPatcher::paramLayoutFileTable = {

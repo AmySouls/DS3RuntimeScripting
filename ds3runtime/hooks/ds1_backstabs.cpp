@@ -33,9 +33,9 @@ int32_t DS1Backstabs::onThrowCheck(uintptr_t throwAttemptChr, uintptr_t throwTar
 		return 1;
 	}
 
-	void (*originalFunction)(...);
+	int32_t (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
-	originalFunction(throwAttemptChr, throwTargetChr, throwInfoStruct, unk0);
+	return originalFunction(throwAttemptChr, throwTargetChr, throwInfoStruct, unk0);
 }
 
 DS1Backstabs* DS1Backstabs::instance = nullptr;

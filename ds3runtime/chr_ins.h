@@ -240,6 +240,13 @@ public:
 	float getAngle() const;
 
 	/**
+	* Get's the crossbow vertical aim angle.
+	* 
+	* @return Vertical crossbow angle this ChrIns is currently facing.
+	*/
+	float getCrossbowAngle() const;
+
+	/**
 	* Get's the current angle of this ChrIns. 
 	* 
 	* This is the absolute root rotation of this ChrIns in the game's virtual 3d space. 

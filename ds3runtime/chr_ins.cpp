@@ -88,6 +88,11 @@ float ChrIns::getAngle() const
 	return *accessMultilevelPointer<float>(address + 0x18, 0x28, 0x74);
 }
 
+float ChrIns::getCrossbowAngle() const
+{
+	return *accessMultilevelPointer<float>(address + 0x18, 0x28, 0x70);
+}
+
 void ChrIns::setAngle(const float& angle)
 {
 	*accessMultilevelPointer<float>(address + 0x18, 0x28, 0x74) = angle;

@@ -88,7 +88,7 @@ public:
 		int32_t durability);
 
 	void giveGoodsAndSwap(GoodsSlot inventorySlot,
-		int32_t paramItemId);
+		int32_t paramItemId, int32_t quantity);
 
 	void tryReloadPlayerChr();
 
@@ -128,23 +128,26 @@ private:
 
 	void savePlayerData();
 
-	void restorePlayerData();
-
 	void saveEquipment();
-
-	void unequipAllEquipment();
-
-	void reequipSavedEquipment();
 
 	void saveAndDiscardItems();
 
-	void loadAndGiveSavedItems();
 
 	ItemParamIdPrefix getItemParamIdPrefixFromGiveId(int32_t giveId);
 
 	bool isHiddenItem(const uint32_t itemId);
 
 	int32_t getItemMaxDurability(ItemParamIdPrefix paramIdPrefix, int32_t paramItemId);
+protected:
+	void restorePlayerData();
+
+	void unequipAllEquipment();
+
+	void reequipSavedEquipment();
+
+	void loadAndGiveSavedItems();
+
+	void clearInventory();
 };
 
 }

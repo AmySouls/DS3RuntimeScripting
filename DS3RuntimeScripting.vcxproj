@@ -172,6 +172,7 @@
     <ClInclude Include="ds3runtime\async_module.h" />
     <ClInclude Include="ds3runtime\boss\ariandar_boss.h" />
     <ClInclude Include="ds3runtime\boss\boss.h" />
+    <ClInclude Include="ds3runtime\boss\build_copy.h" />
     <ClInclude Include="ds3runtime\boss\player_boss.h" />
     <ClInclude Include="ds3runtime\boss\standard_player_boss.h" />
     <ClInclude Include="ds3runtime\bullet_spawn.h" />
@@ -184,6 +185,9 @@
     <ClInclude Include="ds3runtime\game_data_man.h" />
     <ClInclude Include="ds3runtime\game_option_man.h" />
     <ClInclude Include="ds3runtime\hook.h" />
+    <ClInclude Include="ds3runtime\hooks\better_swordspear_hook.h" />
+    <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h" />
+    <ClInclude Include="ds3runtime\hooks\ds1_no_hyperarmor.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
     <ClInclude Include="ds3runtime\hooks\play_animation_hook.h" />
@@ -198,6 +202,7 @@
     <ClInclude Include="ds3runtime\player_network_session.h" />
     <ClInclude Include="ds3runtime\player_ins.h" />
     <ClInclude Include="ds3runtime\scripts\animation_id_handler.h" />
+    <ClInclude Include="ds3runtime\scripts\ds1_passive_poise.h" />
     <ClInclude Include="ds3runtime\scripts\face_data_capture.h" />
     <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h" />
     <ClInclude Include="ds3runtime\scripts\hotkey_manager.h" />
@@ -222,6 +227,7 @@
     <ClCompile Include="ds3runtime\async_module.cpp" />
     <ClCompile Include="ds3runtime\boss\ariandar_boss.cpp" />
     <ClCompile Include="ds3runtime\boss\boss.cpp" />
+    <ClCompile Include="ds3runtime\boss\build_copy.cpp" />
     <ClCompile Include="ds3runtime\boss\standard_player_boss.cpp" />
     <ClCompile Include="ds3runtime\bullet_spawn.cpp" />
     <ClCompile Include="ds3runtime\databaseaddress.cpp" />
@@ -233,6 +239,9 @@
     <ClCompile Include="ds3runtime\game_data_man.cpp" />
     <ClCompile Include="ds3runtime\game_option_man.cpp" />
     <ClCompile Include="ds3runtime\hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\better_swordspear_hook.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp" />
+    <ClCompile Include="ds3runtime\hooks\ds1_no_hyperarmor.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp" />
     <ClCompile Include="ds3runtime\hooks\play_animation_hook.cpp" />
@@ -246,6 +255,7 @@
     <ClCompile Include="ds3runtime\player_ins.cpp" />
     <ClCompile Include="ds3runtime\player_network_session.cpp" />
     <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp" />
+    <ClCompile Include="ds3runtime\scripts\ds1_passive_poise.cpp" />
     <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp" />
     <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp" />
     <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp" />

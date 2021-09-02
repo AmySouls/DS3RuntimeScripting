@@ -91,6 +91,14 @@ public:
 	* @return List of fields within this param type.
 	*/
 	std::vector<ParamField> getParamLayout(const std::wstring& paramName);
+
+	/**
+	* Gets a list of all ids in this param
+	* 
+	* @param paramName The name of the param type to get the ids of.
+	* @return List of ids in a param.
+	*/
+	std::vector<int32_t> getIdsInParam(const std::wstring& paramName);
 private:
 	std::unordered_map<std::wstring, uintptr_t> paramOffsetTable;
 	std::unordered_map<std::wstring, std::unordered_map<int32_t, uintptr_t>> paramIdTables;
