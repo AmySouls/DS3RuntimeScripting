@@ -34,62 +34,7 @@ bool StandardPlayerBoss::onAttach()
 	savePlayerData();
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(false);
 
-	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
-
-	playAnimHook->installFilter("boss_combo_moves_" + std::to_string(getUniqueId()),
-		[this](uintptr_t hkbCharacter, int32_t animationPlayId) -> int32_t {
-			if (!getChrAddress().has_value()) return animationPlayId;
-			ChrIns bossChr(getChrAddress().value());
-			if (!bossChr.isValid() || !bossChr.hasHkbCharacter() || hkbCharacter != bossChr.getHkbCharacter()) return animationPlayId;
-
-			if (currentMoveTask.has_value()) {
-				for (auto entry : currentMoveTask->combos) {
-					const int32_t comboAnimId = bossChr.getHkbIdFromString(entry.first);
-
-					if (animationPlayId != comboAnimId) continue;
-					if (currentMoveTask.has_value()
-						&& currentMoveTask.value().taskId == entry.second) continue;
-					std::optional<BossTask> matchingBossTask;
-
-					for (BossTask bossTask : bossTasks) if (bossTask.taskId.compare(entry.second) == 0) {
-						matchingBossTask = bossTask;
-						break;
-					}
-
-					if (!matchingBossTask.has_value()) break;
-					BossTask newBossTask = matchingBossTask.value(); 
-					newBossTask.comboSource = ComboSource(animationPlayId, getAnimationId().value());
-					currentMoveTask = newBossTask;
-					return 0;
-				}
-
-				if (currentMoveTask->comboSource.has_value() 
-						&& animationPlayId == currentMoveTask->comboSource.value().animationPlayId
-						&& getAnimationId() == currentMoveTask->comboSource.value().animationId) {
-					return 0;
-				}
-			}
-			else {
-				for (NeutralCombo combo : neutralCombos) {
-					const int32_t comboAnimId = bossChr.getHkbIdFromString(combo.animationPlayString);
-					if (animationPlayId != comboAnimId) continue;
-					std::optional<BossTask> matchingBossTask;
-
-					for (BossTask bossTask : bossTasks) if (bossTask.taskId.compare(combo.taskId) == 0) {
-						matchingBossTask = bossTask;
-						break;
-					}
-
-					if (!matchingBossTask.has_value()) break;
-					BossTask newBossTask = matchingBossTask.value(); 
-					newBossTask.comboSource = ComboSource(animationPlayId, getAnimationId().value());
-					currentMoveTask = newBossTask;
-					return 0;
-				}
-			}
-
-			return animationPlayId;
-		});
+	comboSystem.install();
 
 	return true;
 }
@@ -108,8 +53,7 @@ bool StandardPlayerBoss::onDetach()
 	unequipAllEquipment();
 	loadAndGiveSavedItems();
 	reequipSavedEquipment();
-	auto playAnimHook = (PlayAnimationHook*)ds3runtime_global->accessHook("play_anim_hook");
-	playAnimHook->uninstallFilter("boss_combo_moves_" + std::to_string(getUniqueId()));
+	comboSystem.uninstall();
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(true);
 	return true;
 }
@@ -124,6 +68,7 @@ void StandardPlayerBoss::savePlayerData()
 {
 	PlayerIns chr(getChrAddress().value());
 	PlayerGameData playerGameData(chr.getPlayerGameData());
+	savedBodyProportions = playerGameData.getBodyProportions();
 	savedAttributes = playerGameData.getAttributes();
 	savedGender = playerGameData.getGender();
 	savedClass = playerGameData.getClass();
@@ -135,6 +80,7 @@ void StandardPlayerBoss::restorePlayerData()
 {
 	PlayerIns chr(getChrAddress().value());
 	PlayerGameData playerGameData(chr.getPlayerGameData());
+	playerGameData.setBodyPreportions(savedBodyProportions);
 	playerGameData.setAttributes(savedAttributes);
 	playerGameData.setGender(savedGender);
 	playerGameData.setClass(savedClass);
@@ -214,7 +160,9 @@ std::optional<int32_t> StandardPlayerBoss::findInventoryIdByGiveId(int32_t giveI
 
 void StandardPlayerBoss::saveEquipment()
 {
-	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
+	GameDataMan gameDataMan(GameDataMan::getInstance());
+	PlayerGameData playerGameData(gameDataMan.getPlayerGameData());
+	EquipGameData equipGameData(playerGameData.getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 
 	for (int32_t i = 0; i <= 21; i++) {
@@ -230,7 +178,7 @@ void StandardPlayerBoss::saveEquipment()
 		savedEquipment[(InventorySlot)i] = item;
 	}
 
-	for (int32_t i = 0; i <= 0xE; i++) {
+	for (int32_t i = 0; i <= 0xE; ++i) {
 		int32_t inventoryItemId = -1;
 		if (i < 10) inventoryItemId = equipGameData.getInventoryItemIdByQuickSlot((GoodsSlot)i);
 		else inventoryItemId = equipGameData.getInventoryItemIdByToolbeltSlot((GoodsSlot)i);
@@ -244,11 +192,20 @@ void StandardPlayerBoss::saveEquipment()
 
 		savedGoods[(GoodsSlot)i] = item;
 	}
+
+	for (int32_t i = 1; i <= 14; ++i) {
+		savedSpells[i] = playerGameData.getSpell(i);
+	}
 }
 
 void StandardPlayerBoss::unequipAllEquipment()
 {
-	for (int32_t i = 0; i <= 21; i++) {
+	GameDataMan gameDataMan(GameDataMan::getInstance());
+	PlayerGameData playerGameData(gameDataMan.getPlayerGameData());
+	EquipGameData equipGameData(playerGameData.getEquipGameData());
+	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
+
+	for (int32_t i = 0; i <= 21; ++i) {
 		switch (i) {
 		case 0:
 		case 1:
@@ -280,7 +237,6 @@ void StandardPlayerBoss::unequipAllEquipment()
 		case 20:
 		case 21:
 		{
-			EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 			equipGameData.equipInventoryItem((InventorySlot)i, -1);
 			break;
 		}
@@ -289,9 +245,12 @@ void StandardPlayerBoss::unequipAllEquipment()
 		}
 	}
 
-	for (int32_t i = 0; i <= 0xE; i++) {
-		EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
+	for (int32_t i = 0; i <= 0xE; ++i) {
 		equipGameData.equipGoodsInventoryItem((GoodsSlot)i, -1);
+	}
+
+	for (int32_t i = 1; i <= 14; ++i) {
+		playerGameData.setSpell(i, -1);
 	}
 }
 
@@ -317,6 +276,12 @@ void StandardPlayerBoss::reequipSavedEquipment()
 
 		giveGoodsAndSwap(entry.first,
 			paramItemId, entry.second->quantity);
+	}
+
+	for (auto&& entry : savedSpells) {
+		GameDataMan gameDataMan(GameDataMan::getInstance());
+		PlayerGameData playerGameData(gameDataMan.getPlayerGameData());
+		playerGameData.setSpell(entry.first, entry.second);
 	}
 }
 
@@ -435,7 +400,7 @@ void StandardPlayerBoss::replacePlayerAnibndFile(std::filesystem::path path)
 void StandardPlayerBoss::restoreVannilaPlayerAnibndFile()
 {
 	try {
-		std::filesystem::path vanillaPath = std::filesystem::current_path().append("DS3RuntimeScripting\\mods\\boss_vanilla\\");
+		std::filesystem::path vanillaPath = std::filesystem::current_path().append("DS3RuntimeScripting\\mods\\player_chr_vanilla\\");
 		std::filesystem::copy(vanillaPath, std::filesystem::current_path(), std::filesystem::copy_options::overwrite_existing | std::filesystem::copy_options::recursive);
 	}
 	catch (const std::filesystem::filesystem_error& error) {
@@ -486,43 +451,6 @@ void StandardPlayerBoss::setSheathState(int32_t slot)
 	session.sessionPacketSend(13, (char*)sheathData, 4);
 }
 
-void StandardPlayerBoss::registerNeutralCombo(NeutralCombo combo)
-{
-	neutralCombos.push_back(combo);
-}
-
-void StandardPlayerBoss::registerBossTask(BossTask bossTask)
-{
-	bossTasks.push_back(bossTask);
-}
-
-std::optional<BossTask> StandardPlayerBoss::getBossTaskByTaskId(std::string taskId)
-{
-	std::optional<BossTask> bossTask = {};
-
-	for (BossTask task : bossTasks) if (task.taskId == taskId) {
-		bossTask = task;
-		break;
-	}
-
-	return bossTask;
-}
-
-void StandardPlayerBoss::setCurrentMoveTask(std::optional<BossTask> bossTask)
-{
-	currentMoveTask = bossTask;
-}
-
-BossTask* StandardPlayerBoss::getCurrentMoveTask()
-{
-	return currentMoveTask.has_value() ? &currentMoveTask.value() : nullptr;
-}
-
-std::vector<BossTask> StandardPlayerBoss::getBossTasks()
-{
-	return bossTasks;
-}
-
 void StandardPlayerBoss::clearInventory() {
 	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
@@ -534,5 +462,12 @@ void StandardPlayerBoss::clearInventory() {
 		else equipGameData.modifyInventoryItemQuantity(i, -(int32_t)item->quantity);
 	}
 }
+
+stdcombo::ComboSystem* StandardPlayerBoss::getComboSystem()
+{
+	return &comboSystem;
+}
+
+
 
 }

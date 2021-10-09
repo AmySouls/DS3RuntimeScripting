@@ -40,11 +40,11 @@ bool AriandarBoss::onAttach() {
 		-1);
 	giveItemAndSwap(InventorySlot::Hands,
 		ItemParamIdPrefix::Protector,
-		23001000, //Black Hand Armor
+		92002000, //Wolf Knight Gauntlets
 		-1);
 	giveItemAndSwap(InventorySlot::Legs,
 		ItemParamIdPrefix::Protector,
-		60500000, //Millwood Knight Helm
+		93003000, //Dragonslayer Leggings
 		-1);
 	giveItemAndSwap(InventorySlot::Ring1,
 		ItemParamIdPrefix::Accessory,
@@ -68,8 +68,6 @@ bool AriandarBoss::onAttach() {
 		-1);
 	giveGoodsAndSwap(GoodsSlot::QuickItem1,
 		119, 1); //Way of White Circlet
-	giveGoodsAndSwap(GoodsSlot::QuickItem2,
-		296, 5); //Undead Hunter Charm
 	PlayerGameData playerGameData(chr.getPlayerGameData());
 	playerGameData.setGender(PlayerGameData::Gender::Male);
 	playerGameData.setClass(PlayerGameData::Class::Cleric);
@@ -101,6 +99,7 @@ bool AriandarBoss::onAttach() {
 	auto sessionSendHook = (SessionSendHook*)ds3runtime_global->accessHook("session_send_hook");
 
 	playAnimHook->installFilter("ariandar_boss_global_replaces", [this](uintptr_t hkbCharacter, int32_t animationId) -> int32_t {
+		if (!getChrAddress().has_value()) return animationId;
 		ChrIns bossChr(getChrAddress().value());
 		
 		if (bossChr.isValid() && hkbCharacter == bossChr.getHkbCharacter()) {
@@ -113,17 +112,18 @@ bool AriandarBoss::onAttach() {
 		return animationId;
 		});
 
-	registerNeutralCombo(NeutralCombo(L"W_AttackBothLeft1", "Phase1_DSSS_2h_r1_1"));
+	getComboSystem()->registerNeutralCombo(stdcombo::NeutralCombo("Neutral_l1", L"W_AttackBothLeft1", "Phase1_DSSS_2h_r1_1"));
 
-	registerNeutralCombo(NeutralCombo(L"W_AttackBothLeftDash", "Phase1_BKG_2h_r2_1_charged"));
+	getComboSystem()->registerNeutralCombo(stdcombo::NeutralCombo("Neutral_running_l1", L"W_AttackBothLeftDash", "Phase1_BKG_2h_r2_1_charged"));
 
-	registerBossTask(BossTask("Phase1_BKG_2h_r2_1_charged", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_BKG_2h_r2_1_charged", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 			&& !isAnimationPresent(112034320)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				10150005, //Black Knight Glaive
@@ -148,13 +148,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothHeavy1End", "Phase1_BKG_2h_r2_1_uncharged" },
 		}));
 
-	registerBossTask(BossTask("Phase1_BKG_2h_r2_1_uncharged", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_BKG_2h_r2_1_uncharged", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 			&& !isAnimationPresent(112034321)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				10150005, //Black Knight Glaive
@@ -179,10 +180,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLight1", "Phase1_DSSS_2h_r2_1_uncharged" },
 		}));
 
-	registerBossTask(BossTask("Phase1_DSS_2h_r1_1", 36034000, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSS_2h_r1_1", 36034000, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(bossTask->baseAnimationId)) {
 			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 		}
 
 		bossTask->tick++;
@@ -192,10 +197,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft2", "Phase1_RGCS_L2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_DSS_2h_r1_2", 36034010, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSS_2h_r1_2", 36034010, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(bossTask->baseAnimationId)) {
 			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 		}
 
 		bossTask->tick++;
@@ -205,10 +214,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft3", "Phase1_DSSS_2h_r1_2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_DSS_2h_r1_3", 36034020, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSS_2h_r1_3", 36034020, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(bossTask->baseAnimationId)) {
 			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 		}
 
 		bossTask->tick++;
@@ -218,13 +231,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft2", "Phase1_RGCS_L2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RGCS_L2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RGCS_L2", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(36034010) && !isAnimationPresent(151036400)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				2120000, //Rotten Ghru Curved Sword
@@ -250,13 +264,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackSpinHeavy", "Phase1_RGCS_L2_R2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RGCS_L2_R2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RGCS_L2_R2", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(151036420)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				2120000, //Rotten Ghru Curved Sword
@@ -295,13 +310,16 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_L2_R2_2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_DSSS_2h_r2_1_start", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSSS_2h_r2_1_start", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
+		spdlog::debug("Combo source?: {} | Is anim present 1?: {} | Is Anim present 2?: {}", bossTask->comboSource.has_value(), isAnimationPresent(bossTask->comboSource.value().animationId), isAnimationPresent(36034320));
+
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(36034320)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -329,13 +347,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft1", "Phase1_GUGS_2h_r1_3" },
 		}));
 
-	registerBossTask(BossTask("Phase1_DSSS_2h_r2_1_end", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSSS_2h_r2_1_end", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(36034321) && !isAnimationPresent(36034321)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -362,10 +381,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft1", "Phase1_GUGS_2h_r1_3" },
 		}));
 
-	registerBossTask(BossTask("Phase1_DSS_2h_running_r1", 36034500, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSS_2h_running_r1", 36034500, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(bossTask->baseAnimationId)) {
 			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 		}
 
 		bossTask->tick++;
@@ -376,13 +399,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft1", "Phase1_GUGS_2h_r1_3" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_2h_r2_1_start", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_2h_r2_1_start", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(252034320)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -409,13 +433,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_2h_r2_2_start" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_2h_r2_1_end", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_2h_r2_1_end", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(252034321)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -441,13 +466,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothHeavy2Start", "Phase1_RKS_2h_r2_2_start" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_2h_r2_2_start", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_2h_r2_2_start", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(252034340)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -472,13 +498,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothHeavy2End", "Phase1_RKS_2h_r2_2_end" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_2h_r2_2_end", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_2h_r2_2_end", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(252034341)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -501,7 +528,7 @@ bool AriandarBoss::onAttach() {
 		return {};
 		}, {}));
 
-	registerBossTask(BossTask("Phase1_2h_kick_r2", 36030600, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_2h_kick_r2", 36030600, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(bossTask->baseAnimationId)) {
 			return "";
@@ -509,6 +536,10 @@ bool AriandarBoss::onAttach() {
 
 		ChrIns bossChr(getChrAddress().value());
 		auto position = bossChr.getPosition();
+
+		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
+		}
 
 		if (bossTask->tick >= 16 && bossTask->tick < 32) {
 			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * static_cast<float>(M_PI) * 2) * .15f;
@@ -530,12 +561,12 @@ bool AriandarBoss::onAttach() {
 		return {};
 		}, {}));
 
-	registerBossTask(BossTask("Phase1_DSSS_2h_r1_1", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSSS_2h_r1_1", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		ChrIns bossChr(getChrAddress().value());
 
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
-				&& (bossTask->tick <= 4 && bossChr.getAnimationString().find(L"Damage") != std::wstring::npos)
-				|| (bossTask->tick > 4 && !isAnimationPresent(176034000))) {
+				&& (bossTask->tick <= 2 && bossChr.getAnimationString().find(L"Damage") != std::wstring::npos)
+				|| (bossTask->tick > 2 && !isAnimationPresent(176034000))) {
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9220005, //Dragonslayer Spear
@@ -545,17 +576,18 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
 				-1);
 			setSheathState(3);
 		}
-		else if (bossTask->tick == 3) {
+		else if (bossTask->tick == 2) {
 			ChrIns bossChr(getChrAddress().value());
 			bossChr.playAnimation(L"W_AttackBothLight1");
 		}
-		else if (bossTask->tick == 6) {
+		else if (bossTask->tick == 3) {
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9220005, //Dragonslayer Spear
@@ -570,7 +602,7 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft2", "Phase1_DSSS_2h_r1_2" },
 		}));
 	
-	registerBossTask(BossTask("Phase1_GUGS_2h_r1_3", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_GUGS_2h_r1_3", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		ChrIns bossChr(getChrAddress().value());
 
 		if ((!bossTask->comboSource.has_value() 
@@ -585,6 +617,7 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				6050010, //Greatsword
@@ -609,13 +642,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft2", "Phase1_DSSS_2h_r1_2" }
 		}));
 	
-	registerBossTask(BossTask("Phase1_DSSS_2h_r1_2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSSS_2h_r1_2", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(176034010)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -642,12 +676,13 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft3", "Phase1_GUGS_2h_r1_3" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_l2", 36036240, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_l2", 36036240, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if (!isAnimationPresent(bossTask->baseAnimationId) && !isAnimationPresent(252036701)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -711,13 +746,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_AttackBothLeft1", "Phase1_RGCS_L2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_l2_r2_1", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_l2_r2_1", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(252036711)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -742,13 +778,14 @@ bool AriandarBoss::onAttach() {
 			{ L"W_ChargeContinue2", "Phase1_RKS_l2_r2_2" },
 		}));
 
-	registerBossTask(BossTask("Phase1_RKS_l2_r2_2", -1, [this](BossTask* bossTask) -> std::optional<std::string> {
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_RKS_l2_r2_2", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(252036721)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
+			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -820,24 +857,26 @@ void AriandarBoss::logic()
 	if (!chr.isValid()) return;
 	std::optional<int32_t> animationId = getAnimationId();
 	
-	if (getCurrentMoveTask() == nullptr && animationId.has_value()) {
-		for (auto task : getBossTasks()) {
+	if (!getComboSystem()->getCurrentMoveTask().has_value() && animationId.has_value()) {
+		for (auto task : getComboSystem()->getBossTasks()) {
 			if (animationId.value() != -1 && animationId.value() != task.baseAnimationId) continue;
-			setCurrentMoveTask(task);
+			getComboSystem()->setCurrentMoveTask(task);
 			break;
 		}
 	}
 
-	if (getCurrentMoveTask() != nullptr) {
-		std::optional<std::string> taskTransfer = getCurrentMoveTask()->task(getCurrentMoveTask());
+	if (getComboSystem()->getCurrentMoveTask().has_value()) {
+		stdcombo::BossTask bossTask = getComboSystem()->getCurrentMoveTask().value();
+		std::optional<std::string> taskTransfer = bossTask.task(&bossTask);
+		getComboSystem()->setCurrentMoveTask(bossTask);
 		
 		if (taskTransfer.has_value() && taskTransfer.value() == "") {
-			setCurrentMoveTask({});
+			getComboSystem()->setCurrentMoveTask({});
 		}
 		else if (taskTransfer.has_value()) {
-			for (auto task : getBossTasks()) {
+			for (auto task : getComboSystem()->getBossTasks()) {
 				if (taskTransfer.value() != task.taskId) continue;
-				setCurrentMoveTask(task);
+				getComboSystem()->setCurrentMoveTask(task);
 				break;
 			}
 		}
@@ -870,6 +909,10 @@ void AriandarBoss::checks()
 	if (chrData.getFP() < chrData.getMaxFP()) chrData.setFP(static_cast<uint32_t>(fmin(static_cast<float>(chrData.getMaxFP()), chrData.getFP() + fmax(1.0f, chrData.getMaxFP() / 100.0f))));
 	if (chrData.getBaseMaxHealth() != 8000) chrData.setBaseMaxHealth(8000);
 	if (!chrData.isNoStaminaConsumption()) chrData.setNoStaminaConsumption(true);
+}
+
+void AriandarBoss::updateChainComboMove(const std::string& taskId) {
+	this->chainComboLastMove = taskId;
 }
 
 }

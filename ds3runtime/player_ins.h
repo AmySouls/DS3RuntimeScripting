@@ -197,25 +197,6 @@ public:
 	void setAmmo(const uint32_t& slotNumber, const int32_t& equipParamWeaponId);
 
 	/**
-	* Gets the spell in the specified spell slot of this PlayerIns in the game's memory. 
-	* 
-	* @param slotNumber The spell slot to get the ring from, must be a integer ranging 1-14.
-	* @return magicParamId of the spell in this slot.
-	*/
-	int32_t getSpell(const uint32_t& slotNumber) const;
-
-	/**
-	* Sets the spell in the specified attunment slot of this PlayerIns in the game's memory.
-	*
-	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
-	* at the top of the file.
-	* 
-	* @param slotNumber The attunement slot to put the spell in, must be an integer ranging 1-14.
-	* @param magicId magicParamId of the spell to put in this slot.
-	*/
-	void setSpell(const uint32_t& slotNumber, const int32_t& magicId);
-
-	/**
 	* Gets the covenant item of this PlayerIns in the game's memory. 
 	* 
 	* @return equipParamId of this player's covenant.
@@ -281,6 +262,8 @@ public:
 	* @return The base address of the specified PlayerIns if they exist in memory, otherwise this returns 0.
 	*/
 	static uintptr_t getAddressByOffsetNumber(const OffsetNumber& offsetNumber);
+
+	static bool isChrWithOffsetNumber(const OffsetNumber& offsetNumber);
 
 	/**
 	* Check if an address is the virtual address of a PlayerIns. 

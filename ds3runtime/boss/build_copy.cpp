@@ -16,6 +16,7 @@
 #include <ds3runtime/hooks/session_receive_hook.h>
 #include <ds3runtime/sprj_session_manager.h>
 #include "ds3runtime/game_option_man.h"
+#include "ds3runtime/scripts/animation_id_handler.h"
 
 namespace ds3runtime {
 
@@ -25,25 +26,26 @@ bool BuildCopy::onAttach() {
 	PlayerIns chr(getChrAddress().value());
 	if (!StandardPlayerBoss::onAttach()) return false;
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(false);
+	loadAndGiveSavedItems();
+	reequipSavedEquipment();
 
 	((SessionReceiveHook*)ds3runtime_global
 		->accessHook("session_receive_hook"))
 		->installPacketFilter("build_copy", [&](uintptr_t networkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength, uint32_t receiveLength) -> uint32_t {
 		auto session = PlayerNetworkSession(networkSession);
 		auto sessionManager = SprjSessionManager(SprjSessionManager::getInstance());
+		GameOptionMan gameOptionMan(GameOptionMan::getInstance());
 
 		if (id == 8) {
 			auto packet = packet::PlayerStruct(buffer, receiveLength);
 			spdlog::debug("New player: {}", ds3runtime_global->utf8_encode(packet.getWideStringField("name").c_str()));
-			auto invadeType = *reinterpret_cast<PlayerGameData::InvadeType*>(packet.getData() + 0x58);
+			auto invadeType = static_cast<PlayerGameData::InvadeType>(*reinterpret_cast<uint8_t*>(packet.getData() + 0x58));
 			auto targetInvadeType = PlayerGameData::InvadeType::Host;
 			bool isMatchingTarget = false;
 
 			switch (targetType) {
 			case TargetType::Host:
-				isMatchingTarget = invadeType == PlayerGameData::InvadeType::InvadeRed
-					|| invadeType == PlayerGameData::InvadeType::InvadePurpleDark
-					|| invadeType == PlayerGameData::InvadeType::InvadeSunlightDark;
+				isMatchingTarget = invadeType == PlayerGameData::InvadeType::Host;
 				break;
 			case TargetType::Invader:
 				isMatchingTarget = invadeType == PlayerGameData::InvadeType::InvadeRed
@@ -103,12 +105,25 @@ bool BuildCopy::onAttach() {
 	((SessionSendHook*)ds3runtime_global->accessHook("session_send_hook"))->installPacketFilter("build_copy", [&](uintptr_t playerNetworkSession, uintptr_t* networkHandle, int id, char* buffer, uint32_t maxLength) -> uint32_t {
 		auto session = PlayerNetworkSession(playerNetworkSession);
 		auto sessionManager = SprjSessionManager(SprjSessionManager::getInstance());
-		
-		if (id == 8) {
-			auto packet = packet::PlayerStruct(buffer, maxLength);
+		GameOptionMan gameOptionMan(GameOptionMan::getInstance());
 
-			if (!localPlayerStruct.has_value()) {
-				localPlayerStruct = packet;
+		if (id == 8 && !gameOptionMan.isMyWorld()) {
+			auto packet = packet::PlayerStruct(buffer, maxLength);
+			localPlayerStruct = packet;
+
+			if (targetPlayerStruct.has_value()) {
+				packet::PlayerStruct playerData = localPlayerStruct.value();
+				packet::PlayerStruct targetPlayerData = targetPlayerStruct.value();
+				memcpy(reinterpret_cast<uint8_t*>(playerData.getData() + 0x2C),
+					reinterpret_cast<uint8_t*>(targetPlayerData.getData() + 0x2C),
+					0x2C);
+				memcpy(reinterpret_cast<uint8_t*>(playerData.getData() + 0xA4),
+					reinterpret_cast<uint8_t*>(targetPlayerData.getData() + 0xA4),
+					256);
+				playerData.setWideStringField("name", targetPlayerData.getWideStringField("name"));
+				auto session = PlayerNetworkSession(PlayerNetworkSession::getInstance());
+				auto sessionManager = SprjSessionManager(SprjSessionManager::getInstance());
+				session.packetSend(networkHandle, &playerData);
 				return 0;
 			}
 		}
@@ -143,71 +158,74 @@ void BuildCopy::logic()
 	if (!target.has_value()) {
 		target = findNewTarget();
 		if (!target.has_value()) return;
-
-		if (targetPlayerStruct.has_value() && localPlayerStruct.has_value()) {
-			packet::PlayerStruct playerData = localPlayerStruct.value();
-			packet::PlayerStruct targetPlayerData = targetPlayerStruct.value();
-			memcpy(reinterpret_cast<uint8_t*>(playerData.getData() + 0x2C),
-				reinterpret_cast<uint8_t*>(targetPlayerData.getData() + 0x2C),
-				sizeof(Attributes));
-			memcpy(reinterpret_cast<uint8_t*>(playerData.getData() + 0xA4),
-				reinterpret_cast<uint8_t*>(targetPlayerData.getData() + 0xA4),
-				256);
-			playerData.setWideStringField("name", targetPlayerData.getWideStringField("name"));
-			auto session = PlayerNetworkSession(PlayerNetworkSession::getInstance());
-			session.sessionPacketSend(&playerData);
-		}
-
+		unequipAllEquipment();
+		clearInventory();
+		copyPlayerData();
+		//tryReloadPlayerChr();
 		spdlog::info("New target!: {}", ds3runtime_global->utf8_encode(PlayerGameData(target->getPlayerGameData()).getName()));
 	}
 
 	if (!target->isValid()) {
 		target.reset();
+		targetPlayerStruct.reset();
 		targetGoods.clear();
 		targetSpells.clear();
-		unequipAllEquipment();
-		loadAndGiveSavedItems();
-		restorePlayerData();
 		clearInventory();
+		unequipAllEquipment();
+		restorePlayerData();
+		loadAndGiveSavedItems();
+		reequipSavedEquipment();
 		return;
 	}
 
-	updateAndCopyPlayerData();
-
 	if (chr.hasHkbCharacter()) {
 		updateAndCopyEquipment();
+		tryCopyGesture();
 	}
 }
 
 void BuildCopy::checks()
 {
-	if (localPlayerStruct.has_value() && isPlayersLoaded()) {
-		spdlog::debug("players are loaded, sending normal.");
-		auto session = PlayerNetworkSession(PlayerNetworkSession::getInstance());
-		session.sessionPacketSend(&localPlayerStruct.value());
-		localPlayerStruct.reset();
-	}
 }
 
-inline std::optional<PlayerIns> BuildCopy::findNewTarget()
+std::optional<PlayerIns> BuildCopy::findNewTarget()
 {
 	for (int32_t i = 1; i <= 5; ++i) {
+		if (!PlayerIns::isChrWithOffsetNumber(static_cast<PlayerIns::OffsetNumber>(i))) continue;
+		
 		const uintptr_t playerAddress = 
 			PlayerIns::getAddressByOffsetNumber(static_cast<PlayerIns::OffsetNumber>(i));
-
-		if (!PlayerIns::isPlayer(playerAddress)) continue;
 		PlayerIns player(playerAddress);
 
-		if (player.getChrType() == PlayerIns::ChrType::HostOfEmbers
-					||player.getChrType() == PlayerIns::ChrType::Arena) {
-			return playerAddress;
+		switch (targetType) {
+		case TargetType::Host:
+			if (player.getChrType() == PlayerIns::ChrType::HostOfEmbers
+					|| player.getChrType() == PlayerIns::ChrType::Hollow) {
+				return playerAddress;
+			}
+
+			break;
+		case TargetType::Invader:
+			if (player.getChrType() == PlayerIns::ChrType::DarkSpirit) {
+				return playerAddress;
+			}
+
+			break;
+		case TargetType::Arena:
+			if (player.getChrType() == PlayerIns::ChrType::Arena) {
+				return playerAddress; //What
+			}
+
+			break;
+		default:
+			break;
 		}
 	}
 
 	return {};
 }
 
-void BuildCopy::updateAndCopyPlayerData()
+void BuildCopy::copyPlayerData()
 {
 	PlayerIns chr(getChrAddress().value());
 	PlayerGameData gameData(chr.getPlayerGameData());
@@ -228,6 +246,9 @@ void BuildCopy::updateAndCopyPlayerData()
 	if (gameData.getVoice() != targetData.getVoice()) {
 		gameData.setVoice(targetData.getVoice());
 	}
+
+	gameData.setFaceData(targetData.getFaceData());
+	gameData.setBodyPreportions(targetData.getBodyProportions());
 }
 
 void BuildCopy::updateAndCopyEquipment()
@@ -373,7 +394,7 @@ void BuildCopy::updateAndCopyEquipment()
 	const int32_t copyCatCovenant = chr.getCovenant();
 	const int32_t targetCovenant = target->getCovenant();
 
-	if (copyCatCovenant != targetCovenant) {
+	if (targetType != TargetType::Invader && copyCatCovenant != targetCovenant) {
 		
 		if (targetCovenant == -1) {
 			EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
@@ -435,20 +456,22 @@ void BuildCopy::updateAndCopyEquipment()
 void BuildCopy::tryAddSpell(const int32_t& magicId)
 {
 	const int32_t spellCount = targetSpells.size() + 1;
-	EquipGameData equipGameData(PlayerGameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData()).getEquipGameData());
+	PlayerGameData gameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData());
+	EquipGameData equipGameData(gameData.getEquipGameData());
 	EquipInventoryData equipInventoryData(equipGameData.getEquipInventoryData());
 	equipInventoryData.addItem(ItemParamIdPrefix::Goods, magicId, 1, 0);
 
-	if (spellCount <= 14 && getChrAddress().has_value()) {
-		PlayerIns chr(getChrAddress().value());
-		chr.setSpell(spellCount, magicId);
+	if (spellCount <= 14) {
+		gameData.setSpell(spellCount, magicId);
 	}
 
-	targetGoods[spellCount] = magicId;
+	targetSpells[spellCount] = magicId;
 }
 
 void BuildCopy::tryAddGood(const int32_t& goodId)
 {
+	GameOptionMan gameOptionMan(GameOptionMan::getInstance());
+	PlayerGameData gameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData());
 	const int32_t goodCount = targetGoods.size() + 1;
 	std::optional<GoodsSlot> goodsSlot;
 
@@ -503,12 +526,17 @@ void BuildCopy::tryAddGood(const int32_t& goodId)
 	}
 
 	int32_t giveQuantity = 99;
+	const int32_t estusTotal = gameOptionMan.isMyWorld() ? 15 : 7;
 
-	if (goodId >= 0x40000096 && goodId <= 0x400000AB) { //Estus flask should not be more than 4
-		giveQuantity = 4;
+	int32_t ashenCount = 
+		std::floor((gameOptionMan.isMyWorld() ? 2 : 1) * (std::max(gameData.getAttributes().attunement, 0) / 6.0f));
+
+	if (goodId >= 0x96 && goodId <= 0xAB) { //Estus
+		giveQuantity = estusTotal - ashenCount;
 	}
-	else if (goodId >= 0x400000BE && goodId <= 0x400000D3) { //Ashen Estus flask should not be more than 2
-		giveQuantity = 2;
+	else if (goodId >= 0xBE && goodId <= 0xD3) { //Ashen Estus
+		spdlog::debug("Ashen estus count: {} {}", ashenCount, estusTotal);
+		giveQuantity = ashenCount;
 	}
 
 	if (goodsSlot.has_value()) {
@@ -523,6 +551,129 @@ void BuildCopy::tryAddGood(const int32_t& goodId)
 	}
 
 	targetGoods[goodCount] = goodId;
+}
+
+void BuildCopy::tryCopyGesture()
+{
+	auto* handler = (AnimationIdHandler*)ds3runtime_global->accessScript("animation_id_handler");
+	std::optional<int32_t> targetAnimation = handler->getAnimationId(*target);
+	if (!targetAnimation.has_value() || targetAnimation.value() - (targetAnimation.value() % 80000) != 80000) return;
+	int32_t gestureId = -1;
+	
+	switch (targetAnimation.value()) {
+	case 80500:
+		gestureId = 2; // Point Forward
+		break;
+	case 80200:
+		gestureId = 4; //Point Up;
+		break;
+	case 80300:
+		gestureId = 6; //Point down
+		break;
+	case 81100:
+		gestureId = 8; //Wave
+		break;
+	case 80000:
+		gestureId = 10; //Beckon
+		break;
+	case 84400:
+		gestureId = 12; //Call over
+		break;
+	case 80600:
+		gestureId = 14; //Welcome
+		break;
+	case 85000:
+		gestureId = 16; //Applause
+		break;
+	case 84600:
+		gestureId = 18; //Quiet Resolve
+		break;
+	case 81300:
+		gestureId = 20; //Jump For Joy
+		break;
+	case 81400:
+		gestureId = 22; //Joy
+		break;
+	case 81600:
+		gestureId = 24; //Rejoice
+		break;
+	case 81200:
+		gestureId = 26; //hurrah
+		break;
+	case 80100:
+		gestureId = 28; //Praise the Sun
+		break;
+	case 81000:
+		gestureId = 32; //Bow
+		break;
+	case 81500:
+		gestureId = 30; //My thanks
+		break;
+	case 80800:
+		gestureId = 34; //Proper Bow
+		break;
+	case 83300:
+		gestureId = 36; //Dignified Bow
+		break;
+	case 80400:
+		gestureId = 38; //Duel Bow
+		break;
+	case 85200:
+		gestureId = 40; //Legion Etiquette
+		break;
+	case 85300:
+		gestureId = 42; //Darkmoon Loyality
+		break;
+	case 82400:
+		gestureId = 44; //By my sword
+		break;
+	case 80900:
+		gestureId = 46; //Prayer
+		break;
+	case 85600:
+		gestureId = 48; //Silent Ally
+		break;
+	case 81800:
+		gestureId = 50; //Rest
+		break;
+	case 84500:
+		gestureId = 52; //Collapse
+		break;
+	case 84700:
+		gestureId = 54; //Patches Squad
+		break;
+	case 80700:
+		gestureId = 56; //Prostration
+		break;
+	case 85500:
+		gestureId = 58; //Toast
+		break;
+	case 85400:
+		gestureId = 60; //Sleep
+		break;
+	case 84200:
+		gestureId = 62; //Curl Up
+		break;
+	case 84300:
+		gestureId = 64; //Stretch out
+		break;
+	case 85100:
+		gestureId = 66; //Patch of the Dragon
+		break;
+	case 83900:
+		gestureId = 68; //Unmannered Bow
+		break;
+	case 84100:
+		gestureId = 70; //Lord of Cinder
+		break;
+	default:
+		break;
+	}
+
+	if (gestureId != -1) {
+		PlayerGameData gameData(GameDataMan(GameDataMan::getInstance()).getPlayerGameData());
+		gameData.setGesture(1, gestureId);
+	}
 }
 
 bool BuildCopy::isPlayersLoaded()

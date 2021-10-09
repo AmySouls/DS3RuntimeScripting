@@ -183,6 +183,12 @@
     <ClInclude Include="ds3runtime\boss\build_copy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ds3runtime\hooks\has_speffect_visual.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ds3runtime\boss\standard_combo_system.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="pch.cpp">
@@ -314,9 +320,6 @@
     <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -339,6 +342,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ds3runtime\boss\build_copy.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\hooks\has_speffect_visual.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ds3runtime\boss\standard_combo_system.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

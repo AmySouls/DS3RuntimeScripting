@@ -17,6 +17,9 @@
 #include <ds3runtime/hooks/better_swordspear_hook.h>
 #include <ds3runtime/scripts/ds1_passive_poise.h>
 #include <ds3runtime/boss/build_copy.h>
+#include <ds3runtime/scripts/king_crimson_protections.h>
+#include <ds3runtime/hooks/has_speffect_visual.h>
+#include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
 
 using namespace ds3runtime;
 
@@ -54,10 +57,12 @@ static bool attach()
     ds3runtime_global->addHook(std::make_unique<SessionSendHook>());
     ds3runtime_global->addHook(std::make_unique<ThrowHook>());
     ds3runtime_global->addHook(std::make_unique<PlayAnimationHook>());
+    ds3runtime_global->addHook(std::make_unique<SprjChrDamageModuleHook>());
     ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
     ds3runtime_global->runScript(std::make_unique<FMODSystemHandler>());
     ds3runtime_global->runScript(std::make_unique<AnimationIdHandler>());
-    ds3runtime_global->runScript(std::make_unique<BuildCopy>());
+    //ds3runtime_global->runScript(std::make_unique<BuildCopy>());
+    ds3runtime_global->runScript(std::make_unique<KingCrimsonProtections>());
 
     /*
     ds3runtime_global->runScript(std::make_unique<DS1PassivePoise>());

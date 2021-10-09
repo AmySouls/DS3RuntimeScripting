@@ -6,7 +6,7 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/script_module.h"
-#include "ds3runtime/chr_ins.h"
+#include "ds3runtime/player_ins.h"
 
 namespace ds3runtime {
 
@@ -24,8 +24,8 @@ public:
 
 	std::optional<std::unordered_map<int32_t, int32_t>> getAnimationIdBuffer(ChrIns chr);
 private:
-	std::unordered_map<std::wstring, std::unordered_map<int32_t, int32_t>> animationIdMap;
-	std::unordered_map<std::wstring, int32_t> latestAnimationIdMap;
+	std::unordered_map<PlayerIns::Handle, std::unordered_map<int32_t, int32_t>> animationIdMap;
+	std::unordered_map<PlayerIns::Handle, int32_t> latestAnimationIdMap;
 };
 
 }

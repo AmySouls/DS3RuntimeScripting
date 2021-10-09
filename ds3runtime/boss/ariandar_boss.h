@@ -25,6 +25,9 @@ protected:
 
 	void checks();
 private:
+	std::string chainComboLastMove;
+
+	void updateChainComboMove(const std::string& taskId);
 };
 
 }

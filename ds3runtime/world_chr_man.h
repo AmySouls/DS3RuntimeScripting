@@ -7,6 +7,7 @@
 #pragma once
 #include "pch.h"
 #include "memory_util.h"
+#include "chr_ins.h"
 
 namespace ds3runtime {
 
@@ -27,6 +28,8 @@ public:
 	* @return The camera quaternion angle.
 	*/
 	std::array<float, 3> getCamVector() const;
+
+	bool doesChrHaveSpEffect(ChrIns chr, const int32_t& spEffectId) const;
 
 	static uintptr_t getInstance();
 

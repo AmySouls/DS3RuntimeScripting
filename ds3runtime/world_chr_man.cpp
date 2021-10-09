@@ -42,6 +42,18 @@ std::array<float, 3> WorldChrMan::getCamVector() const
 	return quaternion;
 }
 
+bool WorldChrMan::doesChrHaveSpEffect(ChrIns chr, const int32_t& spEffectId) const
+{
+	const uintptr_t effectBase = *accessMultilevelPointer<uintptr_t>(chr.getAddress() + 0x11c8);
+	uintptr_t effectPtr = *accessMultilevelPointer<uintptr_t>(effectBase + 8);
+	if (reinterpret_cast<uintptr_t*>(effectPtr) == nullptr) return false;
+	uint8_t effectcount = 0;
+
+	for (effectPtr = *accessMultilevelPointer<uintptr_t>(effectPtr + 0x78); accessMultilevelPointer<uintptr_t*>(effectPtr) != nullptr; effectPtr = *accessMultilevelPointer<uintptr_t>(effectPtr + 0x78)) {
+		if (*accessMultilevelPointer<int32_t>(effectPtr + 0x60) == spEffectId) return true;
+	}
+}
+
 uintptr_t WorldChrMan::getInstance()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan);

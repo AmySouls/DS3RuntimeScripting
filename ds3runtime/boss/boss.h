@@ -16,6 +16,8 @@ public:
 	void execute();
 
 	virtual std::optional<uintptr_t> getChrAddress() = 0;
+
+	virtual std::optional<int32_t> getAnimationId() = 0;
 protected:
 	virtual void logic() = 0;
 

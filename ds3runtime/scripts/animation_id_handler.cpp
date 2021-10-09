@@ -8,32 +8,37 @@ namespace ds3runtime {
 void AnimationIdHandler::execute()
 {
 	if (!PlayerIns::isMainChrLoaded()) return;
-	uintptr_t entityAnimationHandle = (uintptr_t)accessMultilevelPointer<uintptr_t>(PlayerIns::getMainChrAddress() + 0x1F90, 0x10);
-	if (!entityAnimationHandle) return;
-	ChrIns entity(*accessMultilevelPointer<uintptr_t>(entityAnimationHandle, 8));
-	std::wstring characterString = entity.getCharacterString();
 
-	for (int i = 0; i < 10; i++) {
-		const int animationId = *accessMultilevelPointer<uint32_t>(entityAnimationHandle, 0x20 + (uintptr_t)i * 0x10);
+	for (int32_t i = 0; i <= 5; ++i) {
+		if (!PlayerIns::isChrWithOffsetNumber(static_cast<PlayerIns::OffsetNumber>(i))) continue;
+		const uintptr_t playerAddress = PlayerIns::getAddressByOffsetNumber(static_cast<PlayerIns::OffsetNumber>(i));
+		PlayerIns chr(playerAddress);
+		uintptr_t entityAnimationHandle = reinterpret_cast<uintptr_t>(accessMultilevelPointer<uintptr_t>(chr.getAddress() + 0x1F90, 0x10));
+		if (!entityAnimationHandle) return;
+		PlayerIns::Handle characterHandle = chr.getHandle();
 
-		if (animationIdMap[characterString][i] != animationId) {
-			latestAnimationIdMap[characterString] = animationId;
-		}
+		for (int i = 0; i < 10; i++) {
+			const int animationId = *accessMultilevelPointer<uint32_t>(entityAnimationHandle, 0x20 + (uintptr_t)i * 0x10);
 
-		animationIdMap[characterString][i] = animationId;
-	}	
+			if (animationIdMap[characterHandle][i] != animationId) {
+				latestAnimationIdMap[characterHandle] = animationId;
+			}
+
+			animationIdMap[characterHandle][i] = animationId;
+		}	
+	}
 }
 
 std::optional<int32_t> AnimationIdHandler::getAnimationId(ChrIns chr)
 {
-	if (!latestAnimationIdMap.contains(chr.getCharacterString())) return {};
-	return latestAnimationIdMap[chr.getCharacterString()];
+	if (!latestAnimationIdMap.contains(chr.getHandle())) return {};
+	return latestAnimationIdMap[chr.getHandle()];
 }
 
 std::optional<std::unordered_map<int32_t, int32_t>> AnimationIdHandler::getAnimationIdBuffer(ChrIns chr)
 {
-	if (!animationIdMap.contains(chr.getCharacterString())) return {};
-	return animationIdMap[chr.getCharacterString()];
+	if (!animationIdMap.contains(chr.getHandle())) return {};
+	return animationIdMap[chr.getHandle()];
 }
 
 }

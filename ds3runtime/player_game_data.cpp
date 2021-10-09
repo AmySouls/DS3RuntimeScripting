@@ -56,6 +56,30 @@ void PlayerGameData::setAge(const Age& age)
 	*accessMultilevelPointer<uint8_t>(address + 0x6B8) = static_cast<uint8_t>(age);
 }
 
+std::array<uint8_t, 256> PlayerGameData::getFaceData() const
+{
+	auto faceDataPointer = accessMultilevelPointer<uint8_t>(address + 0x6B0);
+	std::array<uint8_t, 256> faceDataArray = {};
+	std::copy_n(faceDataPointer, faceDataArray.size(), faceDataArray.begin());
+	return faceDataArray;
+}
+
+void PlayerGameData::setFaceData(const std::array<uint8_t, 256>& faceData)
+{
+	auto faceDataPointer = accessMultilevelPointer<uint8_t>(address + 0x6B0);
+	memcpy(faceDataPointer, &faceData[0], 256);
+}
+
+BodyProportions PlayerGameData::getBodyProportions() const
+{
+	return *reinterpret_cast<BodyProportions*>(accessMultilevelPointer<uintptr_t>(address + 0x3B0));
+}
+
+void PlayerGameData::setBodyPreportions(const BodyProportions& bodyPreportions)
+{
+	*reinterpret_cast<BodyProportions*>(accessMultilevelPointer<uintptr_t>(address + 0x3B0)) = bodyPreportions;
+}
+
 Attributes PlayerGameData::getAttributes() const
 {
 	return *reinterpret_cast<Attributes*>(accessMultilevelPointer<uintptr_t>(address + 0x44));
@@ -96,6 +120,26 @@ PlayerGameData::InvadeType PlayerGameData::getInvadeType() const
 void PlayerGameData::setInvadeType(const PlayerGameData::InvadeType& invadeType)
 {
 	*accessMultilevelPointer<uint32_t>(address + 0xFC) = (uint32_t)invadeType;
+}
+
+int32_t PlayerGameData::getSpell(const uint32_t& slotNumber) const
+{
+	return *accessMultilevelPointer<int32_t>(address + 0x470, 0x18 + (slotNumber - 1) * 8);
+}
+
+void PlayerGameData::setSpell(const uint32_t& slotNumber, const int32_t& spellId)
+{
+	*accessMultilevelPointer<int32_t>(address + 0x470, 0x18 + (slotNumber - 1) * 8) = spellId;
+}
+
+uint8_t PlayerGameData::getGesture(const uint32_t& slotNumber) const
+{
+	return *accessMultilevelPointer<uint8_t>(address + 0x528, 0x10 + (slotNumber - 1) * 4);
+}
+
+void PlayerGameData::setGesture(const uint32_t& slotNumber, const uint8_t& gestureId)
+{
+	*accessMultilevelPointer<uint8_t>(address + 0x528, 0x10 + (slotNumber - 1) * 4) = gestureId;
 }
 
 uintptr_t PlayerGameData::getEquipGameData()

@@ -100,16 +100,6 @@ void PlayerIns::setAmmo(const uint32_t& slotNumber, const int32_t& equipParamAcc
 	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x344 + (slotNumber - 1) * 4) = equipParamAccessoryId;
 }
 
-int32_t PlayerIns::getSpell(const uint32_t& slotNumber) const
-{
-	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x470, 0x18 + (slotNumber - 1) * 8);
-}
-
-void PlayerIns::setSpell(const uint32_t& slotNumber, const int32_t& spellId)
-{
-	*accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x470, 0x18 + (slotNumber - 1) * 8) = spellId;
-}
-
 int32_t PlayerIns::getCovenant() const
 {
 	return *accessMultilevelPointer<int32_t>(getAddress() + 0x1FA0, 0x380);
@@ -145,6 +135,12 @@ uintptr_t* PlayerIns::getNetworkHandle()
 uintptr_t PlayerIns::getAddressByOffsetNumber(const OffsetNumber& offsetNumber)
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x40, static_cast<uint32_t>(offsetNumber) * 0x38);
+}
+
+bool PlayerIns::isChrWithOffsetNumber(const OffsetNumber& offsetNumber)
+{
+	const uintptr_t* chrAddress = accessMultilevelPointer<uintptr_t>(DataBaseAddress::WorldChrMan, 0x40, static_cast<uint32_t>(offsetNumber) * 0x38);
+	return chrAddress != nullptr && isPlayer(*chrAddress);
 }
 
 bool PlayerIns::isPlayer(const uintptr_t& address)

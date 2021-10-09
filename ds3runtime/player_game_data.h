@@ -39,6 +39,17 @@ struct Attributes
 	}
 };
 
+struct BodyProportions
+{
+	float head;
+	float upperBody;
+	float lowerBody;
+	float rightHand;
+	float rightLeg;
+	float leftHand;
+	float leftLeg;
+};
+
 class PlayerGameData
 {
 public:
@@ -177,6 +188,29 @@ public:
 	void setAge(const Age& age);
 
 	/**
+	* Gets the face data of this player. 
+	* 
+	* @return The face data of this player.
+	*/
+	std::array<uint8_t, 256> getFaceData() const;
+
+	/**
+	* Sets the face data of this player. 
+	* 
+	* @param faceData The face data to set for this player.
+	*/
+	void setFaceData(const std::array<uint8_t, 256>& faceData);
+
+	/**
+	* Gets the body proportions of this player. 
+	* 
+	* @return The body preportions of this player.
+	*/
+	BodyProportions getBodyProportions() const;
+
+	void setBodyPreportions(const BodyProportions& bodyPreportions);
+
+	/**
 	* Gets the attributes(also known as stats) of this player. 
 	* 
 	* @return The attributes of this player.
@@ -244,6 +278,29 @@ public:
 	* @param invadeType The invasion type to set for this player.
 	*/
 	void setInvadeType(const InvadeType& invadeType);
+
+	/**
+	* Gets the spell in the specified spell slot of this PlayerIns in the game's memory. 
+	* 
+	* @param slotNumber The spell slot to get the ring from, must be a integer ranging 1-14.
+	* @return magicParamId of the spell in this slot.
+	*/
+	int32_t getSpell(const uint32_t& slotNumber) const;
+
+	/**
+	* Sets the spell in the specified attunment slot of this PlayerIns in the game's memory.
+	*
+	* Setting this value may not result in expected behaivor, to learn more read this header's documentation 
+	* at the top of the file.
+	* 
+	* @param slotNumber The attunement slot to put the spell in, must be an integer ranging 1-14.
+	* @param magicId magicParamId of the spell to put in this slot.
+	*/
+	void setSpell(const uint32_t& slotNumber, const int32_t& magicId);
+
+	uint8_t getGesture(const uint32_t& slotNumber) const;
+
+	void setGesture(const uint32_t& slotNumber, const uint8_t& gestureId);
 
 	/**
 	* Gets the virtual address of this player's EquipGameData.

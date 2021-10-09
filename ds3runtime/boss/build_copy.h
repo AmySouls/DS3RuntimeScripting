@@ -45,11 +45,13 @@ private:
 
 	void updateAndCopyEquipment();
 
-	void updateAndCopyPlayerData();
+	void copyPlayerData();
 
 	void tryAddSpell(const int32_t& magicId);
 
 	void tryAddGood(const int32_t& goodId);
+
+	void tryCopyGesture();
 
 	bool isPlayersLoaded();
 };

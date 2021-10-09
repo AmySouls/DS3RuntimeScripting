@@ -27,7 +27,10 @@ uint32_t SessionReceiveHook::onPlayerNetworkSessionReceive(uintptr_t networkSess
 
 	for (auto filter : instance->packetFilters) {
 		receiveLength = filter.second(networkSession, networkHandle, id, buffer, maxLength, receiveLength);
-		if (receiveLength == 0) return 0;
+		if (receiveLength == 0) {
+			spdlog::debug("Receive length 0, returning!");
+			return 0;
+		}
 	}
 
 	return receiveLength;

@@ -21,6 +21,16 @@ void GameOptionMan::setAutoSave(bool autoSave)
 	*accessMultilevelPointer<uint8_t>(address + 0xB10) = autoSave;
 }
 
+bool GameOptionMan::isMyWorld()
+{
+	return *accessMultilevelPointer<uint32_t>(address + 0xB1E);
+}
+
+int32_t GameOptionMan::getInvadeType() const
+{
+	return *accessMultilevelPointer<uint32_t>(address + 0xC54);
+}
+
 uintptr_t GameOptionMan::getInstance()
 {
 	return *accessMultilevelPointer<uintptr_t>(DataBaseAddress::BaseC);
