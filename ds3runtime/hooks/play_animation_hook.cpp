@@ -13,7 +13,7 @@
 namespace ds3runtime {
 
 PlayAnimationHook::PlayAnimationHook()
-	: Hook(0x140D84870, (uintptr_t)onPlayAnimation)
+	: Hook(0x140D84870, (uintptr_t)onPlayAnimation, {})
 {
 	instance = this;
 }
@@ -27,7 +27,7 @@ void PlayAnimationHook::onPlayAnimation(uintptr_t hkbCharacter, int32_t* animati
 		if (filteredId == 0) return;
 	}
 
-	spdlog::debug("Animation played: {}", *animationId);
+	//spdlog::debug("Animation played: {}", *animationId);
 	*animationId = filteredId;
 	void (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;

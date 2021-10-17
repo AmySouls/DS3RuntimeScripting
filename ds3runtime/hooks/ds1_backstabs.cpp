@@ -13,7 +13,7 @@
 namespace ds3runtime {
 
 DS1Backstabs::DS1Backstabs()
-	: Hook(0x1409e2f90, (uintptr_t)onThrowCheck)
+	: Hook(0x1409e2f90, (uintptr_t)onThrowCheck, {})
 {
 	instance = this;
 }

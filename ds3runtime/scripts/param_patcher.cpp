@@ -70,7 +70,7 @@ bool ParamPatcher::onAttach()
         const uintptr_t paramOffset = *accessMultilevelPointer<uintptr_t>(paramStart + i * 8);
         std::wstring paramName = L"UnknownParam";
 
-        if (*accessMultilevelPointer<int32_t>(paramOffset + 0x20) > 7) {
+        if (*accessMultilevelPointer<uint32_t>(paramOffset + 0x20) > 7) {
             paramName = accessMultilevelPointer<const wchar_t>(paramOffset + 0x10, 0);
         }
         else {
@@ -200,7 +200,6 @@ bool ParamPatcher::readBinaryOriginal(const std::wstring& param, const int32_t& 
 void ParamPatcher::patch(const std::wstring& param, const int32_t& id, const uintptr_t& offset, const ParamPatchInfo& patch)
 {
     if (patch.patchId == "original") return;
-    std::unordered_map<int32_t,std::unordered_map<uintptr_t, std::vector<ParamPatchInfo>>> mapHuh = patchMap[param];
     std::vector<ParamPatchInfo> patchList = patchMap[param][id][offset];
 
     if (patchList.size() == 0) {
@@ -299,9 +298,10 @@ std::unordered_map<int32_t, uint64_t> ParamPatcher::createParamIdTable(const uin
 	int32_t tableSize = *accessMultilevelPointer<unsigned short>(paramAddress + 0xA);
 	std::unordered_map<int32_t, uintptr_t> table;
 
-	for (uintptr_t i = 0; i < tableSize; i++) {
+	for (uintptr_t i = 0; i < tableSize; ++i) {
 		int32_t pID = *accessMultilevelPointer<int32_t>(paramAddress + 0x40 + 0x18 * i);
 		int32_t iDO = *accessMultilevelPointer<int32_t>(paramAddress + 0x48 + 0x18 * i);
+
 		table.emplace(pID, paramAddress + iDO);
 	}
 
@@ -341,8 +341,12 @@ std::vector<ParamField> ParamPatcher::getParamLayout(const std::wstring& paramNa
 
 std::vector<int32_t> ParamPatcher::getIdsInParam(const std::wstring& paramName)
 {
-    std::vector<int32_t> ids(paramIdTables[paramName].size());
-    for (auto entry : paramIdTables[paramName]) ids.push_back(entry.first);
+    std::vector<int32_t> ids;
+
+    for (auto entry : paramIdTables[paramName]) {
+        ids.push_back(entry.first);
+    }
+
     return ids;
 }
 

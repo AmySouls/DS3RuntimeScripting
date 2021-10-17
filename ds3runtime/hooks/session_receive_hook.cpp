@@ -13,7 +13,7 @@
 namespace ds3runtime {
 
 SessionReceiveHook::SessionReceiveHook()
-	: Hook(0x140787140, (uintptr_t)onPlayerNetworkSessionReceive)
+	: Hook(0x140787140, (uintptr_t)onPlayerNetworkSessionReceive, {})
 {
 	instance = this;
 }

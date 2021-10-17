@@ -11,7 +11,7 @@
 namespace ds3runtime {
 
 ThrowHook::ThrowHook()
-	: Hook(0x1405F3840, (uintptr_t)onThrow)
+	: Hook(0x1405F3840, (uintptr_t)onThrow, {})
 {
 	instance = this;
 }

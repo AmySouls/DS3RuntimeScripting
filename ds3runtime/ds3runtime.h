@@ -32,6 +32,13 @@ public:
 	bool detach();
 
 	/**
+	* Attempts to install hooks that have not already been installed.
+	*
+	* @param hook Unique Hook to install.
+	*/
+	void tryInstallHooks();
+
+	/**
 	 * Adds a game code hook to DS3RuntimeScripting. Hooks are installed into the game upon calling attach().
 	 *
 	 * @param hook Unique Hook to install.

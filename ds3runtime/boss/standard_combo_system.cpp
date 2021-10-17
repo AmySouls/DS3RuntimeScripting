@@ -70,6 +70,11 @@ void ComboSystem::uninstall()
 	playAnimHook->uninstallFilter("boss_combo_moves_" + std::to_string(boss->getUniqueId()));
 }
 
+Boss* ComboSystem::getBoss()
+{
+	return boss;
+}
+
 void ComboSystem::registerBossTask(const BossTask& bossTask)
 {
 	bossTasks.push_back(bossTask);
@@ -97,6 +102,11 @@ void ComboSystem:: unregisterNeutralCombo(const std::string& comboId)
 std::vector<BossTask> ComboSystem::getBossTasks()
 {
 	return bossTasks;
+}
+
+std::vector<NeutralCombo> ComboSystem::getNeutralCombos()
+{
+	return neutralCombos;
 }
 
 std::optional<BossTask> ComboSystem::getBossTaskByTaskId(std::string taskId)

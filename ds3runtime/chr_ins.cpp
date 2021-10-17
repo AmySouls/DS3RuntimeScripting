@@ -171,6 +171,13 @@ int32_t ChrIns::getHkbIdFromString(const std::wstring& animationString) const
 	return function(*accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28, 0xA0), ds3runtime_global->utf8_encode(animationString).c_str());
 }
 
+std::wstring ChrIns::getHkbStringFromId(const int32_t& id) const
+{
+	char*(*function)(...);
+	*reinterpret_cast<uintptr_t*>(&function) = 0x141049bf0;
+	return ds3runtime_global->utf8_decode(std::string(function(*accessMultilevelPointer<uintptr_t>(address + 0x1F90, 0x28, 0x10, 0x28, 0xA0), id)));
+}
+
 int32_t ChrIns::getWeightIndex() const
 {
 	return *accessMultilevelPointer<int32_t>(address + 0x50, 0x2B4);
@@ -205,6 +212,15 @@ std::vector<std::array<float, 4>> ChrIns::getDummyPolyPositions(const int32_t& d
 	}
 
 	return returnVector;
+}
+
+void ChrIns::applySpEffect(const int32_t& spEffectId)
+{
+	void(*function)(...);
+	*reinterpret_cast<uintptr_t*>(&function) = 0x1409F3C30;
+	int32_t* debugSpEffectPtr = *accessMultilevelPointer<int32_t*>(address + 0x18, 0x18);
+	*accessMultilevelPointer<int32_t>(((uintptr_t)debugSpEffectPtr) + 0x30) = spEffectId;
+	function(debugSpEffectPtr, 2);
 }
 
 uintptr_t ChrIns::getAddress() const

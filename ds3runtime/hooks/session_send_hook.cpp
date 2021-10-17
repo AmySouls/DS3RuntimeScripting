@@ -12,7 +12,7 @@
 namespace ds3runtime {
 
 SessionSendHook::SessionSendHook()
-	: Hook(0x1407875D0, (uintptr_t)onPlayerNetworkSessionDebugSend)
+	: Hook(0x1407875D0, (uintptr_t)onPlayerNetworkSessionDebugSend, {})
 {
 	instance = this;
 }

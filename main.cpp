@@ -20,10 +20,13 @@
 #include <ds3runtime/scripts/king_crimson_protections.h>
 #include <ds3runtime/hooks/has_speffect_visual.h>
 #include <ds3runtime/hooks/sprj_chr_damage_module_hook.h>
+#include <ds3runtime/hooks/jmp_table_status.h>
+#include <ds3runtime/scripts/jmp_table_status_reset.h>
+#include <ds3runtime/ds3_debug_variables.h>
 
 using namespace ds3runtime;
 
-std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;;
+std::shared_ptr<DS3RuntimeScripting> ds3runtime::ds3runtime_global;
 
 static std::shared_ptr<spdlog::logger> createLogger()
 {
@@ -50,9 +53,13 @@ static bool attach()
 {
     ds3runtime_global.reset(new DS3RuntimeScripting);
     spdlog::set_default_logger(createLogger());
-
-    ds3runtime_global->addHook(std::make_unique<GameFrameHook>());
+    //ds3runtime_global->addHook(std::make_unique<GameFrameHook>());
+    DS3DebugVariables().setDebugMovementMultiplier(true);
+    DS3DebugVariables().setDebugAnimSpeedPlayer(true);
+    /*
     ds3runtime_global->runScript(std::make_unique<HotkeyManager>());
+    ds3runtime_global->runScript(std::make_unique<JmpTableStatusReset>());
+    ds3runtime_global->addHook(std::make_unique<JmpTableStatus>());
     ds3runtime_global->addHook(std::make_unique<SessionReceiveHook>());
     ds3runtime_global->addHook(std::make_unique<SessionSendHook>());
     ds3runtime_global->addHook(std::make_unique<ThrowHook>());
@@ -61,8 +68,12 @@ static bool attach()
     ds3runtime_global->runScript(std::make_unique<ParamPatcher>());
     ds3runtime_global->runScript(std::make_unique<FMODSystemHandler>());
     ds3runtime_global->runScript(std::make_unique<AnimationIdHandler>());
+    */
+    
     //ds3runtime_global->runScript(std::make_unique<BuildCopy>());
-    ds3runtime_global->runScript(std::make_unique<KingCrimsonProtections>());
+    //ds3runtime_global->runScript(std::make_unique<KingCrimsonProtections>());
+    //ds3runtime_global->addHook(std::make_unique<DS1Backstabs>());
+    //ds3runtime_global->runScript(std::make_unique<DS1PassivePoise>());
 
     /*
     ds3runtime_global->runScript(std::make_unique<DS1PassivePoise>());

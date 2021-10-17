@@ -12,6 +12,8 @@ namespace ds3runtime {
 class AriandarBoss : public StandardPlayerBoss
 {
 public:
+	AriandarBoss();
+
 	bool onAttach();
 
 	bool onDetach();
@@ -25,9 +27,6 @@ protected:
 
 	void checks();
 private:
-	std::string chainComboLastMove;
-
-	void updateChainComboMove(const std::string& taskId);
 };
 
 }

@@ -34,7 +34,7 @@ bool StandardPlayerBoss::onAttach()
 	savePlayerData();
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(false);
 
-	comboSystem.install();
+	comboSystem->install();
 
 	return true;
 }
@@ -53,7 +53,7 @@ bool StandardPlayerBoss::onDetach()
 	unequipAllEquipment();
 	loadAndGiveSavedItems();
 	reequipSavedEquipment();
-	comboSystem.uninstall();
+	comboSystem->uninstall();
 	GameOptionMan(GameOptionMan::getInstance()).setAutoSave(true);
 	return true;
 }
@@ -465,7 +465,7 @@ void StandardPlayerBoss::clearInventory() {
 
 stdcombo::ComboSystem* StandardPlayerBoss::getComboSystem()
 {
-	return &comboSystem;
+	return comboSystem.get();
 }
 
 

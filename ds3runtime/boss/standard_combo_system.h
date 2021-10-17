@@ -76,7 +76,7 @@ public:
 		this->boss = boss;
 	}
 
-	void install();
+	virtual void install();
 
 	void uninstall();
 
@@ -90,6 +90,8 @@ public:
 
 	std::vector<BossTask> getBossTasks();
 
+	std::vector<NeutralCombo> getNeutralCombos();
+
 	std::optional<BossTask> getBossTaskByTaskId(std::string taskId);
 
 	void setCurrentMoveTask(std::optional<stdcombo::BossTask> bossTask);
@@ -100,6 +102,8 @@ private:
 	std::vector<BossTask> bossTasks;
 	std::vector<NeutralCombo> neutralCombos;
 	std::optional<stdcombo::BossTask> currentMoveTask;
+protected:
+	Boss* getBoss();
 };
 
 }

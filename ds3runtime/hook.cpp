@@ -5,9 +5,10 @@
 
 namespace ds3runtime {
 
-Hook::Hook(uintptr_t originalFunc, uintptr_t replacementFunc) 
+Hook::Hook(uintptr_t originalFunc, uintptr_t replacementFunc, std::vector<std::string> dependencies) 
     : original(std::make_unique<uintptr_t>(originalFunc)),
-      replacement(std::make_unique<uintptr_t>(replacementFunc))
+      replacement(std::make_unique<uintptr_t>(replacementFunc)),
+      dependencies(dependencies)
 {
 }
 
@@ -18,6 +19,7 @@ bool Hook::install()
     txn_status = DetourAttach(reinterpret_cast<PVOID*>(original.get()), reinterpret_cast<PVOID>(*replacement.get()));
     if (txn_status != NO_ERROR) DetourTransactionAbort();
     txn_status = DetourTransactionCommit();
+    if (txn_status == NO_ERROR) installed = true;
     return txn_status == NO_ERROR;
 }
 
@@ -28,7 +30,18 @@ bool Hook::uninstall()
     txn_status = DetourDetach(reinterpret_cast<PVOID*>(original.get()), reinterpret_cast<PVOID>(*replacement.get()));
     if (txn_status != NO_ERROR) DetourTransactionAbort();
     txn_status = DetourTransactionCommit();
+    if (txn_status == NO_ERROR) installed = false;
     return txn_status == NO_ERROR;
+}
+
+std::vector<std::string> Hook::getDependencies()
+{
+    return dependencies;
+}
+
+bool Hook::isInstalled()
+{
+    return installed;
 }
 
 uintptr_t* Hook::getOriginal()

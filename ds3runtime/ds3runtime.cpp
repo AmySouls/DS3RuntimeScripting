@@ -29,7 +29,7 @@ bool DS3RuntimeScripting::detach()
 
 	if (!async) {
 		for (auto&& hook : hooks) {
-			hook->uninstall();
+			if (hook->isInstalled()) hook->uninstall();
 		}
 	}
 	else {
@@ -37,9 +37,20 @@ bool DS3RuntimeScripting::detach()
 	}
 
 	while (true) {
-		auto itr = std::find_if(scripts.begin(), scripts.end(), [](auto&& script) {
-			bool detachResult = true;
-			if (script->isAttached()) detachResult = script->onDetach();
+		bool detachFailed = false;
+
+		std::vector<std::unique_ptr<ScriptModule>>::reverse_iterator itr = 
+				std::find_if(
+					scripts.rbegin(), 
+					scripts.rend(), 
+					[&](auto&& script) {
+			bool detachResult = false;
+			if (detachFailed == true) return detachResult;
+
+			if (script->isAttached()) {
+				detachResult = script->onDetach();
+				if (!detachResult) detachFailed = true;
+			}
 			if (detachResult) script->remove();
 			else {
 				spdlog::warn("Script {} was unable to detach...", script->getName());
@@ -48,13 +59,37 @@ bool DS3RuntimeScripting::detach()
 
 			return detachResult;
 			});
-		
-		if (itr == scripts.end()) break;
+
+		if (detachFailed) {
+			return false;
+		}
+
+		if (itr == std::vector<std::unique_ptr<ScriptModule>>::reverse_iterator(scripts.rend())) break;
 		auto moveDestroy = std::move(*itr);
-		scripts.erase(itr);
+		scripts.erase((itr + 1).base());
 	}
 
 	return true;
+}
+
+void DS3RuntimeScripting::tryInstallHooks()
+{
+	for (auto&& hook : hooks) {
+		if (hook->isInstalled()) continue;
+		bool allDependenciesAttached = true;
+
+		for (std::string dependency : hook->getDependencies()) {
+			auto script = accessScript(dependency);
+
+			if (script == nullptr || !script->isAttached()) {
+				allDependenciesAttached = false;
+				break;
+			}
+		}
+
+		continue;
+		hook->install();
+	}
 }
 
 void DS3RuntimeScripting::addHook(std::unique_ptr<Hook> hook)
@@ -65,7 +100,7 @@ void DS3RuntimeScripting::addHook(std::unique_ptr<Hook> hook)
 void DS3RuntimeScripting::runScript(std::unique_ptr<ScriptModule> script)
 {
 	if (script->isAsync()) reinterpret_cast<AsyncModule*>(script.get())->createThread(script.get());
-	scripts.insert(scripts.begin(), std::move(script));
+	scripts.push_back(std::move(script));
 }
 
 bool DS3RuntimeScripting::removeScript(const uint64_t& uniqueId)
@@ -108,8 +143,11 @@ void DS3RuntimeScripting::executeScripts()
 
 	for (auto&& script : scripts) if (!script->isAsync()) {
 		if (!script->isAttached() && script->onAttach()) script->setAttached();
-		else if (script->isDetaching() && script->onDetach()) script->remove();
-		else script->execute();
+		else if (script->isAttached() && script->isDetaching() && script->onDetach()) script->remove();
+		else if (script->isAttached()) script->execute();
+		else {
+			return;
+		}
 	}
 }
 
@@ -183,6 +221,7 @@ std::wstring DS3RuntimeScripting::utf8_decode(const std::string &str)
 void DS3RuntimeScripting::asyncModeThreadProc()
 {
 	while (ds3runtime_global->asyncModeThreadHandle != NULL) {
+		ds3runtime_global->tryInstallHooks();
 		ds3runtime_global->executeScripts();
 	}
 }

@@ -11,7 +11,7 @@
 namespace ds3runtime {
 
 LuaCapture::LuaCapture()
-	: Hook(0x14112fcd0, (uintptr_t)onLuaGetTop), mut(), cond()
+	: Hook(0x14112fcd0, (uintptr_t)onLuaGetTop, {}), mut(), cond()
 {
 	instance = this;
 	this->luaStates = std::vector<lua_State*>();

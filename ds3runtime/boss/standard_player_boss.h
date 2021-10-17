@@ -17,7 +17,11 @@ namespace ds3runtime {
 class StandardPlayerBoss : public Boss
 {
 public:
-	StandardPlayerBoss() : comboSystem(this)
+	StandardPlayerBoss() : comboSystem(std::make_unique<stdcombo::ComboSystem>(this))
+	{
+	}
+
+	StandardPlayerBoss(std::unique_ptr<stdcombo::ComboSystem> comboSystem) : comboSystem(std::move(comboSystem))
 	{
 	}
 
@@ -59,7 +63,7 @@ private:
 	PlayerGameData::Age savedAge;
 	PlayerGameData::Voice savedVoice;
 	BodyProportions savedBodyProportions;
-	stdcombo::ComboSystem comboSystem;
+	std::unique_ptr<stdcombo::ComboSystem> comboSystem;
 
 	std::optional<int32_t> findInventoryIdByGiveId(int32_t giveId);
 

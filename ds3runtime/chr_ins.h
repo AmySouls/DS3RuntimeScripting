@@ -380,6 +380,14 @@ public:
 	int32_t getHkbIdFromString(const std::wstring& animationString) const;
 	
 	/**
+	* Gets the string which matches a specified Havok Behaivor Id.
+	* 
+	* @param id The specified Havok Behaivor Id.
+	* @return The string repersentation of the specified Havok Behaivor.
+	*/
+	std::wstring getHkbStringFromId(const int32_t& id) const;
+
+	/**
 	* Plays a specified idle animation id via writing to a debug pointer. The game reads this pointer and unless a throw animation is underway, 
 	* it will override the current animation. 
 	* 
@@ -430,6 +438,20 @@ public:
 	* @return A vector containing the found dummy poly positions, stored in own std::array objects.
 	*/
 	std::vector<std::array<float, 4>> getDummyPolyPositions(const int32_t& dummyPolyId, const uint32_t& polyCount) const;
+
+	/**
+	* Applies a SpEffect to this ChrIns.
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = DESYNC, 
+	* NPC = DESYNC 
+	* } 
+	* 
+	* @param spEffectId The SpEffectParam id to apply to this ChrIns.
+	*/
+	void applySpEffect(const int32_t& spEffectId);
 	
 	/**
 	* Gets the virtual address of this ChrIns.

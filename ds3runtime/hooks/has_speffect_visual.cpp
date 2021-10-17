@@ -6,7 +6,7 @@
 namespace ds3runtime {
 
 HasSpEffectVisual::HasSpEffectVisual()
-	: Hook(0x140881F10, (uintptr_t)onGetPhantomColorId)
+	: Hook(0x140881F10, (uintptr_t)onGetPhantomColorId, {})
 {
 	instance = this;
 }

@@ -13,8 +13,14 @@
 #include <ds3runtime/ds3_debug_variables.h>
 #include "ds3runtime/bullet_spawn.h"
 #include "ds3runtime/world_chr_man.h"
+#include "blight_combo_system.h"
 
 namespace ds3runtime {
+
+AriandarBoss::AriandarBoss() : StandardPlayerBoss(
+	std::make_unique<blight::BlightComboSystem>(blight::BlightComboSystem(this, "Chain_Recovery", 5, .00833f)))
+{
+}
 
 bool AriandarBoss::onAttach() {
 
@@ -116,6 +122,36 @@ bool AriandarBoss::onAttach() {
 
 	getComboSystem()->registerNeutralCombo(stdcombo::NeutralCombo("Neutral_running_l1", L"W_AttackBothLeftDash", "Phase1_BKG_2h_r2_1_charged"));
 
+	getComboSystem()->registerBossTask(stdcombo::BossTask("Charge_Recovery", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
+		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
+			&& (!isAnimationPresent(260038400) && !isAnimationPresent(260038401))) {
+			return "";
+		}
+
+		if (bossTask->tick == 0) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9250010, //Lothric Warbanner
+				-1);
+			setSheathState(3);
+		}
+		else if (bossTask->tick == 3) {
+			ChrIns bossChr(getChrAddress().value());
+			bossChr.playAnimation(3708);
+			bossChr.playAnimation(3709);
+		}
+		else if (bossTask->tick == 6) {
+			giveItemAndSwap(InventorySlot::PrimaryRightWep,
+				ItemParamIdPrefix::Weapon,
+				9220005, //Dragonslayer Spear
+				-1);
+			setSheathState(3);
+		}
+
+		bossTask->tick++;
+		return {};
+		}, {}));
+
 	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_BKG_2h_r2_1_charged", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 			&& !isAnimationPresent(112034320)) {
@@ -123,7 +159,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				10150005, //Black Knight Glaive
@@ -155,7 +190,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				10150005, //Black Knight Glaive
@@ -186,10 +220,6 @@ bool AriandarBoss::onAttach() {
 			return "";
 		}
 
-		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
-		}
-
 		bossTask->tick++;
 		return {};
 		}, {
@@ -203,10 +233,6 @@ bool AriandarBoss::onAttach() {
 			return "";
 		}
 
-		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
-		}
-
 		bossTask->tick++;
 		return {};
 		}, {
@@ -218,10 +244,6 @@ bool AriandarBoss::onAttach() {
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(bossTask->baseAnimationId)) {
 			return "";
-		}
-
-		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 		}
 
 		bossTask->tick++;
@@ -238,7 +260,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				2120000, //Rotten Ghru Curved Sword
@@ -271,7 +292,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				2120000, //Rotten Ghru Curved Sword
@@ -311,15 +331,12 @@ bool AriandarBoss::onAttach() {
 		}));
 
 	getComboSystem()->registerBossTask(stdcombo::BossTask("Phase1_DSSS_2h_r2_1_start", -1, [this](stdcombo::BossTask* bossTask) -> std::optional<std::string> {
-		spdlog::debug("Combo source?: {} | Is anim present 1?: {} | Is Anim present 2?: {}", bossTask->comboSource.has_value(), isAnimationPresent(bossTask->comboSource.value().animationId), isAnimationPresent(36034320));
-
 		if ((!bossTask->comboSource.has_value() || !isAnimationPresent(bossTask->comboSource.value().animationId)) 
 				&& !isAnimationPresent(36034320)) {
 			return "";
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -354,7 +371,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -387,10 +403,6 @@ bool AriandarBoss::onAttach() {
 			return "";
 		}
 
-		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
-		}
-
 		bossTask->tick++;
 		return {};
 		}, {
@@ -406,7 +418,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -440,7 +451,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -473,7 +483,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -505,7 +514,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -536,10 +544,6 @@ bool AriandarBoss::onAttach() {
 
 		ChrIns bossChr(getChrAddress().value());
 		auto position = bossChr.getPosition();
-
-		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
-		}
 
 		if (bossTask->tick >= 16 && bossTask->tick < 32) {
 			const float verticalMoveScale = sin((bossTask->tick - 16) / 32.0f * static_cast<float>(M_PI) * 2) * .15f;
@@ -576,7 +580,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -617,7 +620,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				6050010, //Greatsword
@@ -649,7 +651,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9160000, //Dragonslayer Swordspear
@@ -682,7 +683,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -753,7 +753,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -785,7 +784,6 @@ bool AriandarBoss::onAttach() {
 		}
 
 		if (bossTask->tick == 0) {
-			updateChainComboMove(bossTask->taskId);
 			giveItemAndSwap(InventorySlot::PrimaryRightWep,
 				ItemParamIdPrefix::Weapon,
 				9240000, //Ringed Knight Spear
@@ -856,7 +854,15 @@ void AriandarBoss::logic()
 	PlayerIns chr(getChrAddress().value());
 	if (!chr.isValid()) return;
 	std::optional<int32_t> animationId = getAnimationId();
+	blight::BlightComboSystem* blightSystem = reinterpret_cast<blight::BlightComboSystem*>(getComboSystem());
+	spdlog::debug("Combo charges: {} | Is in chain combo: {} | Regen rate: {}", blightSystem->getComboCharges(), blightSystem->isExecutingComboChain(), blightSystem->getComboChargeRegenRate());
 	
+	if (!blightSystem->isExecutingComboChain()) {
+		blightSystem->setComboCharges(
+			std::min(blightSystem->getComboCharges() + blightSystem->getComboChargeRegenRate(), 
+			static_cast<float>(blightSystem->getMaxComboCharges())));
+	}
+
 	if (!getComboSystem()->getCurrentMoveTask().has_value() && animationId.has_value()) {
 		for (auto task : getComboSystem()->getBossTasks()) {
 			if (animationId.value() != -1 && animationId.value() != task.baseAnimationId) continue;
@@ -909,10 +915,6 @@ void AriandarBoss::checks()
 	if (chrData.getFP() < chrData.getMaxFP()) chrData.setFP(static_cast<uint32_t>(fmin(static_cast<float>(chrData.getMaxFP()), chrData.getFP() + fmax(1.0f, chrData.getMaxFP() / 100.0f))));
 	if (chrData.getBaseMaxHealth() != 8000) chrData.setBaseMaxHealth(8000);
 	if (!chrData.isNoStaminaConsumption()) chrData.setNoStaminaConsumption(true);
-}
-
-void AriandarBoss::updateChainComboMove(const std::string& taskId) {
-	this->chainComboLastMove = taskId;
 }
 
 }

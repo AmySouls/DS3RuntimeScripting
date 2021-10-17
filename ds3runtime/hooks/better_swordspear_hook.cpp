@@ -14,7 +14,7 @@
 namespace ds3runtime {
 
 BetterSwordSpearHook::BetterSwordSpearHook()
-	: Hook(0x1409736C0, (uintptr_t)onHitBulletLaunch)
+	: Hook(0x1409736C0, (uintptr_t)onHitBulletLaunch, {})
 {
 	instance = this;
 }

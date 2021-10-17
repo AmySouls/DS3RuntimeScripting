@@ -12,7 +12,7 @@
 namespace ds3runtime {
 
 DS1NoHyperArmor::DS1NoHyperArmor()
-	: Hook(0x1409E4765, (uintptr_t)onTaeEvent)
+	: Hook(0x1409E4765, (uintptr_t)onTaeEvent, {})
 {
 	instance = this;
 }

@@ -7,6 +7,7 @@
 #include "pch.h"
 #include "ds3runtime/script_module.h"
 #include "ds3runtime/ds3runtime.h"
+#include "spdlog/stopwatch.h"
 
 namespace ds3runtime {
 
@@ -44,6 +45,7 @@ public:
 	template<class FieldType>
 	FieldType read(const std::wstring& param, const int32_t& id, const uintptr_t& offset)
 	{
+		uintptr_t address = paramIdTables[param][id] + offset;
 		return *accessMultilevelPointer<FieldType>(paramIdTables[param][id] + offset);
 	}
 

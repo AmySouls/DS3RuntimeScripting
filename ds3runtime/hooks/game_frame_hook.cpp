@@ -12,7 +12,7 @@
 namespace ds3runtime {
 
 GameFrameHook::GameFrameHook()
-	: Hook(0x1423842C0, (uintptr_t)onGameFrame)
+	: Hook(0x1423842C0, (uintptr_t)onGameFrame, {})
 {
 	instance = this;
 }
@@ -25,7 +25,10 @@ void GameFrameHook::onGameFrame(void* rcx, void* rdx, void* r8, void* r9, void* 
 	if (ds3runtime_global->getGameThreadId() == 0) ds3runtime_global->setGameThreadId(GetCurrentThreadId());
 	static uint64_t uniqueFrameClock = 0;
 	uniqueFrameClock++;
-	if (uniqueFrameClock % 2 == 0) ds3runtime_global->executeScripts();
+	if (uniqueFrameClock % 2 == 0) {
+		ds3runtime_global->tryInstallHooks();
+		ds3runtime_global->executeScripts();
+	}
 }
 
 GameFrameHook* GameFrameHook::instance = nullptr;

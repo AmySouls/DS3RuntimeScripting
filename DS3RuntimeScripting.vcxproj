@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>D:\SteamLibrary\steamapps\common\DARK SOULS III\Game\</OutDir>
-    <TargetName>DS3RuntimeScriptingB</TargetName>
+    <OutDir>E:\SteamLibrary\steamapps\common\DARK SOULS III\Game\</OutDir>
+    <TargetName>DS3RuntimeScriptingC</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>D:\SteamLibrary\steamapps\common\DARK SOULS III\Game\</OutDir>
-    <TargetName>DS3RuntimeScriptingB</TargetName>
+    <OutDir>E:\SteamLibrary\steamapps\common\DARK SOULS III\Game\</OutDir>
+    <TargetName>DS3RuntimeScriptingC</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -171,6 +171,7 @@
     <ClInclude Include="dist\pugixml.hpp" />
     <ClInclude Include="ds3runtime\async_module.h" />
     <ClInclude Include="ds3runtime\boss\ariandar_boss.h" />
+    <ClInclude Include="ds3runtime\boss\blight_combo_system.h" />
     <ClInclude Include="ds3runtime\boss\boss.h" />
     <ClInclude Include="ds3runtime\boss\build_copy.h" />
     <ClInclude Include="ds3runtime\boss\standard_combo_system.h" />
@@ -208,6 +209,8 @@
     <ClInclude Include="ds3runtime\scripts\face_data_capture.h" />
     <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h" />
     <ClInclude Include="ds3runtime\scripts\hotkey_manager.h" />
+    <ClInclude Include="ds3runtime\hooks\jmp_table_status.h" />
+    <ClInclude Include="ds3runtime\scripts\jmp_table_status_reset.h" />
     <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h" />
     <ClInclude Include="ds3runtime\scripts\param_patcher.h" />
     <ClInclude Include="ds3runtime\scripts\position_hide.h" />
@@ -228,6 +231,7 @@
     <ClCompile Include="dist\pugixml.cpp" />
     <ClCompile Include="ds3runtime\async_module.cpp" />
     <ClCompile Include="ds3runtime\boss\ariandar_boss.cpp" />
+    <ClCompile Include="ds3runtime\boss\blight_combo_system.cpp" />
     <ClCompile Include="ds3runtime\boss\boss.cpp" />
     <ClCompile Include="ds3runtime\boss\build_copy.cpp" />
     <ClCompile Include="ds3runtime\boss\standard_combo_system.cpp" />
@@ -251,23 +255,25 @@
     <ClCompile Include="ds3runtime\hooks\play_animation_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\session_send_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\session_receive_hook.cpp" />
-    <ClCompile Include="ds3runtime\game_packet.cpp" />
+    <ClCompile Include="ds3runtime\hooks\jmp_table_status.cpp" />
     <ClCompile Include="ds3runtime\hooks\sprj_chr_damage_module_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\throw_hook.cpp" />
-    <ClCompile Include="ds3runtime\misc_functions.cpp" />
-    <ClCompile Include="ds3runtime\player_game_data.cpp" />
-    <ClCompile Include="ds3runtime\player_ins.cpp" />
-    <ClCompile Include="ds3runtime\player_network_session.cpp" />
     <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp" />
     <ClCompile Include="ds3runtime\scripts\ds1_passive_poise.cpp" />
     <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp" />
     <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp" />
+    <ClCompile Include="ds3runtime\scripts\jmp_table_status_reset.cpp" />
     <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp" />
     <ClCompile Include="ds3runtime\scripts\param_patcher.cpp" />
     <ClCompile Include="ds3runtime\scripts\position_hide.cpp" />
     <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp" />
     <ClCompile Include="ds3runtime\scripts\hotkey_manager.cpp" />
     <ClCompile Include="ds3runtime\script_module.cpp" />
+    <ClCompile Include="ds3runtime\misc_functions.cpp" />
+    <ClCompile Include="ds3runtime\player_game_data.cpp" />
+    <ClCompile Include="ds3runtime\player_ins.cpp" />
+    <ClCompile Include="ds3runtime\player_network_session.cpp" />
+    <ClCompile Include="ds3runtime\game_packet.cpp" />
     <ClCompile Include="ds3runtime\sprj_bullet_state.cpp" />
     <ClCompile Include="ds3runtime\sprj_chr_damage_module.cpp" />
     <ClCompile Include="ds3runtime\sprj_chr_data_module.cpp" />

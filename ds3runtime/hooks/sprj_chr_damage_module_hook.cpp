@@ -11,7 +11,7 @@
 namespace ds3runtime {
 
 SprjChrDamageModuleHook::SprjChrDamageModuleHook()
-	: Hook(0x14451f085, (uintptr_t)onApplyDamage)
+	: Hook(0x14451f085, (uintptr_t)onApplyDamage, {})
 {
 	instance = this;
 }
