@@ -95,6 +95,8 @@ public:
 	*/
 	Handle getHandle() const;
 
+	int32_t getEntityId() const;
+
 	/**
 	* Get's the ChrInsType of this ChrIns. 
 	* 
@@ -162,6 +164,15 @@ public:
 	* @return Character string of this ChrIns.
 	*/
 	std::wstring getCharacterString() const;
+
+	/**
+	* Get's the character id of this ChrIns 
+	* 
+	* The character model id of this ChrIns.
+	* 
+	* @return Character id of this ChrIns.
+	*/
+	std::wstring getCharacterId() const;
 
 	/**
 	* Get's the current animation string of this ChrIns. 
@@ -445,13 +456,28 @@ public:
 	* Online limitations: 
 	* { 
 	* Self = RELAY, 
-	* Players = DESYNC, 
-	* NPC = DESYNC 
+	* Players = RELAY, 
+	* NPC = RELAY 
 	* } 
 	* 
 	* @param spEffectId The SpEffectParam id to apply to this ChrIns.
 	*/
 	void applySpEffect(const int32_t& spEffectId);
+
+	/**
+	* Applies a SpEffect to this ChrIns with debug flags.
+	* 
+	* Online limitations: 
+	* { 
+	* Self = RELAY, 
+	* Players = RELAY, 
+	* NPC = RELAY 
+	* } 
+	* 
+	* @param spEffectId The SpEffectParam id to apply to this ChrIns.
+	* @param debugFlag Flag for network action. 0 sends no packet, 2 sends to all.
+	*/
+	void applySpEffect(const int32_t& spEffectId, const int32_t& debugFlag);
 	
 	/**
 	* Gets the virtual address of this ChrIns.

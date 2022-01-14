@@ -22,6 +22,8 @@ public:
 
 	std::optional<int32_t> getAnimationId(ChrIns chr);
 
+	bool isPlayingAnimationId(ChrIns chr, int32_t animationId);
+
 	std::optional<std::unordered_map<int32_t, int32_t>> getAnimationIdBuffer(ChrIns chr);
 private:
 	std::unordered_map<PlayerIns::Handle, std::unordered_map<int32_t, int32_t>> animationIdMap;

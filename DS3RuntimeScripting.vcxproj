@@ -128,7 +128,7 @@
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
-      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\DARK SOULS RES\PROJECTS\DS3RuntimeScripting;C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpplatest</LanguageStandard>
       <AdditionalOptions>/D_USE_MATH_DEFINES %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -151,7 +151,7 @@
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpplatest</LanguageStandard>
-      <AdditionalIncludeDirectories>C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>E:\DARK SOULS RES\PROJECTS\DS3RuntimeScripting;C:\dev\vcpkg\installed\x86-windows\include;C:\Users\amira\Documents\DS3RuntimeScripting\DS3RuntimeScripting;C:\dev\vcpkg\installed\x64-windows\include\crashpad;C:\Program Files\Lua\include;C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
     </ClCompile>
     <Link>
@@ -190,6 +190,23 @@
     <ClInclude Include="ds3runtime\hooks\better_swordspear_hook.h" />
     <ClInclude Include="ds3runtime\hooks\ds1_backstabs.h" />
     <ClInclude Include="ds3runtime\hooks\ds1_no_hyperarmor.h" />
+    <ClInclude Include="ds3runtime\hooks\time_since_last_frame.h" />
+    <ClInclude Include="ds3runtime\i_chr_finder.h" />
+    <ClInclude Include="ds3runtime\modules\elden_ring\backstab_angle_check.h" />
+    <ClInclude Include="ds3runtime\modules\elden_ring\elden_ring_jump.h" />
+    <ClInclude Include="ds3runtime\modules\elden_ring\position_calculate_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\attacker_effect_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\ban_check.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\bullet_chr_hit_vfx_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\bullet_hit_hierarchy_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\durablity_cost_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\hit_delete.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\hit_reg_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\hit_reg_hook_shockwave.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\hit_sibling_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\hit_uuid_hook.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\hit_uuid_identify.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\no_player_iframes.h" />
     <ClInclude Include="ds3runtime\hooks\game_frame_hook.h" />
     <ClInclude Include="ds3runtime\hooks\has_speffect_visual.h" />
     <ClInclude Include="ds3runtime\hooks\lua_capture.h" />
@@ -201,17 +218,21 @@
     <ClInclude Include="ds3runtime\memory_util.h" />
     <ClInclude Include="ds3runtime\game_packet.h" />
     <ClInclude Include="ds3runtime\misc_functions.h" />
+    <ClInclude Include="ds3runtime\modules\roll_release_test\roll_release_test.h" />
+    <ClInclude Include="ds3runtime\modules\run_frame_test\run_frame_test.h" />
     <ClInclude Include="ds3runtime\player_game_data.h" />
     <ClInclude Include="ds3runtime\player_network_session.h" />
     <ClInclude Include="ds3runtime\player_ins.h" />
     <ClInclude Include="ds3runtime\scripts\animation_id_handler.h" />
     <ClInclude Include="ds3runtime\scripts\ds1_passive_poise.h" />
+    <ClInclude Include="ds3runtime\modules\network_roll_patch\ds3_iframe_patch.h" />
     <ClInclude Include="ds3runtime\scripts\face_data_capture.h" />
     <ClInclude Include="ds3runtime\scripts\fmod_system_handler.h" />
     <ClInclude Include="ds3runtime\scripts\hotkey_manager.h" />
     <ClInclude Include="ds3runtime\hooks\jmp_table_status.h" />
     <ClInclude Include="ds3runtime\scripts\jmp_table_status_reset.h" />
     <ClInclude Include="ds3runtime\scripts\king_crimson_protections.h" />
+    <ClInclude Include="ds3runtime\scripts\mod_p2p_filter.h" />
     <ClInclude Include="ds3runtime\scripts\param_patcher.h" />
     <ClInclude Include="ds3runtime\scripts\position_hide.h" />
     <ClInclude Include="ds3runtime\scripts\repeat_players_filter.h" />
@@ -249,6 +270,23 @@
     <ClCompile Include="ds3runtime\hooks\better_swordspear_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds1_backstabs.cpp" />
     <ClCompile Include="ds3runtime\hooks\ds1_no_hyperarmor.cpp" />
+    <ClCompile Include="ds3runtime\hooks\time_since_last_frame.cpp" />
+    <ClCompile Include="ds3runtime\i_chr_finder.cpp" />
+    <ClCompile Include="ds3runtime\modules\elden_ring\backstab_angle_check.cpp" />
+    <ClCompile Include="ds3runtime\modules\elden_ring\elden_ring_jump.cpp" />
+    <ClCompile Include="ds3runtime\modules\elden_ring\position_calculate_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\attacker_effect_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\ban_check.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\bullet_chr_hit_vfx_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\bullet_hit_hierarchy_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\durablity_cost_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\hit_delete.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\hit_reg_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\hit_reg_hook_shockwave.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\hit_sibling_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\hit_uuid_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\hit_uuid_identify.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\no_player_iframes.cpp" />
     <ClCompile Include="ds3runtime\hooks\game_frame_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\has_speffect_visual.cpp" />
     <ClCompile Include="ds3runtime\hooks\lua_capture.cpp" />
@@ -258,12 +296,16 @@
     <ClCompile Include="ds3runtime\hooks\jmp_table_status.cpp" />
     <ClCompile Include="ds3runtime\hooks\sprj_chr_damage_module_hook.cpp" />
     <ClCompile Include="ds3runtime\hooks\throw_hook.cpp" />
+    <ClCompile Include="ds3runtime\modules\roll_release_test\roll_release_test.cpp" />
+    <ClCompile Include="ds3runtime\modules\run_frame_test\run_frame_test.cpp" />
     <ClCompile Include="ds3runtime\scripts\animation_id_handler.cpp" />
     <ClCompile Include="ds3runtime\scripts\ds1_passive_poise.cpp" />
+    <ClCompile Include="ds3runtime\modules\network_roll_patch\ds3_iframe_patch.cpp" />
     <ClCompile Include="ds3runtime\scripts\face_data_capture.cpp" />
     <ClCompile Include="ds3runtime\scripts\fmod_system_handler.cpp" />
     <ClCompile Include="ds3runtime\scripts\jmp_table_status_reset.cpp" />
     <ClCompile Include="ds3runtime\scripts\king_crimson_protections.cpp" />
+    <ClCompile Include="ds3runtime\scripts\mod_p2p_filter.cpp" />
     <ClCompile Include="ds3runtime\scripts\param_patcher.cpp" />
     <ClCompile Include="ds3runtime\scripts\position_hide.cpp" />
     <ClCompile Include="ds3runtime\scripts\repeat_players_filter.cpp" />

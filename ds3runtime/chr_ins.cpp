@@ -21,6 +21,11 @@ ChrIns::Handle ChrIns::getHandle() const
 	return static_cast<Handle>(*accessMultilevelPointer<uint32_t>(address + 8));
 }
 
+int32_t ChrIns::getEntityId() const
+{
+	return *accessMultilevelPointer<uint32_t>(address + 0x1A1C);
+}
+
 ChrIns::ChrType ChrIns::getChrType() const
 {
 	return static_cast<ChrType>(*accessMultilevelPointer<uint32_t>(address + 0x70));
@@ -49,6 +54,11 @@ unsigned short ChrIns::getForwardId() const
 std::wstring ChrIns::getCharacterString() const
 {
 	return std::wstring(accessMultilevelPointer<wchar_t>(address + 0x1F90, 0x18, 0x130));
+}
+
+std::wstring ChrIns::getCharacterId() const
+{
+	return std::wstring(accessMultilevelPointer<wchar_t>(address + 0x1F90, 0x18, 0x48));
 }
 
 std::wstring ChrIns::getAnimationString() const
@@ -216,11 +226,16 @@ std::vector<std::array<float, 4>> ChrIns::getDummyPolyPositions(const int32_t& d
 
 void ChrIns::applySpEffect(const int32_t& spEffectId)
 {
+	applySpEffect(spEffectId, 2);
+}
+
+void ChrIns::applySpEffect(const int32_t& spEffectId, const int32_t& debugFlags)
+{
 	void(*function)(...);
 	*reinterpret_cast<uintptr_t*>(&function) = 0x1409F3C30;
 	int32_t* debugSpEffectPtr = *accessMultilevelPointer<int32_t*>(address + 0x18, 0x18);
 	*accessMultilevelPointer<int32_t>(((uintptr_t)debugSpEffectPtr) + 0x30) = spEffectId;
-	function(debugSpEffectPtr, 2);
+	function(debugSpEffectPtr, debugFlags);
 }
 
 uintptr_t ChrIns::getAddress() const

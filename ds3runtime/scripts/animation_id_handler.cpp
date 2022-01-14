@@ -35,6 +35,17 @@ std::optional<int32_t> AnimationIdHandler::getAnimationId(ChrIns chr)
 	return latestAnimationIdMap[chr.getHandle()];
 }
 
+bool AnimationIdHandler::isPlayingAnimationId(ChrIns chr, int32_t animationId)
+{
+	if (!animationIdMap.contains(chr.getHandle())) return false;
+
+	for (auto entry : animationIdMap[chr.getHandle()]) {
+		if (entry.second == animationId) return true;
+	}
+
+	return false;
+}
+
 std::optional<std::unordered_map<int32_t, int32_t>> AnimationIdHandler::getAnimationIdBuffer(ChrIns chr)
 {
 	if (!animationIdMap.contains(chr.getHandle())) return {};

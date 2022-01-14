@@ -5,14 +5,14 @@
 
 #pragma once
 #include "pch.h"
-#include "ds3_iframe_patch_hit_delete.h"
+#include "hit_delete.h"
 #include "ds3runtime/ds3runtime.h"
-#include "ds3runtime/scripts/ds3_iframe_patch.h"
+#include "ds3_iframe_patch.h"
 
 namespace ds3runtime::ds3IFramePatch {
 
 HitBoxDeleteHook::HitBoxDeleteHook()
-	: Hook(0x1408321f0, (uintptr_t)onHitBoxDelete)
+	: Hook(0x1408321f0, (uintptr_t)onHitBoxDelete, { "ds3_iframe_patch" })
 {
 	instance = this;
 }

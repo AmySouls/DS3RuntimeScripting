@@ -23,8 +23,12 @@ public:
 	{
 		return "game_frame_hook";
 	}
+
+	uint64_t getFrameNumber();
 private:
 	static GameFrameHook* instance;
+
+	uint64_t uniqueFrameClock = 0;
 };
 
 }

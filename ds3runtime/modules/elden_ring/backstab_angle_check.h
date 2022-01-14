@@ -7,10 +7,11 @@
 #include "pch.h"
 #include "ds3runtime/script_module.h"
 #include "ds3runtime/ds3runtime.h"
+#include "spdlog/stopwatch.h"
 
-namespace ds3runtime{
+namespace ds3runtime::eldenring {
 
-class ModP2PFilter : public ScriptModule
+class BackstabAngleCheck : public ScriptModule
 {
 public:
 	bool onAttach();
@@ -21,10 +22,8 @@ public:
 
 	std::string getName()
 	{
-		return "mod_p2p_fitler";
+		return "backstab_angle_check";
 	}
-private:
-	uint16_t modKey = 163;
 };
 
 }

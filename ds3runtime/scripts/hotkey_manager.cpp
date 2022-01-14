@@ -37,9 +37,19 @@ void HotkeyManager::registerKeyDownEvent(std::string eventName, std::function<vo
 	keyDownEvents[eventName] = callback;
 }
 
+void HotkeyManager::unregisterKeyDownEvent(std::string eventName)
+{
+	keyDownEvents.erase(eventName);
+}
+
 void HotkeyManager::registerKeyUpEvent(std::string eventName, std::function<void()> callback)
 {
 	keyUpEvents[eventName] = callback;
+}
+
+void HotkeyManager::unregisterKeyUpEvent(std::string eventName)
+{
+	keyUpEvents.erase(eventName);
 }
 
 HotkeyManager* HotkeyManager::instance = nullptr;

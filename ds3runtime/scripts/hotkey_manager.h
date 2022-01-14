@@ -25,7 +25,11 @@ public:
 
 	void registerKeyDownEvent(std::string eventName, std::function<void()> callback);
 
+	void unregisterKeyDownEvent(std::string eventName);
+
 	void registerKeyUpEvent(std::string eventName, std::function<void()> callback);
+
+	void unregisterKeyUpEvent(std::string eventName);
 private:
 	HWND windowHandle;
 	WNDPROC originalWindowProc = 0;

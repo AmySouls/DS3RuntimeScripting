@@ -6,14 +6,14 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/ds3runtime.h"
-#include "ds3runtime/hooks/ds3_iframe_patch_attacker_effect_hook.h"
-#include "ds3runtime/scripts/ds3_iframe_patch.h"
+#include "attacker_effect_hook.h"
+#include "ds3_iframe_patch.h"
 #include "ds3runtime/scripts/param_patcher.h"
 
 namespace ds3runtime::ds3IFramePatch {
 
 AttackerEffectHook::AttackerEffectHook()
-	: Hook(0x14087CE00, (uintptr_t)onSpEffectApply)
+	: Hook(0x14087CE00, (uintptr_t)onSpEffectApply, { "param_patcher" })
 {
 	instance = this;
 }
@@ -23,7 +23,10 @@ void AttackerEffectHook::onSpEffectApply(uintptr_t chrIns, int32_t spEffectId, u
 	void (*originalFunction)(...);
 	*(uintptr_t*)&originalFunction = *instance->original;
 	ChrIns attackerChr(chrIns);
-	if (attackerChr.getHandle() == ChrIns::Handle::MainChr && spEffectId != -1 && ParamHandler("", L"SpEffectParam", spEffectId).isValidParam() && ParamHandler("", L"SpEffectParam", spEffectId).readBinary(0x160, 1)) return;
+	if (attackerChr.getHandle() == ChrIns::Handle::MainChr 
+		&& spEffectId != -1 
+		&& ParamHandler("", L"SpEffectParam", spEffectId).isValidParam() 
+		&& ParamHandler("", L"SpEffectParam", spEffectId).readBinary(0x160, 1)) return;
 	originalFunction(unk0, spEffectId, unk0, unk1, unk2, unk3, unk4, unk5, unk6, unk7);
 }
 

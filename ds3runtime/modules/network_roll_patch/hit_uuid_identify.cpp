@@ -6,13 +6,13 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/ds3runtime.h"
-#include "ds3_iframe_patch_hit_uuid_identify.h"
-#include "ds3runtime/scripts/ds3_iframe_patch.h"
+#include "hit_uuid_identify.h"
+#include "ds3_iframe_patch.h"
 
 namespace ds3runtime::ds3IFramePatch {
 
 HitUUIDIdentifyHook::HitUUIDIdentifyHook()
-	: Hook(0x140836490, (uintptr_t)onHitCheck)
+	: Hook(0x140836490, (uintptr_t)onHitCheck, {})
 {
 	instance = this;
 }

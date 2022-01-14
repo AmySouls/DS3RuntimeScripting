@@ -5,16 +5,16 @@
 
 #pragma once
 #include "pch.h"
-#include "ds3_iframe_patch_hit_sibling_hook.h"
+#include "hit_sibling_hook.h"
 #include "ds3runtime/ds3runtime.h"
-#include "ds3runtime/scripts/ds3_iframe_patch.h"
+#include "ds3_iframe_patch.h"
 #include "ds3runtime/world_chr_man.h"
 #include "ds3runtime/player_ins.h"
 
 namespace ds3runtime::ds3IFramePatch {
 
 HitBoxHierarchyHook::HitBoxHierarchyHook()
-	: Hook(0x140832100, (uintptr_t)onSetHierarchy)
+	: Hook(0x140832100, (uintptr_t)onSetHierarchy, { "ds3_iframe_patch" })
 {
 	instance = this;
 }

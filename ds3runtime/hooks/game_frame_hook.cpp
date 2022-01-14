@@ -23,12 +23,16 @@ void GameFrameHook::onGameFrame(void* rcx, void* rdx, void* r8, void* r9, void* 
 	*(uintptr_t*)&originalFunction = *instance->original;
 	originalFunction(rcx, rdx, r8, r9, rsp20);
 	if (ds3runtime_global->getGameThreadId() == 0) ds3runtime_global->setGameThreadId(GetCurrentThreadId());
-	static uint64_t uniqueFrameClock = 0;
-	uniqueFrameClock++;
-	if (uniqueFrameClock % 2 == 0) {
+	instance->uniqueFrameClock++;
+	if (instance->uniqueFrameClock % 2 == 0) {
 		ds3runtime_global->tryInstallHooks();
 		ds3runtime_global->executeScripts();
 	}
+}
+
+uint64_t GameFrameHook::getFrameNumber()
+{
+	return this->uniqueFrameClock / 2;
 }
 
 GameFrameHook* GameFrameHook::instance = nullptr;

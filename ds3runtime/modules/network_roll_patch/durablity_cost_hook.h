@@ -6,7 +6,7 @@
 #pragma once
 #include "pch.h"
 #include "ds3runtime/hook.h"
-#include <ds3runtime/scripts/ds3_iframe_patch.h>
+#include "ds3_iframe_patch.h"
 
 namespace ds3runtime::ds3IFramePatch {
 

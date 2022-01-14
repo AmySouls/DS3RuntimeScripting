@@ -5,13 +5,13 @@
 
 #pragma once
 #include "pch.h"
-#include "ds3_iframe_patch_hit_reg_hook_shockwave.h"
+#include "hit_reg_hook_shockwave.h"
 #include "ds3runtime/ds3runtime.h"
 
 namespace ds3runtime::ds3IFramePatch {
 
 HitRegHookShockwave::HitRegHookShockwave()
-	: Hook(0x1409AFCE0, (uintptr_t)onHitRegistration)
+	: Hook(0x1409AFCE0, (uintptr_t)onHitRegistration, {})
 {
 	instance = this;
 }
